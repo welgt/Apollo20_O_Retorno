@@ -1,11 +1,12 @@
 import pygame
+import math
 
 class Novo_objeto:
     def __init__(self, surface, posicao):
         self.__surface = pygame.image.load(surface)
         self.__tamanho = self.__surface.get_rect()[2], self.__surface.get_rect()[3]
         self.__posicao = posicao[0], posicao[1]
-        self.__centro = (self.__posicao[0] + (self.__tamanho[0]/2)), (self.__posicao[1] + (self.__tamanho[1]/2))
+        self.__centro_surface = self.get_posicao()[0]+self.__tamanho[0]/2, self.get_posicao()[1] + self.__tamanho[1]/2
         self.__velocidade = 0, 0
         self.__friccao = 0
         self.__angulo_rotacao = 0
@@ -38,10 +39,10 @@ class Novo_objeto:
 
 
     def get_centro(self):
-        return self.__centro
+        return self.__centro_surface
 
     def set_centro(self, novo_centro):
-        self.__centro = novo_centro
+        self.__centro_surface = novo_centro
 
 
 
@@ -95,4 +96,30 @@ class Novo_objeto:
         nova_posicao[1] += self.get_posicao()[1]
 
         return surface ,nova_posicao
+
+    def criaPoligonoPropulsor(self, largura_poligono, posicao_x, ponto_acelerador_poligono):
+
+
+        ponto_direito = largura_poligono + self.get_posicao()[0] +self.__tamanho[0]/2 + posicao_x
+        ponto_esquerdo = -largura_poligono + self.get_posicao()[0] +self.__tamanho[0]/2+ posicao_x
+        ponto_acelerador_poligono += self.get_posicao()[1] + self.get_posicao()[1] / 2
+        altura_base = self.get_tamanho()[1]
+
+        vertices_propulsor = ((ponto_direito, altura_base + self.get_posicao()[1]),  # (0,3),
+                              (self.get_posicao()[0]++self.__tamanho[0]/2+ posicao_x, ponto_acelerador_poligono),  # (3,-3)
+                              (ponto_esquerdo, altura_base + self.get_posicao()[1]))  # (-3,-3)
+
+        origem_nave = self.get_centro()
+        angulo_rotacao = math.radians(-self.__angulo_rotacao)
+
+        poligono_rotacionado = []
+
+        for vertice in vertices_propulsor:
+            vertice_aux = vertice[0] - origem_nave[0], vertice[1] - origem_nave[1]
+            vertice_aux = (vertice_aux[0] * math.cos(angulo_rotacao) - vertice_aux[1] * math.sin(angulo_rotacao),
+                           vertice_aux[0] * math.sin(angulo_rotacao) + vertice_aux[1] * math.cos(angulo_rotacao))
+            vertice_aux = vertice_aux[0] + origem_nave[0], vertice_aux[1] + origem_nave[1]
+            poligono_rotacionado.append(vertice_aux)
+
+        return poligono_rotacionado
 
