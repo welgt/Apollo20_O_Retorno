@@ -1,15 +1,17 @@
 import pygame
 import math
-from Configuracaes import *
+from Config import *
 
 # falta arrumar a def get_centro_surface e adicionala na funcao de rotacionar
 
 class Novo_objeto:
-    def __init__(self, surface, posicao):
+    def __init__(self, surface, posicao_x,posicao_y):
         self.__surface = pygame.image.load(surface)
-        self.__tamanho = self.__surface.get_rect()[2], self.__surface.get_rect()[3]
-        self.__posicao = posicao[0], posicao[1]
-        self.__centro_surface = self.get_posicao()[0]+self.__tamanho[0]/2, self.get_posicao()[1] + self.__tamanho[1]/2
+        self.__tamanho_x = self.__surface.get_rect()[2]
+        self.__tamanho_y = self.__surface.get_rect()[3]
+        self.__posicao_x = posicao_x
+        self.__posicao_y = posicao_y
+        #self.__centro_surface = self.__posicao_x + (self.__tamanho_x / 2), self.get_posicao_y + self.__tamanho_y / 2
         self.__velocidade = 0, 0
         self.__friccao = 0
         self.__angulo_rotacao = 0
@@ -25,20 +27,34 @@ class Novo_objeto:
     def set_surface(self, nova_surface):
         self.__surface = pygame.image.load(nova_surface)
 
+    def get_posicao_x(self):
+        return self.__posicao_x
+
+    def get_posicao_y(self):
+        return self.__posicao_y
+
+    def get_posicao_x(self):
+        return self.__posicao_x, self.__posicao_y
+
+    def set_posicao(self, nova_posicao_x, nova_posicao_y):
+        self.__posicao_x = nova_posicao_x
+        self.__posicao_y =  nova_posicao_y
+
     def get_posicao(self):
-        return self.__posicao
+        return self.__posicao_x, self.__posicao_y
 
-    def set_posicao(self, nova_posicao):
-        self.__posicao = nova_posicao
+    def get_tamanho_x(self):
+        return self.__tamanho_x
 
-    def get_tamanho(self):
-        return self.__tamanho
+    def get_tamanho_y(self):
+        return self.__tamanho_y
 
-    def set_tamanho(self, novo_tamanho):
-        self.__surface = pygame.transform.scale(self.__surface, (novo_tamanho))
-        novo_centro = novo_tamanho[0]/2, novo_tamanho[1]/2
+    def set_tamanho(self, novo_tamanho_x, novo_tamanho_y):
+        self.__surface = pygame.transform.scale(self.__surface, (novo_tamanho_x, novo_tamanho_y))
+        novo_centro = novo_tamanho_x/2, novo_tamanho_y/2
         self.set_centro(novo_centro)
-        self.__tamanho = novo_tamanho
+        self.__tamanho_x = novo_tamanho_x
+        self.__tamanho_y = novo_tamanho_y
 
 
     def get_centro_surface(self):
@@ -106,14 +122,14 @@ class Novo_objeto:
     def criaPoligono_Propulsor(self, largura_poligono, posicao_x, ponto_acelerador_poligono):
 
 
-        ponto_direito = largura_poligono + self.get_posicao()[0] +self.__tamanho[0]/2 + posicao_x
-        ponto_esquerdo = -largura_poligono + self.get_posicao()[0] +self.__tamanho[0]/2+ posicao_x
-        ponto_acelerador_poligono += self.get_posicao()[1]+ self.get_tamanho()[1]
-        altura_base = self.get_tamanho()[1]
+        ponto_direito = largura_poligono + self.get_posicao_x() + self.get_tamanho_x() / 2 + posicao_x
+        ponto_esquerdo = -largura_poligono + self.get_posicao_x() + self.__tamanho_x / 2 + posicao_x
+        ponto_acelerador_poligono += self.get_posicao_y()+ self.get_tamanho_y()
+        altura_base = self.get_tamanho_y()
 
         vertices_propulsor = ((ponto_direito, altura_base + self.get_posicao()[1]),  # (0,3),
-                              (self.get_posicao()[0] +self.__tamanho[0]/2+ posicao_x, ponto_acelerador_poligono),  # (3,-3)
-                              (ponto_esquerdo, altura_base + self.get_posicao()[1]))  # (-3,-3)
+                              (self.get_posicao_x() + self.__tamanho_x / 2 + posicao_x, ponto_acelerador_poligono),  # (3,-3)
+                              (ponto_esquerdo, altura_base + self.get_posicao_y()))  # (-3,-3)
 
         return self.__rotacionaPoligono_propulsor(vertices_propulsor)
 
@@ -121,7 +137,7 @@ class Novo_objeto:
 
     def __rotacionaPoligono_propulsor(self, vertices_propulsor):
 
-        origem_nave = self.get_posicao()[0]+self.__tamanho[0]/2, self.get_posicao()[1] + self.__tamanho[1]/2
+        origem_nave = self.get_posicao_x() + self.__tamanho_x / 2, self.get_posicao_y() + self.__tamanho_x / 2
         angulo_rotacao = math.radians(-self.__angulo_rotacao)
 
         poligono_rotacionado = []
