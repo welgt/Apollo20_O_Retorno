@@ -17,7 +17,7 @@ i = 0
 
 jogoAtivo = True
 while jogoAtivo:
-    i+=0.4
+    i+=0.1
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             jogoAtivo = False
@@ -28,11 +28,15 @@ while jogoAtivo:
 
 
     tela.fill(BLACK)
+    nave.set_angulo_rotacao(i)
     naveRot = nave.rotacaoCentralizada(i)
-
     tela.blit(naveRot[0], naveRot[1])
+
+    nave.criaPoligono_Propulsor(10,0,0)
+    tela.set_fps(FPS)
     tela.flip()
 
+    print("nave angulo rotacao :", nave.get_angulo_rotacao())
 pygame.quit()
 
 """def rotatePolygon(self,angle):

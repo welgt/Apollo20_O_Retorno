@@ -119,17 +119,18 @@ class Novo_objeto:
 
         return surface ,nova_posicao
 
+
     def criaPoligono_Propulsor(self, largura_poligono, posicao_x, ponto_acelerador_poligono):
 
 
-        ponto_direito = largura_poligono + self.get_posicao_x() + self.get_tamanho_x() / 2 + posicao_x
-        ponto_esquerdo = -largura_poligono + self.get_posicao_x() + self.__tamanho_x / 2 + posicao_x
-        ponto_acelerador_poligono += self.get_posicao_y()+ self.get_tamanho_y()
-        altura_base = self.get_tamanho_y()
+        ponto_direito = largura_poligono + self.__posicao_x + self.__tamanho_x / 2 + posicao_x
+        ponto_esquerdo = -largura_poligono + self.__posicao_x + self.__tamanho_x / 2 + posicao_x
+        ponto_acelerador_poligono += self.__posicao_y + self.__tamanho_y
+        altura_base = self.__tamanho_y
 
-        vertices_propulsor = ((ponto_direito, altura_base + self.get_posicao()[1]),  # (0,3),
-                              (self.get_posicao_x() + self.__tamanho_x / 2 + posicao_x, ponto_acelerador_poligono),  # (3,-3)
-                              (ponto_esquerdo, altura_base + self.get_posicao_y()))  # (-3,-3)
+        vertices_propulsor = ((ponto_direito, altura_base + self.__posicao_y),  # (0,3),
+                              (self.__posicao_x + self.__tamanho_x / 2 + posicao_x, ponto_acelerador_poligono),  # (3,-3)
+                              (ponto_esquerdo, altura_base + self.__posicao_y))  # (-3,-3)
 
         return self.__rotacionaPoligono_propulsor(vertices_propulsor)
 
@@ -137,8 +138,8 @@ class Novo_objeto:
 
     def __rotacionaPoligono_propulsor(self, vertices_propulsor):
 
-        origem_nave = self.get_posicao_x() + self.__tamanho_x / 2, self.get_posicao_y() + self.__tamanho_x / 2
-        angulo_rotacao = math.radians(-self.__angulo_rotacao)
+        origem_nave = self.__posicao_x + self.__tamanho_x / 2, self.__posicao_y + self.__tamanho_x / 2
+        angulo_rotacao = math.radians(-self.get_angulo_rotacao())
 
         poligono_rotacionado = []
 
