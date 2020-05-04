@@ -1,11 +1,12 @@
 import pygame
+from Config import *
 class Nova_tela:
     def __init__(self, titulo, resolucao):
         self.__tela = pygame.display.set_mode(resolucao)
         self.__titulo = pygame.display.set_caption(titulo)
         self.__titulo_da_tela = titulo
         self.__clock =pygame.time.Clock()
-        self.__fps = 60
+        self.__fps = FPS
 
     def get_resolucao_tela(self):
         return self.__tela
@@ -32,8 +33,6 @@ class Nova_tela:
     def flip(self):
         pygame.display.flip()
 
-    def set_fps(self, fps):
-        self.__clock.tick(fps)
 
     def draw(self, cor, lista_vertice):
         pygame.draw.polygon(self.__tela, cor, lista_vertice)

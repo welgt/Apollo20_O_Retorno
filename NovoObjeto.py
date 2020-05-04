@@ -2,24 +2,29 @@ import pygame
 import math
 from Config import *
 
+
 # falta arrumar a def get_centro_surface e adicionala na funcao de rotacionar
 
 class Novo_objeto:
-    def __init__(self, surface, posicao_x,posicao_y):
+    def __init__(self, surface, posicao_x, posicao_y):
         self.__surface = pygame.image.load(surface)
         self.__tamanho_x = self.__surface.get_rect()[2]
         self.__tamanho_y = self.__surface.get_rect()[3]
         self.__posicao_x = posicao_x
         self.__posicao_y = posicao_y
         #self.__centro_surface = self.__posicao_x + (self.__tamanho_x / 2), self.get_posicao_y + self.__tamanho_y / 2
-        self.__velocidade = 0, 0
+        self.__velocidade_x = 0
+        self.__velocidade_y = 0
+        self.__potencia_propulsor = 0
         self.__friccao = 0
         self.__angulo_rotacao = 0
         self.__velocidade_rotacao = 0
         self.__rect =self.__surface.get_rect()
         self.__propulsor = False
         self.__colidiu_tela = False
-        self.__rotacionou = False, False
+        self.__rotacionou_dir = False
+        self.__rotacionou_esq = False
+
 
     def get_surface(self):
         return self.__surface
@@ -30,10 +35,16 @@ class Novo_objeto:
     def get_posicao_x(self):
         return self.__posicao_x
 
+    def set_posicao_x(self, posicao_x):
+        self.__posicao_x = posicao_x
+
     def get_posicao_y(self):
         return self.__posicao_y
 
-    def get_posicao_x(self):
+    def set_posicao_y(self, posicao_y):
+        self.__posicao_y = posicao_y
+
+    def get_posicao(self):
         return self.__posicao_x, self.__posicao_y
 
     def set_posicao(self, nova_posicao_x, nova_posicao_y):
@@ -43,11 +54,42 @@ class Novo_objeto:
     def get_posicao(self):
         return self.__posicao_x, self.__posicao_y
 
-    def get_tamanho_x(self):
-        return self.__tamanho_x
+
+
+
+
+    def set_velocidade_x(self, velocidade):
+        self.__velocidade_x = velocidade
+
+    def get_velocidade_x(self):
+        return self.__velocidade_x
+
+    def set_velocidade_y(self, velocidade):
+        self.__velocidade_y = velocidade
+
+    def get_velocidade_y(self):
+        return self.__velocidade_y
+
+    def get_potencia_propulsor(self):
+         return self.__potencia_propulsor
+
+    def set_potencia_propulsor(self, potencia_propulsor):
+        self.__potencia_propulsor = potencia_propulsor
+
 
     def get_tamanho_y(self):
         return self.__tamanho_y
+
+    def get_tamanho_y(self):
+        return self.__tamanho_y
+
+
+
+
+
+
+
+
 
     def set_tamanho(self, novo_tamanho_x, novo_tamanho_y):
         self.__surface = pygame.transform.scale(self.__surface, (novo_tamanho_x, novo_tamanho_y))
@@ -57,19 +99,21 @@ class Novo_objeto:
         self.__tamanho_y = novo_tamanho_y
 
 
+
+
+
+
+
+
+
+
+
     def get_centro_surface(self):
         return self.__centro_surface
 
     def set_centro(self, novo_centro):
         self.__centro_surface = novo_centro
 
-
-
-    def get_velocidade(self):
-        return self.__velocidade
-
-    def set_velocidade(self, nova_velocidade):
-        self.__velocidade = nova_velocidade
 
     def get_rect(self):
         return self.__rect
@@ -104,11 +148,21 @@ class Novo_objeto:
     def set_colidiu_tela(self, booleana):
         self.__colidiu_tela = booleana
 
-    def get_rotacionou(self):
-        return self.__rotacionou
+    def get_rotacionou_dir(self):
+        return self.__rotacionou_dir
 
-    def set_rotacionou(self, booleana):
-        self.__rotacionou = booleana
+    def set_rotacionou_dir(self, booleana):
+        self.__rotacionou_dir = booleana
+
+
+
+    def get_rotacionou_esq(self):
+        return self.__rotacionou_esq
+
+    def set_rotacionou_esq(self, booleana):
+        self.__rotacionou_esq = booleana
+
+
 
     def rotacaoCentralizada(self,angulo):
 
@@ -171,6 +225,67 @@ class Novo_objeto:
 
     def verifica_colisao_tela(self):
         #self.posicao_x = self.colisao(self.posicao_x, self.tamanho_x, RESOLUCAO[0])
-        self.get_posicao()[0] = self.colisao(self.get_posicao()[0], self.get_tamanho()[0], RESOLUCAO[0])
+        self.__posicao_x = self.colisao(self.__posicao_x, self.__tamanho_x, RESOLUCAO[0])
         #self.posicao_y = self.colisao(self.posicao_y, self.tamanho_y, RESOLUCAO[1])
-        self.get_posicao()[1] = self.colisao(self.get_posicao()[1], self.get_tamanho()[1], RESOLUCAO[1])
+        self.__posicao_y = self.colisao(self.__posicao_y, self.__tamanho_y, RESOLUCAO[1])
+
+
+
+
+    # ACELERACAO do propulsor
+    def aceleracao_propulsor(self, tempo):
+
+
+
+        #if nave.propulsor == True:
+        if self.get_propulsor_ativo() == True:
+            #nave.velocidade_y -= (VELOCIDADE_ACELERACAO_LUA / FPS) * tempo * nave.friccao
+            self.__velocidade_y-= (VELOCIDADE_ACELERACAO_LUA / FPS) * tempo * self.get_friccao()
+
+            # permite aumentar o tamanho do propulsor ate 1
+            #if potencia_propulsor < 1:
+            if self.__potencia_propulsor < 1:
+                #potencia_propulsor += (VELOCIDADE_ACELERACAO_LUA / FPS) * tempo * nave.friccao
+                self.__potencia_propulsor += (VELOCIDADE_ACELERACAO_LUA / FPS) * tempo * self.get_friccao()
+
+            #if nave.velocidade_y <= VELOCIDADE_ACELERACAO_LUA:
+            if self.get_velocidade_y() <= VELOCIDADE_ACELERACAO_LUA:
+                tempo = 0
+
+                # define nova direcao caso a nave esteja inclinada pra direita e propulsor ativo
+                #if nave.angulo_rotacao <= 1 and nave.propulsor:
+                if self.get_angulo_rotacao()<=1 and self.get_propulsor_ativo():
+                    #nave.velocidade_x += (nave.angulo_rotacao * -1) / 360
+                    self.__velocidade_x += self.get_angulo_rotacao()*-1 /360
+
+                # define nova direcao caso a nave esteja inclinada pra esquerda e propulsor ativo
+                #if nave.angulo_rotacao >= 1 and nave.propulsor:
+                if self.__angulo_rotacao >= 1 and self.get_propulsor_ativo():
+                    #nave.velocidade_x -= nave.angulo_rotacao / 360
+                    self.__velocidade_x -= self.get_angulo_rotacao()/360
+
+
+
+    def gravidade(self, tempo):
+
+        # GRAVIDADE
+        if self.get_propulsor_ativo() == False:
+            # nave.velocidade_y += (VELOCIDADE_ACELERACAO_LUA / FPS) * tempo * nave.friccao
+            # velocidade_y = nave.get_velocidade_y()
+            self.__velocidade_y += (VELOCIDADE_ACELERACAO_LUA / FPS) * tempo * self.get_friccao()
+            # self.set_velocidade_y(velocidade_y)
+
+            # diminiu o tamanho do propulsor
+            # potencia_propulsor -= (VELOCIDADE_ACELERACAO_LUA / FPS) * tempo * nave.friccao
+            # potencia_propulsor = nave.get_potencia_propulsor()
+            self.__potencia_propulsor -= (VELOCIDADE_ACELERACAO_LUA / FPS) * tempo * self.get_friccao()
+            # self.set_potencia_propulsor(potencia_propulsor)
+
+            # caso ele for menor que zero, fique em zero.
+            # if potencia_propulsor < 0:
+            if self.get_potencia_propulsor() < 0:
+                # potencia_propulsor = 0
+                self.set_potencia_propulsor(0)
+            # if nave.velocidade_y >= VELOCIDADE_ACELERACAO_LUA:
+            if self.get_velocidade_y() >= VELOCIDADE_ACELERACAO_LUA:
+                tempo = 0
