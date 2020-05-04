@@ -8,11 +8,11 @@ clock = pygame.time.Clock()
 gamePlay = Nova_tela("teste", RESOLUCAO)
 nave = Novo_objeto('arquivos/nave.png', 300, 300)
 lua = Novo_objeto('arquivos/lua.png', 200, 50)
-nave.set_tamanho(25, 40)
+nave.set_tamanho(30, 60)
 lua.set_tamanho(200, 200)
 
 nave.set_friccao(FRICCAO_PROPULSOR)
-nave.set_velocidade_rotacao(VELOCIDADE_ACELERACAO_LUA*2)
+nave.set_velocidade_rotacao(VELOCIDADE_ROTACAO)
 tempo = 0
 
 # poligono_propulsor = pygame.draw.polygon(gamePlay.tela, WHITE, [(300,600), (295,618), (824,407), (800,400)],0)
@@ -99,8 +99,8 @@ while jogoAtivo:
     # rotaciona a (imagem) nave
     nave_rot = nave.rotacaoCentralizada(nave.get_angulo_rotacao())
 
-    gamePlay.blit(nave_rot[0],nave_rot[1])
     gamePlay.blit(lua.get_surface(), lua.get_posicao())
+    gamePlay.blit(nave_rot[0],nave_rot[1])
     gamePlay.draw(WHITE, poligono_propulsor_dir)
     gamePlay.draw(WHITE, poligono_propulsor_esq)
 
@@ -122,5 +122,6 @@ while jogoAtivo:
     gamePlay.flip()
     clock.tick(FPS)
 
+    print(nave.get_centro_surface())
 
 pygame.quit()
