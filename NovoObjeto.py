@@ -1,6 +1,8 @@
 import pygame
 import math
 
+# falta arrumar a def get_centro_surface e adicionala na funcao de rotacionar
+
 class Novo_objeto:
     def __init__(self, surface, posicao):
         self.__surface = pygame.image.load(surface)
@@ -38,7 +40,7 @@ class Novo_objeto:
         self.__tamanho = novo_tamanho
 
 
-    def get_centro(self):
+    def get_centro_surface(self):
         return self.__centro_surface
 
     def set_centro(self, novo_centro):
@@ -91,25 +93,31 @@ class Novo_objeto:
     def rotacaoCentralizada(self,angulo):
 
         surface = pygame.transform.rotate(self.get_surface(), angulo)
-        nova_posicao = surface.get_rect(center=self.get_centro())
+        nova_posicao = surface.get_rect(center=self.get_centro_surface())
         nova_posicao[0] += self.get_posicao()[0]
         nova_posicao[1] += self.get_posicao()[1]
 
         return surface ,nova_posicao
 
-    def criaPoligonoPropulsor(self, largura_poligono, posicao_x, ponto_acelerador_poligono):
+    def criaPoligono_Propulsor(self, largura_poligono, posicao_x, ponto_acelerador_poligono):
 
 
         ponto_direito = largura_poligono + self.get_posicao()[0] +self.__tamanho[0]/2 + posicao_x
         ponto_esquerdo = -largura_poligono + self.get_posicao()[0] +self.__tamanho[0]/2+ posicao_x
-        ponto_acelerador_poligono += self.get_posicao()[1] + self.get_posicao()[1] / 2
+        ponto_acelerador_poligono += self.get_posicao()[1]+ self.get_tamanho()[1]
         altura_base = self.get_tamanho()[1]
 
         vertices_propulsor = ((ponto_direito, altura_base + self.get_posicao()[1]),  # (0,3),
-                              (self.get_posicao()[0]++self.__tamanho[0]/2+ posicao_x, ponto_acelerador_poligono),  # (3,-3)
+                              (self.get_posicao()[0] +self.__tamanho[0]/2+ posicao_x, ponto_acelerador_poligono),  # (3,-3)
                               (ponto_esquerdo, altura_base + self.get_posicao()[1]))  # (-3,-3)
 
-        origem_nave = self.get_centro()
+        return self.__rotacionaPoligono_propulsor(vertices_propulsor)
+
+
+
+    def __rotacionaPoligono_propulsor(self, vertices_propulsor):
+
+        origem_nave = self.get_posicao()[0]+self.__tamanho[0]/2, self.get_posicao()[1] + self.__tamanho[1]/2
         angulo_rotacao = math.radians(-self.__angulo_rotacao)
 
         poligono_rotacionado = []
