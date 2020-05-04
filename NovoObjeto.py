@@ -1,5 +1,6 @@
 import pygame
 import math
+from Configuracaes import *
 
 # falta arrumar a def get_centro_surface e adicionala na funcao de rotacionar
 
@@ -90,6 +91,9 @@ class Novo_objeto:
     def get_rotacionou(self):
         return self.__rotacionou
 
+    def set_rotacionou(self, booleana):
+        self.__rotacionou = booleana
+
     def rotacaoCentralizada(self,angulo):
 
         surface = pygame.transform.rotate(self.get_surface(), angulo)
@@ -131,3 +135,25 @@ class Novo_objeto:
 
         return poligono_rotacionado
 
+
+    def colisao(self, posEixoObjeto, tamanho, resolucaoTela):                # considerando novo centro da imagem  - (tamanho/2)
+        if posEixoObjeto >= 0 and posEixoObjeto <= resolucaoTela - tamanho/2:
+            #self.colidiu = False
+            self.set_colidiu_tela(False)
+        else:
+            #print("colidiu")
+            #self.colidiu = True
+            self.set_colidiu_tela(True)
+            if posEixoObjeto < resolucaoTela / 2:
+                #print(self.posicao_y)
+                posEixoObjeto = 0
+            else:                                         # considerando novo centro da imagem  - (tamanho/2)
+                posEixoObjeto = resolucaoTela - tamanho/2
+        return posEixoObjeto
+
+
+    def verifica_colisao_tela(self):
+        #self.posicao_x = self.colisao(self.posicao_x, self.tamanho_x, RESOLUCAO[0])
+        self.get_posicao()[0] = self.colisao(self.get_posicao()[0], self.get_tamanho()[0], RESOLUCAO[0])
+        #self.posicao_y = self.colisao(self.posicao_y, self.tamanho_y, RESOLUCAO[1])
+        self.get_posicao()[1] = self.colisao(self.get_posicao()[1], self.get_tamanho()[1], RESOLUCAO[1])
