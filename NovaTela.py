@@ -23,7 +23,6 @@ class Nova_tela:
     def get_fps(self):
         return self.__fps
 
-
     def blit(self, surface_obj, posicao_obj):
         self.__tela.blit(surface_obj, posicao_obj)
 
@@ -32,7 +31,6 @@ class Nova_tela:
 
     def flip(self):
         pygame.display.flip()
-
 
     def draw(self, cor, lista_vertice):
         pygame.draw.polygon(self.__tela, cor, lista_vertice)

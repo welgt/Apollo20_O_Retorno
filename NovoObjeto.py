@@ -54,10 +54,6 @@ class Novo_objeto:
     def get_posicao(self):
         return self.__posicao_x, self.__posicao_y
 
-
-
-
-
     def set_velocidade_x(self, velocidade):
         self.__velocidade_x = velocidade
 
@@ -76,20 +72,11 @@ class Novo_objeto:
     def set_potencia_propulsor(self, potencia_propulsor):
         self.__potencia_propulsor = potencia_propulsor
 
-
     def get_tamanho_y(self):
         return self.__tamanho_y
 
     def get_tamanho_y(self):
         return self.__tamanho_y
-
-
-
-
-
-
-
-
 
     def set_tamanho(self, novo_tamanho_x, novo_tamanho_y):
         self.__surface = pygame.transform.scale(self.__surface, (novo_tamanho_x, novo_tamanho_y))
@@ -98,22 +85,11 @@ class Novo_objeto:
         self.__tamanho_x = novo_tamanho_x
         self.__tamanho_y = novo_tamanho_y
 
-
-
-
-
-
-
-
-
-
-
     def get_centro_surface(self):
         return self.__centro_surface
 
     def set_centro(self, novo_centro):
         self.__centro_surface = novo_centro
-
 
     def get_rect(self):
         return self.__rect
@@ -154,14 +130,11 @@ class Novo_objeto:
     def set_rotacionou_dir(self, booleana):
         self.__rotacionou_dir = booleana
 
-
-
     def get_rotacionou_esq(self):
         return self.__rotacionou_esq
 
     def set_rotacionou_esq(self, booleana):
         self.__rotacionou_esq = booleana
-
 
 
     def rotacaoCentralizada(self,angulo):
@@ -176,7 +149,6 @@ class Novo_objeto:
 
     def criaPoligono_Propulsor(self, largura_poligono, posicao_horizontal, ponto_acelerador_poligono):
 
-
         ponto_direito = largura_poligono + self.__posicao_x + self.__tamanho_x / 2 + posicao_horizontal
         ponto_esquerdo = -largura_poligono + self.__posicao_x + self.__tamanho_x / 2 + posicao_horizontal
         ponto_acelerador_poligono += self.__posicao_y + self.__tamanho_y
@@ -187,7 +159,6 @@ class Novo_objeto:
                               (ponto_esquerdo, altura_base + self.__posicao_y))  # (-3,-3)
 
         return self.__rotacionaPoligono_propulsor(vertices_propulsor)
-
 
 
     def __rotacionaPoligono_propulsor(self, vertices_propulsor):
@@ -208,25 +179,22 @@ class Novo_objeto:
 
 
     def colisao(self, posEixoObjeto, tamanho, resolucaoTela):                # considerando novo centro da imagem  - (tamanho/2)
-        if posEixoObjeto >= 0 and posEixoObjeto <= resolucaoTela - tamanho/2:
+        if posEixoObjeto >= 0 and posEixoObjeto <= resolucaoTela - tamanho:
             #self.colidiu = False
             self.set_colidiu_tela(False)
         else:
             #print("colidiu")
-            #self.colidiu = True
             self.set_colidiu_tela(True)
             if posEixoObjeto < resolucaoTela / 2:
                 #print(self.posicao_y)
                 posEixoObjeto = 0
             else:                                         # considerando novo centro da imagem  - (tamanho/2)
-                posEixoObjeto = resolucaoTela - tamanho/2
+                posEixoObjeto = resolucaoTela - tamanho
         return posEixoObjeto
 
 
     def verifica_colisao_tela(self):
-        #self.posicao_x = self.colisao(self.posicao_x, self.tamanho_x, RESOLUCAO[0])
         self.__posicao_x = self.colisao(self.__posicao_x, self.__tamanho_x, RESOLUCAO[0])
-        #self.posicao_y = self.colisao(self.posicao_y, self.tamanho_y, RESOLUCAO[1])
         self.__posicao_y = self.colisao(self.__posicao_y, self.__tamanho_y, RESOLUCAO[1])
 
 
@@ -235,33 +203,22 @@ class Novo_objeto:
     # ACELERACAO do propulsor
     def aceleracao_propulsor(self, tempo):
 
-
-
-        #if nave.propulsor == True:
         if self.get_propulsor_ativo() == True:
-            #nave.velocidade_y -= (VELOCIDADE_ACELERACAO_LUA / FPS) * tempo * nave.friccao
             self.__velocidade_y-= (VELOCIDADE_ACELERACAO_LUA / FPS) * tempo * self.get_friccao()
 
             # permite aumentar o tamanho do propulsor ate 1
-            #if potencia_propulsor < 1:
             if self.__potencia_propulsor < 1:
-                #potencia_propulsor += (VELOCIDADE_ACELERACAO_LUA / FPS) * tempo * nave.friccao
                 self.__potencia_propulsor += (VELOCIDADE_ACELERACAO_LUA / FPS) * tempo * self.get_friccao()
 
-            #if nave.velocidade_y <= VELOCIDADE_ACELERACAO_LUA:
             if self.get_velocidade_y() <= VELOCIDADE_ACELERACAO_LUA:
                 tempo = 0
 
                 # define nova direcao caso a nave esteja inclinada pra direita e propulsor ativo
-                #if nave.angulo_rotacao <= 1 and nave.propulsor:
                 if self.get_angulo_rotacao()<=1 and self.get_propulsor_ativo():
-                    #nave.velocidade_x += (nave.angulo_rotacao * -1) / 360
                     self.__velocidade_x += self.get_angulo_rotacao()*-1 /360
 
                 # define nova direcao caso a nave esteja inclinada pra esquerda e propulsor ativo
-                #if nave.angulo_rotacao >= 1 and nave.propulsor:
                 if self.__angulo_rotacao >= 1 and self.get_propulsor_ativo():
-                    #nave.velocidade_x -= nave.angulo_rotacao / 360
                     self.__velocidade_x -= self.get_angulo_rotacao()/360
 
 
@@ -270,22 +227,14 @@ class Novo_objeto:
 
         # GRAVIDADE
         if self.get_propulsor_ativo() == False:
-            # nave.velocidade_y += (VELOCIDADE_ACELERACAO_LUA / FPS) * tempo * nave.friccao
-            # velocidade_y = nave.get_velocidade_y()
+
             self.__velocidade_y += (VELOCIDADE_ACELERACAO_LUA / FPS) * tempo * self.get_friccao()
-            # self.set_velocidade_y(velocidade_y)
 
             # diminiu o tamanho do propulsor
-            # potencia_propulsor -= (VELOCIDADE_ACELERACAO_LUA / FPS) * tempo * nave.friccao
-            # potencia_propulsor = nave.get_potencia_propulsor()
             self.__potencia_propulsor -= (VELOCIDADE_ACELERACAO_LUA / FPS) * tempo * self.get_friccao()
-            # self.set_potencia_propulsor(potencia_propulsor)
 
             # caso ele for menor que zero, fique em zero.
-            # if potencia_propulsor < 0:
             if self.get_potencia_propulsor() < 0:
-                # potencia_propulsor = 0
                 self.set_potencia_propulsor(0)
-            # if nave.velocidade_y >= VELOCIDADE_ACELERACAO_LUA:
             if self.get_velocidade_y() >= VELOCIDADE_ACELERACAO_LUA:
                 tempo = 0

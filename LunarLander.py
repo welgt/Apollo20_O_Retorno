@@ -1,4 +1,4 @@
-import math
+
 from NovaTela import *
 from NovoObjeto import *
 import pygame
