@@ -4,9 +4,10 @@ from Config import *
 from Tela import *
 class Mapa_do_jogo:
     def __init__(self):
+        self.__qtd_tuplas_terreno = 0
         self.__desenha = True
         self.__terreno = None
-        pass
+        self.__cont = 1
 
 
     def desenha(self, tela):
@@ -39,33 +40,34 @@ class Mapa_do_jogo:
             self.__desenha = False"""
             #tela.draw_polygon(WHITE, self.__terreno)
 
-            self.__terreno = ((0, 0),(0, 0), (0, 0), (0, 0),(0, 0),
-                              (0, 0),(0, 0), (0, 0), (0, 0),(0, 0),
+            self.__terreno = ((0, 0), (0, 0), (0, 0), (0, 0), (0, 0),
+                              (0, 0), (0, 0), (0, 0), (0, 0), (0, 0),
 
                               (0, 0), (0, 0), (0, 0), (0, 0), (0, 0),
                               (0, 0), (0, 0), (0, 0), (0, 0), (0, 0),
+
 
                               (1200, 1200), (0, 600))  # nao pode modificar, limite da tela!
 
             x = 0
-            i = 1
+            self.__qtd_tuplas_terreno = len(self.__terreno)
+
             porcento_h = (RESOLUCAO[1]/1000) * 200 # 20% da tela
             novo_terreno = []
             for vertice in self.__terreno:
                 rand = random.randint((RESOLUCAO[1]-porcento_h), (RESOLUCAO[1]-10))
                 vertice_aux = ((vertice[0] + x), (vertice[1] + rand))
-                if i == 21:
-                    vertice_aux = ((RESOLUCAO[0]), (RESOLUCAO[1]))
-                if i == 22:
-                    vertice_aux = ((0), (RESOLUCAO[0]))
-                print("i :", i)
+                print("i :", self.__cont)
                 print("x :", x)
                 print(rand)
-                x += RESOLUCAO[0]/20
-                i += 1
+                x += RESOLUCAO[0]/(self.__qtd_tuplas_terreno-2)
+                self.__cont += 1
 
                 novo_terreno.append(vertice_aux)
 
+            # preenche as valores das ultimas duas tuplas que nao deve ser mudado
+            novo_terreno.insert ((self.__cont -1), (RESOLUCAO[0], RESOLUCAO[1]))
+            novo_terreno.insert((self.__cont) , (0, RESOLUCAO[0]))
             self.__terreno = novo_terreno
             print(self.__terreno)
 
