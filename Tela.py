@@ -32,5 +32,8 @@ class Nova_tela:
     def flip(self):
         pygame.display.flip()
 
-    def draw(self, cor, lista_vertice):
+    def draw_polygon(self, cor, lista_vertice):
         pygame.draw.polygon(self.__tela, cor, lista_vertice)
+
+    def draw_rect(self, cor, retangulo):
+        pygame.draw.rect(self.__tela, cor, retangulo)

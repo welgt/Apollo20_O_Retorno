@@ -178,7 +178,7 @@ class Novo_objeto:
         return poligono_rotacionado
 
 
-    def colisao(self, posEixoObjeto, tamanho, resolucaoTela):                # considerando novo centro da imagem  - (tamanho/2)
+    def colisao(self, posEixoObjeto, tamanho, resolucaoTela):
         if posEixoObjeto >= 0 and posEixoObjeto <= resolucaoTela - tamanho:
             #self.colidiu = False
             self.set_colidiu_tela(False)
@@ -188,7 +188,7 @@ class Novo_objeto:
             if posEixoObjeto < resolucaoTela / 2:
                 #print(self.posicao_y)
                 posEixoObjeto = 0
-            else:                                         # considerando novo centro da imagem  - (tamanho/2)
+            else:
                 posEixoObjeto = resolucaoTela - tamanho
         return posEixoObjeto
 
