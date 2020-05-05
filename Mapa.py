@@ -28,7 +28,22 @@ class Mapa_do_jogo:
         if self.__desenha == True:
             randon_1 = random.randint(400, 550)
             randon_2 = random.randint(400, 550)
-            self.__terreno = [(0, randon_1), (1200, randon_2),(1200, 1200), (0, 600)]
+
+            randon_3 = random.randint(400, 550)
+            randon_4 = random.randint(400, 550)
+            randon_5 = random.randint(400, 550)
+            randon_6 = random.randint(400, 550)
+            randon_7 = random.randint(400, 550)
+            randon_8 = random.randint(400, 550)
+            randon_9 = random.randint(400, 550)
+            randon_10 = random.randint(400, 550)
+
+            self.__terreno = [(0, randon_1),
+
+                              (240, randon_3), (360, randon_4), (480, randon_5), (600, randon_6), (720, randon_7), (840, randon_8),(950, randon_9), (1080, randon_8),
+
+                              (1200, randon_2),
+                              (1200, 1200), (0, 600)] # nao pode modificar, limite da tela!
             self.__desenha = False
 
         tela.draw_polygon(WHITE, self.__terreno)
