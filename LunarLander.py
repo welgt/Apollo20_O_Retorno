@@ -71,20 +71,20 @@ while jogoAtivo:
                 debug = False
 
     gamePlay.fill(BLACK)
-    nave.verifica_colisao_tela()
 
+    nave.verifica_colisao_tela()
     # ACELERACAO do propulsor
     nave.aceleracao_propulsor(tempo)
     # GRAVIDADE
     nave.gravidade(tempo)
 
     # so adiciona angulo do lado esquerdo da nave se for o grau maximo permitido de 90
-    if nave.get_rotacionou_esq() and nave.get_angulo_rotacao() <= 90:
+    if nave.get_rotacionou_esq() and nave.get_angulo_rotacao() <=350:
         angulo += nave.get_velocidade_rotacao()
         nave.set_angulo_rotacao(angulo)
 
     # so adiciona angulo do lado direito da nave se for o grau maximo permitido de 90
-    if nave.get_rotacionou_dir() and nave.get_angulo_rotacao() >= -90:
+    if nave.get_rotacionou_dir() and nave.get_angulo_rotacao() >= -350:
         angulo -= nave.get_velocidade_rotacao()
         nave.set_angulo_rotacao(angulo)
 
@@ -121,7 +121,8 @@ while jogoAtivo:
     tempo+=0.1
     gamePlay.flip()
     clock.tick(FPS)
+    print(clock.tick(FPS))
 
-    print(nave.get_centro_surface())
+    #print(nave.get_centro_surface())
 
 pygame.quit()

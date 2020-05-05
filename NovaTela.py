@@ -5,7 +5,7 @@ class Nova_tela:
         self.__tela = pygame.display.set_mode(resolucao)
         self.__titulo = pygame.display.set_caption(titulo)
         self.__titulo_da_tela = titulo
-        self.__clock =pygame.time.Clock()
+        self.__clock = pygame.time.Clock()
         self.__fps = FPS
 
     def get_resolucao_tela(self):
