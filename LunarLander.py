@@ -10,7 +10,7 @@ clock = pygame.time.Clock()
 gamePlay = Nova_tela("teste", RESOLUCAO)
 
 nave = Novo_objeto('arquivos/nave.png', 300, 300)
-nave.set_tamanho(30, 60)
+nave.set_tamanho(TAMANHO_DA_NAVE_X, TAMANHO_DA_NAVE_y)
 nave.set_friccao(FRICCAO_PROPULSOR)
 nave.set_velocidade_rotacao(VELOCIDADE_ROTACAO)
 
@@ -119,8 +119,8 @@ while jogoAtivo:
         nave.set_posicao(posicao_x, posicao_y)
 
         # cria poligono propulsor e recebe tamanho da calda
-        poligono_propulsor_dir = nave.criaPoligono_Propulsor(2, 5, nave.get_potencia_propulsor() * FPS)
-        poligono_propulsor_esq = nave.criaPoligono_Propulsor(2, -5, nave.get_potencia_propulsor() * FPS)
+        poligono_propulsor_dir = nave.criaPoligono_Propulsor(1, 4, nave.get_potencia_propulsor() * FPS)
+        poligono_propulsor_esq = nave.criaPoligono_Propulsor(1, -4, nave.get_potencia_propulsor() * FPS)
 
         # rotaciona a (imagem) nave
         nave_rot = nave.rotacaoCentralizada(nave.get_angulo_rotacao())
