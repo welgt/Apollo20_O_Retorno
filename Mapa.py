@@ -76,6 +76,7 @@ class Mapa_do_jogo:
 
 
                 #define o local de pouso
+
                 if self.__ramdom_pouso_nave == self.__cont:
 
                     self.__existe_area_pouso = True
@@ -104,10 +105,6 @@ class Mapa_do_jogo:
 
                     #vertice_aux = (vertice[0] + x + x_inicio_pouso), (vertice[1] + 400)
                     #novo_terreno.append(vertice_aux)
-                    #vertice_aux = (vertice[0] + x + x_fim_pouso), (vertice[1] + 400)
-                    #novo_terreno.append(vertice_aux)
-            ##else:
-              ##  self.__base_pouso = pygame.Rect((100,100),(100,100) )
 
                 #incrementa x e define a quantidade de pontos em x da tela
                 x += RESOLUCAO[0]/(self.__qtd_tuplas_terreno)
