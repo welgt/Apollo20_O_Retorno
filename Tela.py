@@ -37,3 +37,14 @@ class Nova_tela:
 
     def draw_rect(self, cor, retangulo):
         pygame.draw.rect(self.__tela, cor, retangulo)
+
+    def draw_line(self, cor, vertice_inicial, vertice_final, espessura):
+        #pygame.draw.line(self.__tela, cor, lista_vertices, espessura_linha)
+        pygame.draw.line(self.__tela, cor, vertice_inicial, vertice_final, espessura)
+
+    def draw_lines(self, cor, lista_vertice):
+        #pygame.draw.line(self.__tela, cor, lista_vertices, espessura_linha)
+        pygame.draw.lines(self.__tela, cor,lista_vertice)
+
+    def teste(self, cor,lista, espessura):
+        pygame.draw.lines(self.__tela, cor, True, lista, espessura)

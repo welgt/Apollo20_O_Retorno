@@ -14,7 +14,7 @@ nave.set_tamanho(TAMANHO_DA_NAVE_X, TAMANHO_DA_NAVE_y)
 nave.set_friccao(FRICCAO_PROPULSOR)
 nave.set_velocidade_rotacao(VELOCIDADE_ROTACAO)
 
-lua = Novo_objeto('arquivos/lua.png', 200, 50)
+lua = Novo_objeto('arquivos/lua.png', 800, 50)
 lua.set_tamanho(200, 200)
 
 tempo = 0
