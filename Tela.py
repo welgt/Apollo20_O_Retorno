@@ -42,9 +42,5 @@ class Nova_tela:
         #pygame.draw.line(self.__tela, cor, lista_vertices, espessura_linha)
         pygame.draw.line(self.__tela, cor, vertice_inicial, vertice_final, espessura)
 
-    def draw_lines(self, cor, lista_vertice):
-        #pygame.draw.line(self.__tela, cor, lista_vertices, espessura_linha)
-        pygame.draw.lines(self.__tela, cor,lista_vertice)
-
-    def teste(self, cor,lista, espessura):
+    def draw_lines(self, cor,lista, espessura):
         pygame.draw.lines(self.__tela, cor, True, lista, espessura)
