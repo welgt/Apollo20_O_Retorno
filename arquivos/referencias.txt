@@ -4,3 +4,6 @@ Rotating Objects 90 Degrees Around The Origin:
 
 Transformations - rotating shapes (2):
     https://www.youtube.com/watch?v=F1eURZJ57c8
+
+Tuplas e listas:
+    https://cadernoscicomp.com.br/tutorial/introducao-a-programacao-em-python-3/listas-em-python-3/

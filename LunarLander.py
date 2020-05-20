@@ -2,11 +2,12 @@
 from Tela import *
 from Nave import *
 from Mapa import *
+from Interface import *
+
 import pygame
 
 pygame.init()
 mapa = Mapa_do_jogo()
-clock = pygame.time.Clock()
 gamePlay = Nova_tela("teste", RESOLUCAO)
 
 nave = Nova_nave('arquivos/nave.png', 300, 300)
@@ -17,14 +18,11 @@ nave.set_velocidade_rotacao(VELOCIDADE_ROTACAO)
 lua = Nova_nave('arquivos/lua.png', 800, 50)
 lua.set_tamanho(200, 200)
 
+interface = Nova_interface()
+
 tempo = 0
 
 # poligono_propulsor = pygame.draw.polygon(gamePlay.tela, WHITE, [(300,600), (295,618), (824,407), (800,400)],0)
-
-# relogio
-milisegundos = 0
-segundos = 0
-delta_time = 0
 
 debug = False
 jogoAtivo = True
@@ -43,7 +41,8 @@ while jogoAtivo:
 
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
-                jogoAtivo = False
+                menu = True
+                debug = True
 
             elif event.key == pygame.K_LEFT:
                 nave.set_rotacionou_esq(True)
@@ -60,10 +59,6 @@ while jogoAtivo:
             # debugar
             elif event.key == pygame.K_g:
                 game = True
-                debug = True
-
-            elif event.key == pygame.K_m:
-                menu = True
                 debug = True
 
             elif event.key == pygame.K_c:
@@ -85,6 +80,10 @@ while jogoAtivo:
 
     if menu == True:
         print("Entrei no menu")
+        botao_play = interface.criar_botao(gamePlay, 100, 100, 100, 50)
+        botao_exit = interface.criar_botao(gamePlay, 100, 300, 150, 50)
+        print("tamanho do botao play :" ,botao_play.get_tamanho_botao())
+        print(botao_exit.get_tamanho_botao())
 
     game = True
     if game == True:
@@ -139,17 +138,10 @@ while jogoAtivo:
     if config == True:
         print("Entrei nas configuracoes")
 
-    # RELOGIO
-    if milisegundos < FPS:
-        milisegundos += 1
-        # print("milisegundos  : ", milisegundos)
-    else:
-        segundos += 1
-        # print("segundos :------------", segundos)
-        milisegundos = 0
+    gamePlay.cronometro()
 
     tempo+=0.1
     gamePlay.flip()
-    clock.tick(FPS)
+    gamePlay.set_fps(FPS)
 
 pygame.quit()
