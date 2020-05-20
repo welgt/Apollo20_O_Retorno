@@ -1,6 +1,6 @@
 
 from Tela import *
-from Objeto import *
+from Nave import *
 from Mapa import *
 import pygame
 
@@ -9,12 +9,12 @@ mapa = Mapa_do_jogo()
 clock = pygame.time.Clock()
 gamePlay = Nova_tela("teste", RESOLUCAO)
 
-nave = Novo_objeto('arquivos/nave.png', 300, 300)
+nave = Nova_nave('arquivos/nave.png', 300, 300)
 nave.set_tamanho(TAMANHO_DA_NAVE_X, TAMANHO_DA_NAVE_y)
 nave.set_friccao(FRICCAO_PROPULSOR)
 nave.set_velocidade_rotacao(VELOCIDADE_ROTACAO)
 
-lua = Novo_objeto('arquivos/lua.png', 800, 50)
+lua = Nova_nave('arquivos/lua.png', 800, 50)
 lua.set_tamanho(200, 200)
 
 tempo = 0
@@ -89,7 +89,7 @@ while jogoAtivo:
     game = True
     if game == True:
 
-        mapa.desenha_solo(gamePlay)
+        mapa.desenha_terreno(gamePlay)
 
         velocidade_x = nave.get_velocidade_x()
         velocidade_y = nave.get_velocidade_y()
@@ -119,8 +119,8 @@ while jogoAtivo:
         nave.set_posicao(posicao_x, posicao_y)
 
         # cria poligono propulsor e recebe tamanho da calda
-        poligono_propulsor_dir = nave.criaPoligono_Propulsor(1, 4, nave.get_potencia_propulsor() * FPS)
-        poligono_propulsor_esq = nave.criaPoligono_Propulsor(1, -4, nave.get_potencia_propulsor() * FPS)
+        poligono_propulsor_dir = nave.criaPoligono_Propulsor(2, 4, nave.get_potencia_propulsor() * FPS)
+        poligono_propulsor_esq = nave.criaPoligono_Propulsor(2, -4, nave.get_potencia_propulsor() * FPS)
 
         # rotaciona a (imagem) nave
         nave_rot = nave.rotacaoCentralizada(nave.get_angulo_rotacao())
@@ -129,6 +129,7 @@ while jogoAtivo:
         gamePlay.blit(nave_rot[0],nave_rot[1])
         gamePlay.draw_polygon(WHITE, poligono_propulsor_dir)
         gamePlay.draw_polygon(WHITE, poligono_propulsor_esq)
+
 
         # futura condicao de dano/perca pontos/morte etc
         if nave.get_colidiu_tela() == True:

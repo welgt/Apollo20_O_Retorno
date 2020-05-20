@@ -2,10 +2,7 @@ import pygame
 import math
 from Config import *
 
-
-# falta arrumar a def get_centro_surface e adicionala na funcao de rotacionar
-
-class Novo_objeto:
+class Nova_nave:
     def __init__(self, surface, posicao_x, posicao_y):
         self.__surface = pygame.image.load(surface)
         self.__tamanho_x = self.__surface.get_rect()[2]
@@ -178,7 +175,7 @@ class Novo_objeto:
         return poligono_rotacionado
 
 
-    def colisao(self, posEixoObjeto, tamanho, resolucaoTela):
+    def __colisao(self, posEixoObjeto, tamanho, resolucaoTela):
         if posEixoObjeto >= 0 and posEixoObjeto <= resolucaoTela - tamanho:
             #self.colidiu = False
             self.set_colidiu_tela(False)
@@ -194,8 +191,8 @@ class Novo_objeto:
 
 
     def verifica_colisao_tela(self):
-        self.__posicao_x = self.colisao(self.__posicao_x, self.__tamanho_x, RESOLUCAO[0])
-        self.__posicao_y = self.colisao(self.__posicao_y, self.__tamanho_y, RESOLUCAO[1])
+        self.__posicao_x = self.__colisao(self.__posicao_x, self.__tamanho_x, RESOLUCAO[0])
+        self.__posicao_y = self.__colisao(self.__posicao_y, self.__tamanho_y, RESOLUCAO[1])
 
 
 
