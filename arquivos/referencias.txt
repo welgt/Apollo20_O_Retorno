@@ -7,3 +7,6 @@ Transformations - rotating shapes (2):
 
 Tuplas e listas:
     https://cadernoscicomp.com.br/tutorial/introducao-a-programacao-em-python-3/listas-em-python-3/
+
+Impressao de textos na surface:
+    https://www.youtube.com/watch?v=wxL1hx3MuzA

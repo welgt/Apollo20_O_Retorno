@@ -1,0 +1,7 @@
+
+Falta fazer o texto dos botoes do menu ficar centralizado dinamicamente.
+    Interface.py
+        linha 154
+
+Falta controlar a opacidade do painel e botoes de acordo com o evento.
+Fazer escalonamento no botao de acordo com o click

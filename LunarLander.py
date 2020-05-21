@@ -16,6 +16,7 @@ lua = Nova_nave('arquivos/lua.png', 800, 50)
 painel = painel()
 botao_play = botao()
 botao_exit = botao()
+botao_confg = botao()
 
 tempo = 0
 
@@ -83,20 +84,25 @@ while jogoAtivo:
 
     if menu == True:
         botao().evento(event, botao_play)
+        botao().evento(event, botao_exit)
+        botao().evento(event, botao_confg)
 
 
         painel .cria_painel(gamePlay, 0, 0, 40, 45)
         painel.draw_painel(gamePlay,WHITE)
-        painel.draw_borda_painel(gamePlay, AMARELO)
+        #painel.draw_borda_painel(gamePlay, AMARELO)
 
-        botao_play.criar_botao(painel, 0, -16, 30, 10)
-        botao_play.draw_botao(gamePlay,AMARELO)
-        botao_play.draw_borda_botao(gamePlay,BLACK)
+        botao_play.criar_botao(painel, 0, -50, 30, 10)
+        botao_play.draw_botao(gamePlay, 'PLAY')
+        #botao_play.draw_borda_botao(gamePlay,RED)
 
-        botao_exit.criar_botao(painel, 0, 16, 30, 10)
-        botao_exit.draw_botao(gamePlay,RED)
-        botao_exit.draw_borda_botao(gamePlay,AMARELO)
+        botao_confg.criar_botao(painel, 0, 0, 30, 10)
+        botao_confg.draw_botao(gamePlay, 'CONFIG..')
+        #botao_confg.draw_borda_botao(gamePlay,RED)
 
+        botao_exit.criar_botao(painel, 0, 50, 30, 10)
+        botao_exit.draw_botao(gamePlay, 'EXIT')
+        #botao_exit.draw_borda_botao(gamePlay,RED)
 
     game = True
     if game == True:
