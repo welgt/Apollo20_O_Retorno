@@ -80,10 +80,35 @@ while jogoAtivo:
 
     if menu == True:
         print("Entrei no menu")
-        botao_play = interface.criar_botao(gamePlay, 100, 100, 100, 50)
-        botao_exit = interface.criar_botao(gamePlay, 100, 300, 150, 50)
-        print("tamanho do botao play :" ,botao_play.get_tamanho_botao())
-        print(botao_exit.get_tamanho_botao())
+
+        painel = interface.cria_painel(gamePlay, 0, 0, 30, 45)
+        painel.draw_painel(gamePlay,WHITE)
+        painel.draw_borda_painel(gamePlay, AMARELO)
+
+        botao_play = interface.criar_botao(gamePlay, 0, 0, 30, 10)
+        botao_play.draw_botao(gamePlay, RED)
+        botao_play.draw_borda_botao(gamePlay, BLACK)
+
+        botao_exit = interface.criar_botao(gamePlay, 0, 40, 30, 10)
+        botao_exit.draw_botao(gamePlay, RED)
+        botao_exit.draw_borda_botao(gamePlay, BLACK)
+
+        #botao_exit = interface.criar_botao(gamePlay, 0, 40, 30, 10)
+        #botao_exit.set_cor_botao(RED)
+
+        interface.set_qtd_botoes(2)
+
+
+        print(interface.get_qtd_botoes())
+
+
+
+        #print("tamanho do botao play :" ,botao_play.get_tamanho_botao())
+        #print("tamanho do botao exit :", botao_exit.get_tamanho_botao())
+
+
+
+
 
     game = True
     if game == True:
