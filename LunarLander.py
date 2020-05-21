@@ -4,6 +4,7 @@ from Nave import *
 from Mapa import *
 from Interface import *
 
+
 import pygame
 
 pygame.init()
@@ -11,14 +12,10 @@ mapa = Mapa_do_jogo()
 gamePlay = Nova_tela("teste", RESOLUCAO)
 
 nave = Nova_nave('arquivos/nave.png', 300, 300)
-nave.set_tamanho(TAMANHO_DA_NAVE_X, TAMANHO_DA_NAVE_y)
-nave.set_friccao(FRICCAO_PROPULSOR)
-nave.set_velocidade_rotacao(VELOCIDADE_ROTACAO)
-
 lua = Nova_nave('arquivos/lua.png', 800, 50)
-lua.set_tamanho(200, 200)
-
-interface = Nova_interface()
+painel = painel()
+botao_play = botao()
+botao_exit = botao()
 
 tempo = 0
 
@@ -36,8 +33,14 @@ while jogoAtivo:
 
 
     for event in pygame.event.get():
+
+
+
         if event.type == pygame.QUIT:
             jogoAtivo = False
+
+        #if event.type == pygame.MOUSEBUTTONDOWN:
+         #   print("funcionou")
 
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
@@ -79,39 +82,30 @@ while jogoAtivo:
     gamePlay.fill(BLACK)
 
     if menu == True:
-        print("Entrei no menu")
+        botao().evento(event, botao_play)
 
-        painel = interface.cria_painel(gamePlay, 0, 0, 30, 45)
+
+        painel .cria_painel(gamePlay, 0, 0, 40, 45)
         painel.draw_painel(gamePlay,WHITE)
         painel.draw_borda_painel(gamePlay, AMARELO)
 
-        botao_play = interface.criar_botao(gamePlay, 0, 0, 30, 10)
-        botao_play.draw_botao(gamePlay, RED)
-        botao_play.draw_borda_botao(gamePlay, BLACK)
+        botao_play.criar_botao(painel, 0, -16, 30, 10)
+        botao_play.draw_botao(gamePlay,AMARELO)
+        botao_play.draw_borda_botao(gamePlay,BLACK)
 
-        botao_exit = interface.criar_botao(gamePlay, 0, 40, 30, 10)
-        botao_exit.draw_botao(gamePlay, RED)
-        botao_exit.draw_borda_botao(gamePlay, BLACK)
-
-        #botao_exit = interface.criar_botao(gamePlay, 0, 40, 30, 10)
-        #botao_exit.set_cor_botao(RED)
-
-        interface.set_qtd_botoes(2)
-
-
-        print(interface.get_qtd_botoes())
-
-
-
-        #print("tamanho do botao play :" ,botao_play.get_tamanho_botao())
-        #print("tamanho do botao exit :", botao_exit.get_tamanho_botao())
-
-
-
+        botao_exit.criar_botao(painel, 0, 16, 30, 10)
+        botao_exit.draw_botao(gamePlay,RED)
+        botao_exit.draw_borda_botao(gamePlay,AMARELO)
 
 
     game = True
     if game == True:
+
+        lua.set_tamanho(200, 200)
+
+        nave.set_tamanho(TAMANHO_DA_NAVE_X, TAMANHO_DA_NAVE_y)
+        nave.set_friccao(FRICCAO_PROPULSOR)
+        nave.set_velocidade_rotacao(VELOCIDADE_ROTACAO)
 
         mapa.desenha_terreno(gamePlay)
 
