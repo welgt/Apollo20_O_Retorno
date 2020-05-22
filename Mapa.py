@@ -12,7 +12,8 @@ class Mapa_do_jogo:
         self.__random_alturas_diferentes = 0
         self.__ramdom_pouso_nave = 0
         self.__cont = 1
-        self.__base_pouso = None
+        self.__base_pouso_retangulo = None
+        self.__base_pouso_line = None
         self.__porcento_altura_terreno = None
         self.__existe_area_pouso = False
 
@@ -23,7 +24,9 @@ class Mapa_do_jogo:
         #tela.draw_rect(WHITE, retangulo)
         #terreno = [(100, 100), (500, 100),(500, 500), (100, 500)]
 
+
         if self.__desenha == True:
+
 
             # a quantidade de tupla (0, 0) define a qualidade e quantidade de pontos ao logo do horizonte do terreno
             self.__terreno = [(0, 0), (0, 0), (0, 0), (0, 0), (0, 0),
@@ -77,8 +80,14 @@ class Mapa_do_jogo:
                     self.__novo_terreno.insert((self.__cont), ((vertice[0] + x),                  vertice[1] + self.__random_alturas_diferentes))
                     self.__cont+=2
 
-                    # desenha o feedback da area de pouso
+                    # desenha o feedback da area de pouso com um retangulo
                     self.__base_pouso = pygame.Rect(((vertice[0] + x)), self.__random_alturas_diferentes, ((x_fim_pouso/2)), 10)
+
+                    # desenha o feedback da area de pouso com uma line
+                    self.__base_pouso_line = [(vertice[0] + x + x_inicio_pouso),
+                                                (vertice[1] + self.__random_alturas_diferentes),
+                                                (vertice[0] + x),
+                                                (vertice[1] + self.__random_alturas_diferentes)]
 
                     #quando é sorteado um local de pouso(rebaixo do terreno ou feedback) tem que atualizar o tamanho do for
                     # para que continue desenhando os vertices ate o fim da tela
@@ -98,7 +107,8 @@ class Mapa_do_jogo:
             self.__qtd_tuplas_terreno+=2
             self.__terreno = self.__novo_terreno
 
-            #permite desenhar o terreno apenas uma vez somente no primeiro frame.
+
+            # permite desenhar o terreno apenas uma vez somente no primeiro frame.
             self.__desenha = False
 
         self.__debug()
@@ -108,11 +118,14 @@ class Mapa_do_jogo:
 
         lista = [(325, 200), (355, 200), (355, 250), (325, 250)]
         #tela.draw_lines(LARANJA, lista)
-        tela.draw_lines(LARANJA, self.__novo_terreno, 2)
+        tela.draw_lines(LARANJA, self.__novo_terreno, 4)
 
         # só desenha a area de pouso se ela existir, ou seja se caiu no if #define o local de pouso.
         if(self.__existe_area_pouso):
-            tela.draw_rect(GREEN, self.__base_pouso)
+            #tela.draw_rect(GREEN, self.__base_pouso)
+            #tela.draw_line(RED, (0,0),(1200,600), 20)
+            tela.draw_line(RED, (self.__base_pouso_line[0], self.__base_pouso_line[1]),
+                                (self.__base_pouso_line[2], self.__base_pouso_line[3]), 4)
 
     def get_line_terreno(self):
         return self.__novo_terreno

@@ -195,7 +195,7 @@ class botao:
 
         txt_play = fonte_texto()
         txt_play.set_texto(texto, 'Times new roman')
-        txt_play.cria_texto(30, WHITE, 1)
+        txt_play.cria_texto(20, WHITE, 1)
         tela.blit(txt_play.get_surface(), (self.get_posicao_x() +
                                            txt_play.get_tamanho()+5,self.get_posicao_y()))
 

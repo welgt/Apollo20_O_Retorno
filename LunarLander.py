@@ -21,6 +21,7 @@ painel_config.set_ativo(False)
 painel_sair = painel()
 painel_sair.set_ativo(False)
 
+texto_botao_play = 'PLAY'
 msg_exit = fonte_texto()
 
 botao_play = botao()
@@ -63,6 +64,7 @@ while jogoAtivo:
                 # tem que fazer um pouse aqui pra so depois setar o botao play como falso
                 botao_play.set_clicou(False)
                 game_loop = False
+                texto_botao_play = 'DESPAUSAR'
 
 
 
@@ -106,7 +108,7 @@ while jogoAtivo:
         painel_menu.draw_painel(gamePlay,WHITE)
 
         botao_play.criar_botao(painel_menu, 0, -50, 30, 10)
-        botao_play.draw_botao(gamePlay, 'PLAY')
+        botao_play.draw_botao(gamePlay, texto_botao_play)
         #botao_play.draw_borda_botao(gamePlay,RED)
 
         botao_confg.criar_botao(painel_menu, 0, 0, 30, 10)
