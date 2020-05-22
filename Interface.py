@@ -15,16 +15,6 @@ class fonte_texto:
         self.__texto = ""
 
 
-
-        #self.__surface = self.get_fonte_botao().render(self.__frase , self.get_visivel(), self.get_cor())
-        #teste = texto_play.get_fonte_botao().render('PLAY', texto_play.get_visivel(), WHITE)
-
-    # texto_play = letras()
-    # texto_play.set_visivel(1)
-    # teste = texto_play.get_fonte_botao().render('PLAY', texto_play.get_visivel(), WHITE)
-    # tela.blit(teste, (self.get_posicao_x(),self.get_posicao_y()))
-
-
     def cria_texto(self,tamanho, cor, visivel):
         self.set_tamanho(tamanho)
         fonte_botao = pygame.font.SysFont(self.__fonte_default, self.get_tamanho())
@@ -111,12 +101,13 @@ class painel:
     def draw_painel(self, tela, cor):
         self.__painel = pygame.Rect(self.__posicao_x, self.__posicao_y, self.__largura,
                                     self.__altura)
-        tela.draw_rect(cor, self.__painel)
 
-        self.draw_borda_painel(tela, AMARELO)
-        self.set_ativo(True)
+        if self.get_ativo()== True:
+            tela.draw_rect(cor, self.__painel)
+            self.__draw_borda(tela, AMARELO)
 
-    def draw_borda_painel(self, tela, cor):
+
+    def __draw_borda(self, tela, cor):
         borda = [(self.__posicao_x, self.__posicao_y),
                  (self.__posicao_x + self.__largura, self.__posicao_y),
                  (self.__posicao_x + self.__largura, self.__posicao_y + self.__altura),
@@ -135,8 +126,14 @@ class botao:
         self.__largura = 0
         self.__altura = 0
         self.__qtd_botao = 0
-
         self.__clicou = False
+        self.__mouse_cont = 0
+
+    def get_mouse_cont(self):
+        return self.__mouse_cont
+
+    def set_mouse_cont(self, int):
+        self.__mouse_cont = int
 
     def get_cor(self):
         return self.__cor
@@ -178,6 +175,9 @@ class botao:
         self.__clicou = clicou
 
 
+
+
+
     def criar_botao(self, painel, posicao_x, posicao_y, largura, altura):
 
 
@@ -199,10 +199,10 @@ class botao:
         tela.blit(txt_play.get_surface(), (self.get_posicao_x() +
                                            txt_play.get_tamanho()+5,self.get_posicao_y()))
 
-        self.draw_borda_botao(RED, tela)
+        self.__draw_borda(RED, tela)
 
 
-    def draw_borda_botao(self, cor, tela):
+    def __draw_borda(self, cor, tela):
 
         borda = [(self.__posicao_x, self.__posicao_y),
                  (self.__posicao_x+self.__largura, self.__posicao_y),
@@ -212,43 +212,47 @@ class botao:
         tela.draw_lines(cor, borda,3)
 
 
+
     # verifica colisao entre a posicao do mouse_x_y e o objeto chamado na funcao
-    def __colidiu(self, botao):
-        if pygame.mouse.get_pos()[0] >= botao.get_posicao_x() \
-                and pygame.mouse.get_pos()[0] <= botao.get_posicao_x() + botao.get_largura() \
-                and pygame.mouse.get_pos()[1] >= botao.get_posicao_y() \
-                and pygame.mouse.get_pos()[1] <= botao.get_posicao_y() + botao.get_altura():
-                return True
+    def __colidiu(self):
+
+        if pygame.mouse.get_pos()[0] >= self.get_posicao_x() \
+                and pygame.mouse.get_pos()[0] <= self.get_posicao_x() + self.get_largura() \
+                and pygame.mouse.get_pos()[1] >= self.get_posicao_y() \
+                and pygame.mouse.get_pos()[1] <= self.get_posicao_y() + self.get_altura():
+
+            return True
         else:
+            self.set_mouse_cont(0)
             return False
-
-
-
-
-
-
-
 
 
     def evento(self, evento, botao):
 
-
         # se o botao que me chamou colidiu faça:
-        if self.__colidiu(botao) == True:
+        if botao.__colidiu() == True:
+            #self.set_mouse_cont(0)
 
             #captura o click do mouse caso ele for apertado
             if evento.type == pygame.MOUSEBUTTONDOWN:
+                botao.set_mouse_cont(1)
                 botao.set_clicou(True)
                 print("apertou")
                 botao.set_cor(RED)
 
-            # captura se o mouse nao esta apertado
-            if evento.type == pygame.MOUSEMOTION:
 
-                print("passei pelo botao")
+
+            # captura se o mouse nao esta apertado e nesse caso so se for em cima do botao
+            if evento.type == pygame.MOUSEMOTION:
                 # caso tudo for verdadeiro ate aqui mude a cor do botao ao passar o mouse por cima do botao
                 botao.set_cor(AMARELO)
 
-
-        if self.__colidiu(botao) == False:
+        else:
             botao.set_cor(BLACK)
+
+
+        if botao.get_clicou() == False:
+            botao.set_mouse_cont(0)
+
+        if evento.type == pygame.MOUSEBUTTONUP:
+            botao.set_clicou(False)
