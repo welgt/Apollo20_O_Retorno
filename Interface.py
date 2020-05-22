@@ -12,7 +12,6 @@ class fonte_texto:
         self.__visivel = 0
         self.__cor = 0
         self.__surface =None
-
         self.__texto = ""
 
 
@@ -58,29 +57,13 @@ class painel:
         self.__posicao_y = 0
         self.__largura = 0
         self.__altura = 0
+        self.__ativo = False
 
-    def cria_painel(self, tela, posicao_x, posicao_y, largura, altura):
-        self.__posicao_x = posicao_x + RESOLUCAO[0] / 2 - self.__largura / 2
-        self.__posicao_y = posicao_y + RESOLUCAO[1] / 2 - self.__altura / 2
-        self.__largura = (RESOLUCAO[0] / 1000) * (largura * 10)
-        self.__altura = (RESOLUCAO[1] / 1000) * (altura * 10)
+    def get_ativo(self):
+        return self.__ativo
 
-       
-
-    def draw_painel(self, tela, cor):
-        self.__painel = pygame.Rect(self.__posicao_x, self.__posicao_y, self.__largura,
-                                    self.__altura)
-        tela.draw_rect(cor, self.__painel)
-
-        self.draw_borda_painel(tela, AMARELO)
-
-    def draw_borda_painel(self, tela, cor):
-        borda = [(self.__posicao_x, self.__posicao_y),
-                 (self.__posicao_x + self.__largura, self.__posicao_y),
-                 (self.__posicao_x + self.__largura, self.__posicao_y + self.__altura),
-                 (self.__posicao_x, self.__posicao_y + self.__altura)]
-        tela.draw_lines(cor, borda, 3)
-
+    def set_ativo(self, ativo):
+        self.__ativo = ativo
 
     def get_cor(self):
         return self.__cor
@@ -117,6 +100,31 @@ class painel:
 
 
 
+    def cria_painel(self, tela, posicao_x, posicao_y, largura, altura):
+        self.__posicao_x = posicao_x + RESOLUCAO[0] / 2 - self.__largura / 2
+        self.__posicao_y = posicao_y + RESOLUCAO[1] / 2 - self.__altura / 2
+        self.__largura = (RESOLUCAO[0] / 1000) * (largura * 10)
+        self.__altura = (RESOLUCAO[1] / 1000) * (altura * 10)
+
+       
+
+    def draw_painel(self, tela, cor):
+        self.__painel = pygame.Rect(self.__posicao_x, self.__posicao_y, self.__largura,
+                                    self.__altura)
+        tela.draw_rect(cor, self.__painel)
+
+        self.draw_borda_painel(tela, AMARELO)
+        self.set_ativo(True)
+
+    def draw_borda_painel(self, tela, cor):
+        borda = [(self.__posicao_x, self.__posicao_y),
+                 (self.__posicao_x + self.__largura, self.__posicao_y),
+                 (self.__posicao_x + self.__largura, self.__posicao_y + self.__altura),
+                 (self.__posicao_x, self.__posicao_y + self.__altura)]
+        tela.draw_lines(cor, borda, 3)
+
+
+
 class botao:
 
     def __init__(self):
@@ -128,44 +136,7 @@ class botao:
         self.__altura = 0
         self.__qtd_botao = 0
 
-
-
-
-    def criar_botao(self, painel, posicao_x, posicao_y, largura, altura):
-
-
-        self.__posicao_x = posicao_x + painel.get_posicao_x() + painel.get_largura() / 2 - self.__largura / 2
-        self.__posicao_y = posicao_y + painel.get_posicao_y() + painel.get_altura() / 2 - self.__altura / 2
-        self.__largura = (painel.get_largura() / 1000) * (largura * 10)
-        self.__altura = (painel.get_altura()/1000)* (altura*10)
-
-
-
-
-    def draw_botao(self, tela, texto):
-
-        self.__botao = pygame.Rect(self.__posicao_x, self.__posicao_y, self.__largura, self.__altura)
-        tela.draw_rect(self.get_cor(), self.__botao)
-
-
-        txt_play = fonte_texto()
-        txt_play.set_texto(texto, 'Times new roman')
-        txt_play.cria_texto(30, WHITE, 1)
-        tela.blit(txt_play.get_surface(), (self.get_posicao_x() +
-                                           txt_play.get_tamanho()+5,self.get_posicao_y()))
-
-        self.draw_borda_botao(RED, tela)
-
-
-    def draw_borda_botao(self, cor, tela):
-
-        borda = [(self.__posicao_x, self.__posicao_y),
-                 (self.__posicao_x+self.__largura, self.__posicao_y),
-                 (self.__posicao_x+ self.__largura, self.__posicao_y+self.__altura),
-                 (self.__posicao_x ,self.__posicao_y+ self.__altura)]
-
-        tela.draw_lines(cor, borda,3)
-
+        self.__clicou = False
 
     def get_cor(self):
         return self.__cor
@@ -200,38 +171,84 @@ class botao:
     def get_botao(self):
         return self.__botao
 
+    def get_clicou(self):
+        return self.__clicou
+
+    def set_clicou(self, clicou):
+        self.__clicou = clicou
+
+
+    def criar_botao(self, painel, posicao_x, posicao_y, largura, altura):
+
+
+        self.__posicao_x = posicao_x + painel.get_posicao_x() + painel.get_largura() / 2 - self.__largura / 2
+        self.__posicao_y = posicao_y + painel.get_posicao_y() + painel.get_altura() / 2 - self.__altura / 2
+        self.__largura = (painel.get_largura() / 1000) * (largura * 10)
+        self.__altura = (painel.get_altura()/1000)* (altura*10)
+
+
+    def draw_botao(self, tela, texto):
+
+        self.__botao = pygame.Rect(self.__posicao_x, self.__posicao_y, self.__largura, self.__altura)
+        tela.draw_rect(self.get_cor(), self.__botao)
+
+
+        txt_play = fonte_texto()
+        txt_play.set_texto(texto, 'Times new roman')
+        txt_play.cria_texto(30, WHITE, 1)
+        tela.blit(txt_play.get_surface(), (self.get_posicao_x() +
+                                           txt_play.get_tamanho()+5,self.get_posicao_y()))
+
+        self.draw_borda_botao(RED, tela)
+
+
+    def draw_borda_botao(self, cor, tela):
+
+        borda = [(self.__posicao_x, self.__posicao_y),
+                 (self.__posicao_x+self.__largura, self.__posicao_y),
+                 (self.__posicao_x+ self.__largura, self.__posicao_y+self.__altura),
+                 (self.__posicao_x ,self.__posicao_y+ self.__altura)]
+
+        tela.draw_lines(cor, borda,3)
+
+
     # verifica colisao entre a posicao do mouse_x_y e o objeto chamado na funcao
     def __colidiu(self, botao):
-        if pygame.mouse.get_pos()[0] >= botao.get_posicao_x() and \
-                pygame.mouse.get_pos()[0] <= botao.get_posicao_x() + botao.get_largura() and \
-                pygame.mouse.get_pos()[1] >= botao.get_posicao_y() and \
-                pygame.mouse.get_pos()[1] <= botao.get_posicao_y() + botao.get_altura():
+        if pygame.mouse.get_pos()[0] >= botao.get_posicao_x() \
+                and pygame.mouse.get_pos()[0] <= botao.get_posicao_x() + botao.get_largura() \
+                and pygame.mouse.get_pos()[1] >= botao.get_posicao_y() \
+                and pygame.mouse.get_pos()[1] <= botao.get_posicao_y() + botao.get_altura():
                 return True
         else:
             return False
 
+
+
+
+
+
+
+
+
     def evento(self, evento, botao):
+
 
         # se o botao que me chamou colidiu faça:
         if self.__colidiu(botao) == True:
 
             #captura o click do mouse caso ele for apertado
             if evento.type == pygame.MOUSEBUTTONDOWN:
+                botao.set_clicou(True)
                 print("apertou")
                 botao.set_cor(RED)
 
-
             # captura se o mouse nao esta apertado
             if evento.type == pygame.MOUSEMOTION:
+
                 print("passei pelo botao")
                 # caso tudo for verdadeiro ate aqui mude a cor do botao ao passar o mouse por cima do botao
                 botao.set_cor(AMARELO)
 
+
         if self.__colidiu(botao) == False:
             botao.set_cor(BLACK)
-
-
-
-
-
-

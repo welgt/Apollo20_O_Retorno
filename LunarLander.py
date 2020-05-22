@@ -13,10 +13,14 @@ gamePlay = Nova_tela("teste", RESOLUCAO)
 
 nave = Nova_nave('arquivos/nave.png', 300, 300)
 lua = Nova_nave('arquivos/lua.png', 800, 50)
-painel = painel()
+painel_menu = painel()
+painel_menu.set_ativo(True)
+painel_config = painel()
+
 botao_play = botao()
 botao_exit = botao()
 botao_confg = botao()
+botao_voltar = botao()
 
 tempo = 0
 
@@ -24,8 +28,6 @@ tempo = 0
 
 debug = False
 jogoAtivo = True
-menu = False
-game = False
 config = False
 
 
@@ -40,12 +42,17 @@ while jogoAtivo:
         if event.type == pygame.QUIT:
             jogoAtivo = False
 
+
         #if event.type == pygame.MOUSEBUTTONDOWN:
          #   print("funcionou")
 
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
-                menu = True
+                #menu = True
+                painel_menu.set_ativo(True)
+                botao_confg.set_clicou(False)
+                # tem que fazer um pouse aqui pra so depois setar o botao play como falso
+                botao_play.set_clicou(False)
                 debug = True
 
             elif event.key == pygame.K_LEFT:
@@ -80,40 +87,91 @@ while jogoAtivo:
             elif event.key == pygame.K_UP or event.key == pygame.K_d:
                 debug = False
 
+            elif event.key == pygame.K_UP or event.key == pygame.K_ESCAPE:
+                pass
+
+
     gamePlay.fill(BLACK)
 
-    if menu == True:
+
+    # MENU
+    if painel_menu.get_ativo() == True:
+
+        if botao_exit.get_clicou() == True:
+            jogoAtivo = False
+
         botao().evento(event, botao_play)
         botao().evento(event, botao_exit)
         botao().evento(event, botao_confg)
 
 
-        painel .cria_painel(gamePlay, 0, 0, 40, 45)
-        painel.draw_painel(gamePlay,WHITE)
+        painel_menu .cria_painel(gamePlay, 0, 0, 40, 45)
+        painel_menu.draw_painel(gamePlay,WHITE)
         #painel.draw_borda_painel(gamePlay, AMARELO)
 
-        botao_play.criar_botao(painel, 0, -50, 30, 10)
+        botao_play.criar_botao(painel_menu, 0, -50, 30, 10)
         botao_play.draw_botao(gamePlay, 'PLAY')
         #botao_play.draw_borda_botao(gamePlay,RED)
 
-        botao_confg.criar_botao(painel, 0, 0, 30, 10)
+        botao_confg.criar_botao(painel_menu, 0, 0, 30, 10)
         botao_confg.draw_botao(gamePlay, 'CONFIG..')
         #botao_confg.draw_borda_botao(gamePlay,RED)
 
-        botao_exit.criar_botao(painel, 0, 50, 30, 10)
+        botao_exit.criar_botao(painel_menu, 0, 50, 30, 10)
         botao_exit.draw_botao(gamePlay, 'EXIT')
         #botao_exit.draw_borda_botao(gamePlay,RED)
 
-    game = True
-    if game == True:
 
+
+
+    # CONFIGURACOES
+    if botao_confg.get_clicou() == True:
+
+        botao().evento(event, botao_voltar)
+
+        painel_menu.set_ativo(False)
+        botao_play.set_clicou(False)
+
+
+        painel_config .cria_painel(gamePlay, 0, 0, 40, 45)
+        painel_config.draw_painel(gamePlay,WHITE)
+
+        botao_voltar.criar_botao(painel_config, 0, 50, 30, 10)
+        botao_voltar.draw_botao(gamePlay, 'VOLTAR')
+
+
+
+
+        if botao_voltar.get_clicou() == True :
+            botao_exit.set_clicou(False)
+            botao_confg.set_clicou(False)
+            painel_menu.set_ativo(True)
+            painel_config.set_ativo(False)
+
+
+
+        #print("Entrei nas configuracoes")
+
+
+
+
+
+
+
+
+
+
+    #GAMEPLAY
+    if botao_play.get_clicou() == True:
+
+        #menu = False
+        painel_menu.set_ativo(False)
+
+        mapa.desenha_terreno(gamePlay)
         lua.set_tamanho(200, 200)
-
         nave.set_tamanho(TAMANHO_DA_NAVE_X, TAMANHO_DA_NAVE_y)
         nave.set_friccao(FRICCAO_PROPULSOR)
         nave.set_velocidade_rotacao(VELOCIDADE_ROTACAO)
-
-        mapa.desenha_terreno(gamePlay)
 
         velocidade_x = nave.get_velocidade_x()
         velocidade_y = nave.get_velocidade_y()
@@ -160,8 +218,11 @@ while jogoAtivo:
             nave.set_velocidade_x(0)
             nave.set_velocidade_y(0)
 
-    if config == True:
-        print("Entrei nas configuracoes")
+
+
+
+
+
 
     gamePlay.cronometro()
 
