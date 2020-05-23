@@ -205,7 +205,11 @@ while jogoAtivo:
         potencia_propulsor = nave.get_potencia_propulsor()
         angulo = nave.get_angulo_rotacao()
 
-        nave.verifica_colisao_tela()
+        #nave.verifica_colisao_tela()
+        nave.verifica_colisao_area_pouso(mapa.get_pouso_nave_line(), mapa.get_altura_pouso_nave())
+        if nave.get_colidiu_area_pouso() == True:
+            painel_menu.set_ativo(True)
+            nave.set_velocidade_x(0)
         # ACELERACAO do propulsor
         nave.aceleracao_propulsor(tempo)
         # GRAVIDADE

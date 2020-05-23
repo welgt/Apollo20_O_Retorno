@@ -16,6 +16,16 @@ class Mapa_do_jogo:
         self.__base_pouso_line = None
         self.__porcento_altura_terreno = None
         self.__existe_area_pouso = False
+        self.__altura_base_pouso = None
+
+    def get_pouso_nave_line(self):
+        return self.__base_pouso_line
+
+    def get_pouso_nave_retangulo(self):
+        return self.__base_pouso_retangulo
+
+    def get_altura_pouso_nave(self):
+        return self.__altura_base_pouso
 
 
     def desenha_terreno(self, tela):
@@ -71,7 +81,7 @@ class Mapa_do_jogo:
                     x_vertice_pouso = RESOLUCAO[0]/(self.__qtd_tuplas_terreno)
 
                     # pega o divisao e define o tamanho x e o centro do pouso. determina o vertice1 da direita.
-                    x_fim_pouso = ((x_vertice_pouso + RESOLUCAO[0] / (self.__qtd_tuplas_terreno)) - TAMANHO_DA_NAVE_X)/2
+                    x_fim_pouso = ((x_vertice_pouso + RESOLUCAO[0] / (self.__qtd_tuplas_terreno)) - TAMANHO_DA_NAVE_X)/1
                     # define o inicio do vertice2 da esquerda
                     x_inicio_pouso = x_fim_pouso/2
 
@@ -79,6 +89,9 @@ class Mapa_do_jogo:
                     self.__novo_terreno.insert((self.__cont), ((vertice[0] + x + x_inicio_pouso), vertice[1] + self.__random_alturas_diferentes))
                     self.__novo_terreno.insert((self.__cont), ((vertice[0] + x),                  vertice[1] + self.__random_alturas_diferentes))
                     self.__cont+=2
+
+                    # captura a altura do pouso pra usar na colisao entre nave e terreno
+                    self.__altura_base_pouso = self.__random_alturas_diferentes
 
                     # desenha o feedback da area de pouso com um retangulo
                     self.__base_pouso = pygame.Rect(((vertice[0] + x)), self.__random_alturas_diferentes, ((x_fim_pouso/2)), 10)
@@ -116,7 +129,7 @@ class Mapa_do_jogo:
         tela.draw_polygon(WHITE, self.__terreno)
         #tela.draw_line(LARANJA, (798, 0), (798, 598), 2)
 
-        lista = [(325, 200), (355, 200), (355, 250), (325, 250)]
+        #lista = [(325, 200), (355, 200), (355, 250), (325, 250)]
         #tela.draw_lines(LARANJA, lista)
         tela.draw_lines(LARANJA, self.__novo_terreno, 4)
 
@@ -124,8 +137,8 @@ class Mapa_do_jogo:
         if(self.__existe_area_pouso):
             #tela.draw_rect(GREEN, self.__base_pouso)
             #tela.draw_line(RED, (0,0),(1200,600), 20)
-            tela.draw_line(RED, (self.__base_pouso_line[0], self.__base_pouso_line[1]),
-                                (self.__base_pouso_line[2], self.__base_pouso_line[3]), 4)
+            tela.draw_line(GREY, (self.__base_pouso_line[0], self.__base_pouso_line[1]),
+                                    (self.__base_pouso_line[2], self.__base_pouso_line[3]), 6)
 
     def get_line_terreno(self):
         return self.__novo_terreno

@@ -19,6 +19,8 @@ class Nova_nave:
         self.__rect =self.__surface.get_rect()
         self.__propulsor = False
         self.__colidiu_tela = False
+        self.__colidiu_pouso = False
+
         self.__rotacionou_dir = False
         self.__rotacionou_esq = False
 
@@ -51,6 +53,7 @@ class Nova_nave:
     def get_posicao(self):
         return self.__posicao_x, self.__posicao_y
 
+
     def set_velocidade_x(self, velocidade):
         self.__velocidade_x = velocidade
 
@@ -69,8 +72,8 @@ class Nova_nave:
     def set_potencia_propulsor(self, potencia_propulsor):
         self.__potencia_propulsor = potencia_propulsor
 
-    def get_tamanho_y(self):
-        return self.__tamanho_y
+    def get_tamanho_x(self):
+        return self.__tamanho_x
 
     def get_tamanho_y(self):
         return self.__tamanho_y
@@ -120,6 +123,12 @@ class Nova_nave:
 
     def set_colidiu_tela(self, booleana):
         self.__colidiu_tela = booleana
+
+    def get_colidiu_area_pouso(self):
+        return self.__colidiu_pouso
+
+    def set_colidiu_area_pouso(self, booleana):
+        self.__colidiu_pouso = booleana
 
     def get_rotacionou_dir(self):
         return self.__rotacionou_dir
@@ -194,6 +203,25 @@ class Nova_nave:
         self.__posicao_x = self.__colisao(self.__posicao_x, self.__tamanho_x, RESOLUCAO[0])
         self.__posicao_y = self.__colisao(self.__posicao_y, self.__tamanho_y, RESOLUCAO[1])
 
+    def verifica_colisao_area_pouso(self, base_pouso_nave, alturas_pouso_ramdom_nave):
+        inicio_area_pouso_horizontal = base_pouso_nave[2]
+        fim_area_pouso_horizontal = base_pouso_nave[0]
+
+        if self.__posicao_x >= inicio_area_pouso_horizontal \
+                and self.__posicao_x + self.get_tamanho_x() <= fim_area_pouso_horizontal \
+                and self.__posicao_y + self.__tamanho_y >= alturas_pouso_ramdom_nave:
+            self.set_colidiu_area_pouso(True)
+            print("COLIDIU COM A AREA DE POUSO")
+        else:
+            self.set_colidiu_area_pouso(False)
+        print("inicio_area_pouso_horizontal :", inicio_area_pouso_horizontal)
+        print("fim_area_pouso_horizontal    :", fim_area_pouso_horizontal)
+        print("pos x nave : ", self.__posicao_x)
+        print("pos y nave : ", self.__posicao_y)
+        print("alturas_pouso_ramdom_nave :  ", alturas_pouso_ramdom_nave)
+
+        #tela.draw_line(GREY, (self.__base_pouso_line[0], self.__base_pouso_line[1]),
+         #              (self.__base_pouso_line[2], self.__base_pouso_line[3]), 6)
 
 
 
