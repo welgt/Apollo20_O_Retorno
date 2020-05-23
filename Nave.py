@@ -85,6 +85,7 @@ class Nova_nave:
         self.__tamanho_x = novo_tamanho_x
         self.__tamanho_y = novo_tamanho_y
 
+
     def get_centro_surface(self):
         return self.__centro_surface
 
@@ -184,44 +185,54 @@ class Nova_nave:
         return poligono_rotacionado
 
 
-    def __colisao(self, posEixoObjeto, tamanho, resolucaoTela):
-        if posEixoObjeto >= 0 and posEixoObjeto <= resolucaoTela - tamanho:
-            #self.colidiu = False
+    def verifica_colisao_tela(self):
+
+        # se for diferente disso é porque esta fora da tela
+        if self.get_posicao_x()>= 0 and self.__posicao_x <= RESOLUCAO[0] - self.get_tamanho_x()\
+            and self.get_posicao_y()>= 0 and self.__posicao_y <= RESOLUCAO[1] - self.get_tamanho_y():
+            print("nao colidiu")
             self.set_colidiu_tela(False)
         else:
-            #print("colidiu")
+            print("colidiu")
             self.set_colidiu_tela(True)
-            if posEixoObjeto < resolucaoTela / 2:
-                #print(self.posicao_y)
-                posEixoObjeto = 0
+            # decide se zera a posicao da nave pra esquerda ou pra direita
+            if self.get_posicao_x() < RESOLUCAO[0]/2:
+                self.set_posicao_x(0)
             else:
-                posEixoObjeto = resolucaoTela - tamanho
-        return posEixoObjeto
+                self.set_posicao_x(RESOLUCAO[0]- self.get_tamanho_x())
+            # decide se zera a posicao da nave pra cima  ou pra baixo
+            if self.get_posicao_y() < RESOLUCAO[1] / 2:
+                self.set_posicao_y(0)
+            else:
+                self.set_posicao_y(RESOLUCAO[1] - self.get_tamanho_y())
 
 
-    def verifica_colisao_tela(self):
-        self.__posicao_x = self.__colisao(self.__posicao_x, self.__tamanho_x, RESOLUCAO[0])
-        self.__posicao_y = self.__colisao(self.__posicao_y, self.__tamanho_y, RESOLUCAO[1])
 
-    def verifica_colisao_area_pouso(self, base_pouso_nave, alturas_pouso_ramdom_nave):
-        inicio_area_pouso_horizontal = base_pouso_nave[2]
-        fim_area_pouso_horizontal = base_pouso_nave[0]
 
-        if self.__posicao_x >= inicio_area_pouso_horizontal \
-                and self.__posicao_x + self.get_tamanho_x() <= fim_area_pouso_horizontal \
-                and self.__posicao_y + self.__tamanho_y >= alturas_pouso_ramdom_nave:
-            self.set_colidiu_area_pouso(True)
-            print("COLIDIU COM A AREA DE POUSO")
+    def verifica_colisao_area_pouso(self, mapa):
+
+        # se caso foi sorteado uma area de pouso (por prevencao caso a variavel mapa.get_pouso_nave_line() esteja None)
+        if mapa.get_existe_area_pouso:
+
+            #pega o vertice inicial horizontal da area de pouso do terreno
+            inicio_area_pouso_horizontal = mapa.get_pouso_nave_line()[0]
+
+            # pega o vertice final horizontal da area de pouso do terreno
+            fim_area_pouso_horizontal = mapa.get_pouso_nave_line()[2]
+
+            # verifica a colisao entre a nave e a area de pouso
+            if self.__posicao_x >= inicio_area_pouso_horizontal \
+                    and self.__posicao_x + self.get_tamanho_x() <= fim_area_pouso_horizontal \
+                    and self.__posicao_y + self.__tamanho_y >= mapa.get_altura_pouso_nave():
+                self.set_colidiu_area_pouso(True)
+                print("COLIDIU COM A AREA DE POUSO")
+                #se colidiu zere o propulsor
+                self.set_potencia_propulsor(0)
+            else:
+                self.set_colidiu_area_pouso(False)
+
         else:
-            self.set_colidiu_area_pouso(False)
-        print("inicio_area_pouso_horizontal :", inicio_area_pouso_horizontal)
-        print("fim_area_pouso_horizontal    :", fim_area_pouso_horizontal)
-        print("pos x nave : ", self.__posicao_x)
-        print("pos y nave : ", self.__posicao_y)
-        print("alturas_pouso_ramdom_nave :  ", alturas_pouso_ramdom_nave)
-
-        #tela.draw_line(GREY, (self.__base_pouso_line[0], self.__base_pouso_line[1]),
-         #              (self.__base_pouso_line[2], self.__base_pouso_line[3]), 6)
+            print('NÃO FOI SORTEADO NENHUMA AREA DE POUSO NA TELA')
 
 
 

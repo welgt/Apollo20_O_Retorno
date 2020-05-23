@@ -205,11 +205,12 @@ while jogoAtivo:
         potencia_propulsor = nave.get_potencia_propulsor()
         angulo = nave.get_angulo_rotacao()
 
-        #nave.verifica_colisao_tela()
-        nave.verifica_colisao_area_pouso(mapa.get_pouso_nave_line(), mapa.get_altura_pouso_nave())
+        nave.verifica_colisao_tela()
+        nave.verifica_colisao_area_pouso(mapa)
         if nave.get_colidiu_area_pouso() == True:
             painel_menu.set_ativo(True)
-            nave.set_velocidade_x(0)
+
+
         # ACELERACAO do propulsor
         nave.aceleracao_propulsor(tempo)
         # GRAVIDADE
@@ -238,8 +239,8 @@ while jogoAtivo:
 
         gamePlay.blit(lua.get_surface(), lua.get_posicao())
         gamePlay.blit(nave_rot[0], nave_rot[1])
-        gamePlay.draw_polygon(WHITE, poligono_propulsor_dir)
-        gamePlay.draw_polygon(WHITE, poligono_propulsor_esq)
+        gamePlay.draw_polygon(CYAN, poligono_propulsor_dir)
+        gamePlay.draw_polygon(CYAN, poligono_propulsor_esq)
 
         # futura condicao de dano/perca pontos/morte etc
         if nave.get_colidiu_tela() == True:

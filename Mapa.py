@@ -27,6 +27,9 @@ class Mapa_do_jogo:
     def get_altura_pouso_nave(self):
         return self.__altura_base_pouso
 
+    def get_existe_area_pouso(self):
+        return self.__existe_area_pouso
+
 
     def desenha_terreno(self, tela):
         #print("desenhando solo")
@@ -80,26 +83,32 @@ class Mapa_do_jogo:
                     # coleta a divisao da abstracao da malha do terreno em x
                     x_vertice_pouso = RESOLUCAO[0]/(self.__qtd_tuplas_terreno)
 
+
+
+
                     # pega o divisao e define o tamanho x e o centro do pouso. determina o vertice1 da direita.
-                    x_fim_pouso = ((x_vertice_pouso + RESOLUCAO[0] / (self.__qtd_tuplas_terreno)) - TAMANHO_DA_NAVE_X)/1
+                    x_inicio_pouso = ((x_vertice_pouso + RESOLUCAO[0] / (self.__qtd_tuplas_terreno)) - TAMANHO_DA_NAVE_X)/1
                     # define o inicio do vertice2 da esquerda
-                    x_inicio_pouso = x_fim_pouso/2
+                    x_fim_pouso = x_inicio_pouso/2
+
 
                     # faz o rebaixo do pouso da nave no terreno
-                    self.__novo_terreno.insert((self.__cont), ((vertice[0] + x + x_inicio_pouso), vertice[1] + self.__random_alturas_diferentes))
-                    self.__novo_terreno.insert((self.__cont), ((vertice[0] + x),                  vertice[1] + self.__random_alturas_diferentes))
+                    self.__novo_terreno.insert((self.__cont), ((vertice[0] + x + x_fim_pouso), vertice[1] + self.__random_alturas_diferentes))
+                    self.__novo_terreno.insert((self.__cont), ((vertice[0] + x),               vertice[1] + self.__random_alturas_diferentes))
+
                     self.__cont+=2
 
                     # captura a altura do pouso pra usar na colisao entre nave e terreno
                     self.__altura_base_pouso = self.__random_alturas_diferentes
 
                     # desenha o feedback da area de pouso com um retangulo
-                    self.__base_pouso = pygame.Rect(((vertice[0] + x)), self.__random_alturas_diferentes, ((x_fim_pouso/2)), 10)
+                    self.__base_pouso = pygame.Rect(((vertice[0] + x)), self.__random_alturas_diferentes, ((x_inicio_pouso/2)), 10)
 
                     # desenha o feedback da area de pouso com uma line
-                    self.__base_pouso_line = [(vertice[0] + x + x_inicio_pouso),
+                    self.__base_pouso_line =   [(vertice[0] + x),
                                                 (vertice[1] + self.__random_alturas_diferentes),
-                                                (vertice[0] + x),
+
+                                                (vertice[0] + x + x_fim_pouso),
                                                 (vertice[1] + self.__random_alturas_diferentes)]
 
                     #quando é sorteado um local de pouso(rebaixo do terreno ou feedback) tem que atualizar o tamanho do for
