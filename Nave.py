@@ -20,6 +20,7 @@ class Nova_nave:
         self.__propulsor = False
         self.__colidiu_tela = False
         self.__colidiu_pouso = False
+        self.__colidiu_terreno = False
         self.__rotacionou_dir = False
         self.__rotacionou_esq = False
 
@@ -127,6 +128,12 @@ class Nova_nave:
     def set_colidiu_area_pouso(self, booleana):
         self.__colidiu_pouso = booleana
 
+    def get_colidiu_terreno(self):
+        return self.__colidiu_terreno
+
+    def set_colidiu_terreno(self, booleana):
+        self.__colidiu_terreno = booleana
+
     def get_rotacionou_dir(self):
         return self.__rotacionou_dir
 
@@ -186,10 +193,10 @@ class Nova_nave:
         # se for diferente disso é porque esta fora da tela
         if self.get_posicao_x()>= 0 and self.__posicao_x <= RESOLUCAO[0] - self.get_tamanho_x()\
             and self.get_posicao_y()>= 0 and self.__posicao_y <= RESOLUCAO[1] - self.get_tamanho_y():
-            print("nao colidiu")
+            #print("nao colidiu")
             self.set_colidiu_tela(False)
         else:
-            print("colidiu")
+            #print("colidiu")
             self.set_colidiu_tela(True)
             # pega a posicao do momento da colisao e deixa a nave travada nela
             self.set_posicao(self.get_posicao_x(),self.get_posicao_y())
@@ -211,9 +218,9 @@ class Nova_nave:
             fim_area_pouso_horizontal = mapa.get_pouso_nave_line()[2]
 
             # verifica a colisao entre a nave e a area de pouso
-            if self.__posicao_x >= inicio_area_pouso_horizontal \
-                    and self.__posicao_x + self.get_tamanho_x() <= fim_area_pouso_horizontal \
-                    and self.__posicao_y + self.__tamanho_y >= mapa.get_altura_pouso_nave() - mapa.get_espessura_line_pouso_nave()/2:
+            if self.get_posicao_x() >= inicio_area_pouso_horizontal \
+                    and self.get_posicao_x() + self.get_tamanho_x() <= fim_area_pouso_horizontal \
+                    and self.get_posicao_y() + self.get_tamanho_y() >= mapa.get_altura_pouso_nave() - mapa.get_espessura_line_pouso_nave()/2:
                 self.set_colidiu_area_pouso(True)
                 print("COLIDIU COM A AREA DE POUSO")
                 #se colidiu zere o propulsor
@@ -237,51 +244,29 @@ class Nova_nave:
 
 
 
-    #for vertice in self.__terreno:
-    def verifica_colisao_terreno(self, mapa):
-
-        lista_vertice = mapa.get_terreno()
 
 
-        cont = 0
-        lista_aux = []
-
-        for vertice in lista_vertice:
-            lista_aux.append(vertice[0])
-            lista_aux.append(vertice[1])
-        print("ofi:", lista_vertice)
-        #print("aux :",lista_aux)
 
 
-        stop = len(lista_aux)-3
 
-        x_inicio = 0
-        x_fim = 2
 
-        y_inicio = 1
-        y_fim = 3
 
-        for vertice in lista_aux:
 
-            x_vertice_inicio = lista_aux[x_inicio]
-            x_vertice_fim = lista_aux[x_fim]
 
-            y_vertice_inicio = lista_aux[y_inicio]
-            y_vertice_fim = lista_aux[y_fim]
-            
 
-            if y_fim < stop:
-                x_inicio += 4
-                x_fim +=4
-                y_inicio +=4
-                y_fim+=4
-            else:
-                break
 
-            print("x inicio :",x_vertice_inicio)
-            print("x fim :", x_vertice_fim)
-            print("y inicio: ", y_vertice_inicio)
-            print("y fim :",y_vertice_fim)
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -297,11 +282,11 @@ class Nova_nave:
     def aceleracao_propulsor(self, tempo):
 
         if self.get_propulsor_ativo() == True and self.get_colidiu_tela() == False and self.get_colidiu_area_pouso() == False:
-            self.__velocidade_y-= (VELOCIDADE_ACELERACAO_LUA / tempo)  * self.get_friccao()
+            self.__velocidade_y-= VELOCIDADE_ACELERACAO_LUA * tempo  * self.get_friccao()
 
             # permite aumentar o tamanho do propulsor ate 1
             if self.__potencia_propulsor < 1:
-                self.__potencia_propulsor += (VELOCIDADE_ACELERACAO_LUA / tempo)  * self.get_friccao()
+                self.__potencia_propulsor += VELOCIDADE_ACELERACAO_LUA * tempo  * self.get_friccao()
 
             if self.get_velocidade_y() <= VELOCIDADE_ACELERACAO_LUA:
                 tempo = 0
@@ -323,15 +308,214 @@ class Nova_nave:
         if self.get_propulsor_ativo() == False and self.get_colidiu_tela() == False \
             and self.get_colidiu_area_pouso() == False:
 
-            # se o tempo for zero faça valer 0.1 pra nao dar divisao com zero nos calculos abaixo
-            if tempo==0:
-                tempo+=0.1
-            self.__velocidade_y += (VELOCIDADE_ACELERACAO_LUA / tempo) * self.get_friccao()
+            self.__velocidade_y += VELOCIDADE_ACELERACAO_LUA * tempo * self.get_friccao()
             # diminiu o tamanho do propulsor
-            self.__potencia_propulsor -= (VELOCIDADE_ACELERACAO_LUA / tempo) * self.get_friccao()
+            self.__potencia_propulsor -= VELOCIDADE_ACELERACAO_LUA * tempo * self.get_friccao()
 
             # caso ele for menor que zero, fique em zero.
             if self.get_potencia_propulsor() < 0:
                 self.set_potencia_propulsor(0)
             if self.get_velocidade_y() >= VELOCIDADE_ACELERACAO_LUA:
                 tempo = 0
+
+
+
+
+
+
+
+
+
+
+
+   #for vertice in self.__terreno:
+    def verifica_colisao_terreno(self, mapa):
+
+        lista_vertice = mapa.get_terreno()
+
+        cont = 0
+        lista_aux = []
+
+
+        for vertice in lista_vertice:
+            lista_aux.append(vertice[0])
+            lista_aux.append(vertice[1])
+
+        #print("ofi:", lista_vertice)
+        #print("aux :",lista_aux)
+
+        stop = len(lista_aux)-3
+
+        x_inicio = 0
+        x_fim = 2
+        y_inicio = 1
+        y_fim = 3
+
+        for vertice in lista_aux:
+
+            x_vertice_inicio = lista_aux[x_inicio]
+            x_vertice_fim = lista_aux[x_fim]
+
+            y_vertice_inicio = lista_aux[y_inicio]
+            y_vertice_fim = lista_aux[y_fim]
+
+            #if self.get_posicao_x() >= x_vertice_inicio \
+             #       and self.get_posicao_x() + self.get_tamanho_x() <= x_vertice_fim \
+              #      and self.get_posicao_y() + self.get_tamanho_y() >= y_vertice_inicio and y_vertice_fim:
+
+            if self.get_posicao_x() >= x_vertice_inicio \
+                    and self.get_posicao_x()  + self.get_tamanho_x() <= x_vertice_fim \
+                    and self.get_posicao_y()  + self.get_tamanho_y() >= y_vertice_inicio and y_vertice_fim:
+
+                self.set_colidiu_terreno(True)
+                print("COLIDIU COM O TERRENO")
+
+                self.set_posicao(self.get_posicao_x(), (self.get_posicao_y()))
+            else:
+                self.set_colidiu_terreno(False)
+
+            if y_fim < stop:
+                x_inicio += 2
+                x_fim +=2
+                y_inicio +=2
+                y_fim+=2
+            else:
+                break
+
+            #print("x inicio :",x_vertice_inicio)
+            #print("x fim :", x_vertice_fim)
+            #print("y inicio: ", y_vertice_inicio)
+            #print("y fim :",y_vertice_fim)
+
+
+
+
+
+
+
+
+
+
+
+"""    #for vertice in self.__terreno:
+    def verifica_colisao_terreno(self, mapa, tela):
+
+        lista_vertice = mapa.get_terreno()
+
+
+        cont = 0
+        lista_aux = []
+        desenha_colisao = []
+
+        for vertice in lista_vertice:
+            lista_aux.append(vertice[0])
+            lista_aux.append(vertice[1])
+            desenha_colisao.append((vertice[0], vertice[1]))
+
+        #print("ofi:", lista_vertice)
+        #print("aux :",lista_aux)
+
+
+        stop = len(lista_aux)-3
+
+        x_inicio = 0
+        x_fim = 2
+
+        y_inicio = 1
+        y_fim = 3
+
+
+        x_vertice_inicio = lista_aux[x_inicio]
+        x_vertice_fim = lista_aux[x_fim]
+
+        y_vertice_inicio = lista_aux[y_inicio]
+        y_vertice_fim = lista_aux[y_fim]
+
+        if self.get_posicao_x() >= x_vertice_inicio \
+                and self.get_posicao_x()  + self.get_tamanho_x() <= x_vertice_fim \
+                and self.get_posicao_y()  + self.get_tamanho_y() >= y_vertice_inicio and y_vertice_fim:
+
+
+            self.set_colidiu_terreno(True)
+            print("COLIDIU COM O TERRENO")
+
+            self.set_posicao(self.get_posicao_x(), (self.get_posicao_y()))
+        else:
+            self.set_colidiu_terreno(False)
+
+
+            x_inicio += 2
+            x_fim += 2
+            y_inicio += 2
+            y_fim += 2
+
+
+            x_vertice_inicio = lista_aux[x_inicio]
+            x_vertice_fim = lista_aux[x_fim]
+
+            y_vertice_inicio = lista_aux[y_inicio]
+            y_vertice_fim = lista_aux[y_fim]
+
+
+
+            if self.__posicao_x >= x_vertice_inicio \
+                    and self.__posicao_x + self.get_tamanho_x() <= x_vertice_fim \
+                    and self.__posicao_y + self.__tamanho_y >= y_vertice_inicio and y_vertice_fim:
+
+                self.set_colidiu_terreno(True)
+                print("COLIDIU COM O TERRENO")
+
+                self.set_posicao(self.get_posicao_x(), (self.get_posicao_y()))
+            else:
+                self.set_colidiu_terreno(False)
+
+            x_inicio += 2
+            x_fim += 2
+            y_inicio += 2
+            y_fim += 2
+
+
+            x_vertice_inicio = lista_aux[x_inicio]
+            x_vertice_fim = lista_aux[x_fim]
+
+            y_vertice_inicio = lista_aux[y_inicio]
+            y_vertice_fim = lista_aux[y_fim]
+
+
+
+            if self.__posicao_x >= x_vertice_inicio \
+                    and self.__posicao_x + self.get_tamanho_x() <= x_vertice_fim \
+                    and self.__posicao_y + self.__tamanho_y >= y_vertice_inicio and y_vertice_fim:
+
+                self.set_colidiu_terreno(True)
+                print("COLIDIU COM O TERRENO")
+
+                self.set_posicao(self.get_posicao_x(), (self.get_posicao_y()))
+            else:
+                self.set_colidiu_terreno(False)
+
+
+            x_inicio += 2
+            x_fim += 2
+            y_inicio += 2
+            y_fim += 2
+
+
+            x_vertice_inicio = lista_aux[x_inicio]
+            x_vertice_fim = lista_aux[x_fim]
+
+            y_vertice_inicio = lista_aux[y_inicio]
+            y_vertice_fim = lista_aux[y_fim]
+
+
+
+            if self.__posicao_x >= x_vertice_inicio \
+                    and self.__posicao_x + self.get_tamanho_x() <= x_vertice_fim \
+                    and self.__posicao_y + self.__tamanho_y >= y_vertice_inicio and y_vertice_fim:
+
+                self.set_colidiu_terreno(True)
+                print("COLIDIU COM O TERRENO")
+
+                self.set_posicao(self.get_posicao_x(), (self.get_posicao_y()))
+            else:
+                self.set_colidiu_terreno(False)"""

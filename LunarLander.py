@@ -50,7 +50,7 @@ game_loop = False
 debug = False
 jogoAtivo = True
 config = False
-
+tempo = 0
 
 
 while jogoAtivo:
@@ -241,15 +241,18 @@ while jogoAtivo:
             else:
                 print("Voce morreu")
 
-        print("pontos :", dados.get_pontos())
+        if nave.get_colidiu_terreno() == True:
+            painel_menu.set_ativo(True)
+
+        #print("pontos :", dados.get_pontos())
         # futura condicao de dano/perca pontos/morte etc
         #if nave.get_colidiu_tela() == True:
          #   print('colidiu com a a tela')
 
         # ACELERACAO do propulsor
-        nave.aceleracao_propulsor(gamePlay.get_cronometro()[2])
+        nave.aceleracao_propulsor(tempo)
         # GRAVIDADE
-        nave.gravidade(gamePlay.get_cronometro()[2])
+        nave.gravidade(tempo)
 
         # so adiciona angulo do lado esquerdo da nave se for o grau maximo permitido de 90
         if nave.get_rotacionou_esq() and nave.get_angulo_rotacao() <= 90:
@@ -274,7 +277,7 @@ while jogoAtivo:
         gamePlay.blit(nave_rot[0], nave_rot[1])
         gamePlay.draw_polygon(CYAN, poligono_propulsor_dir)
         gamePlay.draw_polygon(CYAN, poligono_propulsor_esq)
-
+    tempo+=0.1
     gamePlay.cronometro()
     gamePlay.flip()
     gamePlay.set_fps(FPS)
