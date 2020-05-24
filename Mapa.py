@@ -17,12 +17,32 @@ class Mapa_do_jogo:
         self.__porcento_altura_terreno = None
         self.__existe_area_pouso = False
         self.__altura_base_pouso = None
+        self.__espessura_base_pouso_line = 6
+
+
+    def get_terreno(self):
+        return self.__terreno
 
     def get_pouso_nave_line(self):
-        return self.__base_pouso_line
+        if self.__existe_area_pouso:
+            return self.__base_pouso_line
+        else:
+            print("NAO FOI SORTEADO UMA AREA DE POUSO")
+            return 0
+
 
     def get_pouso_nave_retangulo(self):
-        return self.__base_pouso_retangulo
+        if self.__existe_area_pouso == False:
+            return self.__base_pouso_retangulo
+        else:
+            print("NAO FOI SORTEADO UMA AREA DE POUSO")
+            return 0
+
+    def get_espessura_line_pouso_nave(self):
+        if self.__existe_area_pouso == True:
+            return self.__espessura_base_pouso_line
+        else:
+            print("NAO FOI SORTEADO UMA AREA DE POUSO")
 
     def get_altura_pouso_nave(self):
         return self.__altura_base_pouso
@@ -87,7 +107,7 @@ class Mapa_do_jogo:
 
 
                     # pega o divisao e define o tamanho x e o centro do pouso. determina o vertice1 da direita.
-                    x_inicio_pouso = ((x_vertice_pouso + RESOLUCAO[0] / (self.__qtd_tuplas_terreno)) - TAMANHO_DA_NAVE_X)/1
+                    x_inicio_pouso = ((x_vertice_pouso + RESOLUCAO[0] / (self.__qtd_tuplas_terreno)) - TAMANHO_DA_NAVE_X+100)
                     # define o inicio do vertice2 da esquerda
                     x_fim_pouso = x_inicio_pouso/2
 
@@ -147,7 +167,7 @@ class Mapa_do_jogo:
             #tela.draw_rect(GREEN, self.__base_pouso)
             #tela.draw_line(RED, (0,0),(1200,600), 20)
             tela.draw_line(GREY, (self.__base_pouso_line[0], self.__base_pouso_line[1]),
-                                    (self.__base_pouso_line[2], self.__base_pouso_line[3]), 6)
+                                    (self.__base_pouso_line[2], self.__base_pouso_line[3]), self.get_espessura_line_pouso_nave())
 
     def get_line_terreno(self):
         return self.__novo_terreno

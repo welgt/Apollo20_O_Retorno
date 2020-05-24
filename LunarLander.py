@@ -1,8 +1,9 @@
-
+from Dados import *
 from Tela import *
 from Nave import *
 from Mapa import *
 from Interface import *
+from Config import *
 
 
 import pygame
@@ -31,6 +32,10 @@ botao_voltar = botao()
 botao_sim = botao()
 botao_nao = botao()
 
+dados = Dados()
+
+
+
 def evento_botoes():
     botao().evento(event, botao_play)
     botao().evento(event, botao_exit)
@@ -41,7 +46,7 @@ def evento_botoes():
 
 game_loop = False
 
-tempo = 0
+
 debug = False
 jogoAtivo = True
 config = False
@@ -205,16 +210,46 @@ while jogoAtivo:
         potencia_propulsor = nave.get_potencia_propulsor()
         angulo = nave.get_angulo_rotacao()
 
+        posicao_x += velocidade_x
+        posicao_y += velocidade_y
+
+        # so tem velocidade caso nao colidiu com a tela
+        if nave.get_colidiu_tela() == False:
+            nave.set_posicao(posicao_x, posicao_y)
+
         nave.verifica_colisao_tela()
         nave.verifica_colisao_area_pouso(mapa)
+        nave.verifica_colisao_terreno(mapa)
+
+        # se a nave pousou verifique as condicoes e atribua a pontuacao correta
         if nave.get_colidiu_area_pouso() == True:
             painel_menu.set_ativo(True)
+            angulo = nave.get_angulo_rotacao()
+            nave.set_angulo_rotacao(angulo)
+            if nave.get_angulo_rotacao()<=15 and nave.get_angulo_rotacao() >= -15:
+                pouso_perfeito = 150
+                dados.set_pontos(pouso_perfeito)
 
+            elif nave.get_angulo_rotacao() <= 25 and nave.get_angulo_rotacao() >= -25:
+                pouso_toleravel = 100
+                dados.set_pontos(pouso_toleravel)
+
+            elif nave.get_angulo_rotacao() <= 35 and nave.get_angulo_rotacao() >= -35:
+                pouso_forcado = 50
+                dados.set_pontos(pouso_forcado)
+
+            else:
+                print("Voce morreu")
+
+        print("pontos :", dados.get_pontos())
+        # futura condicao de dano/perca pontos/morte etc
+        #if nave.get_colidiu_tela() == True:
+         #   print('colidiu com a a tela')
 
         # ACELERACAO do propulsor
-        nave.aceleracao_propulsor(tempo)
+        nave.aceleracao_propulsor(gamePlay.get_cronometro()[2])
         # GRAVIDADE
-        nave.gravidade(tempo)
+        nave.gravidade(gamePlay.get_cronometro()[2])
 
         # so adiciona angulo do lado esquerdo da nave se for o grau maximo permitido de 90
         if nave.get_rotacionou_esq() and nave.get_angulo_rotacao() <= 90:
@@ -226,32 +261,21 @@ while jogoAtivo:
             angulo -= nave.get_velocidade_rotacao()
             nave.set_angulo_rotacao(angulo)
 
-        posicao_x += velocidade_x
-        posicao_y += velocidade_y
-        nave.set_posicao(posicao_x, posicao_y)
+
 
         # cria poligono propulsor e recebe tamanho da calda
         poligono_propulsor_dir = nave.criaPoligono_Propulsor(2, 4, nave.get_potencia_propulsor() * FPS)
         poligono_propulsor_esq = nave.criaPoligono_Propulsor(2, -4, nave.get_potencia_propulsor() * FPS)
 
         # rotaciona a (imagem) nave
-        nave_rot = nave.rotacaoCentralizada(nave.get_angulo_rotacao())
+        nave_rot = nave.rotacaoCentralizada()
 
         gamePlay.blit(lua.get_surface(), lua.get_posicao())
         gamePlay.blit(nave_rot[0], nave_rot[1])
         gamePlay.draw_polygon(CYAN, poligono_propulsor_dir)
         gamePlay.draw_polygon(CYAN, poligono_propulsor_esq)
 
-        # futura condicao de dano/perca pontos/morte etc
-        if nave.get_colidiu_tela() == True:
-            nave.set_velocidade_x(0)
-            nave.set_velocidade_y(0)
-
-
-
-
     gamePlay.cronometro()
-    tempo+=0.1
     gamePlay.flip()
     gamePlay.set_fps(FPS)
 

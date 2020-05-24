@@ -20,16 +20,12 @@ class Nova_nave:
         self.__propulsor = False
         self.__colidiu_tela = False
         self.__colidiu_pouso = False
-
         self.__rotacionou_dir = False
         self.__rotacionou_esq = False
 
 
     def get_surface(self):
         return self.__surface
-
-    def set_surface(self, nova_surface):
-        self.__surface = pygame.image.load(nova_surface)
 
     def get_posicao_x(self):
         return self.__posicao_x
@@ -144,9 +140,9 @@ class Nova_nave:
         self.__rotacionou_esq = booleana
 
 
-    def rotacaoCentralizada(self,angulo):
+    def rotacaoCentralizada(self):
 
-        surface = pygame.transform.rotate(self.get_surface(), angulo)
+        surface = pygame.transform.rotate(self.get_surface(), self.get_angulo_rotacao())
         nova_posicao = surface.get_rect(center=self.get_centro_surface())
         nova_posicao[0] += self.get_posicao()[0]
         nova_posicao[1] += self.get_posicao()[1]
@@ -195,16 +191,10 @@ class Nova_nave:
         else:
             print("colidiu")
             self.set_colidiu_tela(True)
-            # decide se zera a posicao da nave pra esquerda ou pra direita
-            if self.get_posicao_x() < RESOLUCAO[0]/2:
-                self.set_posicao_x(0)
-            else:
-                self.set_posicao_x(RESOLUCAO[0]- self.get_tamanho_x())
-            # decide se zera a posicao da nave pra cima  ou pra baixo
-            if self.get_posicao_y() < RESOLUCAO[1] / 2:
-                self.set_posicao_y(0)
-            else:
-                self.set_posicao_y(RESOLUCAO[1] - self.get_tamanho_y())
+            # pega a posicao do momento da colisao e deixa a nave travada nela
+            self.set_posicao(self.get_posicao_x(),self.get_posicao_y())
+            #self.set_velocidade_x(0)
+            #self.set_velocidade_y(0)
 
 
 
@@ -223,28 +213,95 @@ class Nova_nave:
             # verifica a colisao entre a nave e a area de pouso
             if self.__posicao_x >= inicio_area_pouso_horizontal \
                     and self.__posicao_x + self.get_tamanho_x() <= fim_area_pouso_horizontal \
-                    and self.__posicao_y + self.__tamanho_y >= mapa.get_altura_pouso_nave():
+                    and self.__posicao_y + self.__tamanho_y >= mapa.get_altura_pouso_nave() - mapa.get_espessura_line_pouso_nave()/2:
                 self.set_colidiu_area_pouso(True)
                 print("COLIDIU COM A AREA DE POUSO")
                 #se colidiu zere o propulsor
                 self.set_potencia_propulsor(0)
+                self.set_rotacionou_dir(False)
+                self.set_rotacionou_esq(False)
+                self.set_velocidade_x(0)
+                self.set_velocidade_y(0)
+                #self.set_angulo_rotacao(0)
+                self.set_posicao(self.get_posicao_x(), (self.get_posicao_y()))
             else:
                 self.set_colidiu_area_pouso(False)
 
         else:
-            print('NÃO FOI SORTEADO NENHUMA AREA DE POUSO NA TELA')
+            pass
+
+
+
+
+
+
+
+
+    #for vertice in self.__terreno:
+    def verifica_colisao_terreno(self, mapa):
+
+        lista_vertice = mapa.get_terreno()
+
+
+        cont = 0
+        lista_aux = []
+
+        for vertice in lista_vertice:
+            lista_aux.append(vertice[0])
+            lista_aux.append(vertice[1])
+        print("ofi:", lista_vertice)
+        #print("aux :",lista_aux)
+
+
+        stop = len(lista_aux)-3
+
+        x_inicio = 0
+        x_fim = 2
+
+        y_inicio = 1
+        y_fim = 3
+
+        for vertice in lista_aux:
+
+            x_vertice_inicio = lista_aux[x_inicio]
+            x_vertice_fim = lista_aux[x_fim]
+
+            y_vertice_inicio = lista_aux[y_inicio]
+            y_vertice_fim = lista_aux[y_fim]
+            
+
+            if y_fim < stop:
+                x_inicio += 4
+                x_fim +=4
+                y_inicio +=4
+                y_fim+=4
+            else:
+                break
+
+            print("x inicio :",x_vertice_inicio)
+            print("x fim :", x_vertice_fim)
+            print("y inicio: ", y_vertice_inicio)
+            print("y fim :",y_vertice_fim)
+
+
+
+
+
+
+
+
 
 
 
     # ACELERACAO do propulsor
     def aceleracao_propulsor(self, tempo):
 
-        if self.get_propulsor_ativo() == True:
-            self.__velocidade_y-= (VELOCIDADE_ACELERACAO_LUA / FPS) * tempo * self.get_friccao()
+        if self.get_propulsor_ativo() == True and self.get_colidiu_tela() == False and self.get_colidiu_area_pouso() == False:
+            self.__velocidade_y-= (VELOCIDADE_ACELERACAO_LUA / tempo)  * self.get_friccao()
 
             # permite aumentar o tamanho do propulsor ate 1
             if self.__potencia_propulsor < 1:
-                self.__potencia_propulsor += (VELOCIDADE_ACELERACAO_LUA / FPS) * tempo * self.get_friccao()
+                self.__potencia_propulsor += (VELOCIDADE_ACELERACAO_LUA / tempo)  * self.get_friccao()
 
             if self.get_velocidade_y() <= VELOCIDADE_ACELERACAO_LUA:
                 tempo = 0
@@ -262,12 +319,16 @@ class Nova_nave:
     def gravidade(self, tempo):
 
         # GRAVIDADE
-        if self.get_propulsor_ativo() == False:
+        # se nao tiver acelerando e nao tiver colidido com a tela ou com a area de pouso executa a gravidade
+        if self.get_propulsor_ativo() == False and self.get_colidiu_tela() == False \
+            and self.get_colidiu_area_pouso() == False:
 
-            self.__velocidade_y += (VELOCIDADE_ACELERACAO_LUA / FPS) * tempo * self.get_friccao()
-
+            # se o tempo for zero faça valer 0.1 pra nao dar divisao com zero nos calculos abaixo
+            if tempo==0:
+                tempo+=0.1
+            self.__velocidade_y += (VELOCIDADE_ACELERACAO_LUA / tempo) * self.get_friccao()
             # diminiu o tamanho do propulsor
-            self.__potencia_propulsor -= (VELOCIDADE_ACELERACAO_LUA / FPS) * tempo * self.get_friccao()
+            self.__potencia_propulsor -= (VELOCIDADE_ACELERACAO_LUA / tempo) * self.get_friccao()
 
             # caso ele for menor que zero, fique em zero.
             if self.get_potencia_propulsor() < 0:
