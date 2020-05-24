@@ -20,6 +20,11 @@ class Mapa_do_jogo:
         self.__espessura_base_pouso_line = 6
 
 
+        self.__sort1 = 0
+        self.__sort2 = 0
+        self.__sort3 = 0
+
+
     def get_terreno(self):
         return self.__terreno
 
@@ -83,8 +88,8 @@ class Mapa_do_jogo:
                 self.__qtd_tuplas_terreno = len(self.__terreno)
 
                 # sorteia duas porcentagem de tela para que o morro do terreno alterne entre picos altos e baixos
-                self.__porcento_altura_terreno = random.randint((RESOLUCAO[1] / 1000) * 200,
-                                                                (RESOLUCAO[1] / 1000) * 300)  # 10% ou 20% da tela
+                self.__porcento_altura_terreno = random.randint((RESOLUCAO[1] / 1000) * 100, #200
+                                                                (RESOLUCAO[1] / 1000) * 500) #300    # 10% ou 20% da tela
 
                 # faz outro sorteio que recebe como o parametro o sorteio anterior que pode ser 10 ou 20% da tela
                 self.__random_alturas_diferentes = random.randint((RESOLUCAO[1] - self.__porcento_altura_terreno), (RESOLUCAO[1] - 50))
@@ -92,6 +97,8 @@ class Mapa_do_jogo:
                 # incrementa o valor do x que contem na tupla e em y adiciona randomicamente
                 vertice_aux = ((vertice[0] + x), (vertice[1] + self.__random_alturas_diferentes))
                 self.__novo_terreno.append(vertice_aux)
+
+
 
                 # sorteia numeros entre 1 e a quantidade de tuplas-1 da lista de vertices do terreno
                 self.__ramdom_pouso_nave = random.randint(1, self.__qtd_tuplas_terreno-1)
@@ -150,6 +157,11 @@ class Mapa_do_jogo:
             self.__terreno = self.__novo_terreno
 
 
+
+
+
+
+
             # permite desenhar o terreno apenas uma vez somente no primeiro frame.
             self.__desenha = False
 
@@ -160,7 +172,11 @@ class Mapa_do_jogo:
 
         #lista = [(325, 200), (355, 200), (355, 250), (325, 250)]
         #tela.draw_lines(LARANJA, lista)
-        tela.draw_lines(LARANJA, self.__novo_terreno, 4)
+        self.__sort1 = random.randint(0, 255)
+        self.__sort2 = random.randint(0, 255)
+        self.__sort3 = random.randint(0, 255)
+        tela.draw_lines(( LARANJA), self.__novo_terreno, 4)
+
 
         # só desenha a area de pouso se ela existir, ou seja se caiu no if #define o local de pouso.
         if(self.__existe_area_pouso):

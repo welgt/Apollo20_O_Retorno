@@ -10,3 +10,6 @@ Tuplas e listas:
 
 Impressao de textos na surface:
     https://www.youtube.com/watch?v=wxL1hx3MuzA
+
+retaqngulo com trasparencia:
+    https://www.it-swarm.dev/pt/python/desenhe-um-retangulo-transparente-no-pygame/972567421/

@@ -1,3 +1,5 @@
+import random
+
 import pygame
 import math
 from Config import *
@@ -282,22 +284,22 @@ class Nova_nave:
     def aceleracao_propulsor(self, tempo):
 
         if self.get_propulsor_ativo() == True and self.get_colidiu_tela() == False and self.get_colidiu_area_pouso() == False:
-            self.__velocidade_y-= VELOCIDADE_ACELERACAO_LUA * tempo  * self.get_friccao()
+            self.__velocidade_y-= (VELOCIDADE_ACELERACAO_LUA/FPS) * tempo  * self.get_friccao()
 
             # permite aumentar o tamanho do propulsor ate 1
             if self.__potencia_propulsor < 1:
-                self.__potencia_propulsor += VELOCIDADE_ACELERACAO_LUA * tempo  * self.get_friccao()
+                self.__potencia_propulsor += (VELOCIDADE_ACELERACAO_LUA/FPS)* tempo  * self.get_friccao()
 
             if self.get_velocidade_y() <= VELOCIDADE_ACELERACAO_LUA:
                 tempo = 0
 
                 # define nova direcao caso a nave esteja inclinada pra direita e propulsor ativo
                 if self.get_angulo_rotacao()<=1 and self.get_propulsor_ativo():
-                    self.__velocidade_x += self.get_angulo_rotacao()*-1 /360
+                    self.__velocidade_x += self.get_angulo_rotacao()*-1 /180
 
                 # define nova direcao caso a nave esteja inclinada pra esquerda e propulsor ativo
                 if self.__angulo_rotacao >= 1 and self.get_propulsor_ativo():
-                    self.__velocidade_x -= self.get_angulo_rotacao()/360
+                    self.__velocidade_x -= self.get_angulo_rotacao()/180
 
 
 
@@ -308,9 +310,9 @@ class Nova_nave:
         if self.get_propulsor_ativo() == False and self.get_colidiu_tela() == False \
             and self.get_colidiu_area_pouso() == False:
 
-            self.__velocidade_y += VELOCIDADE_ACELERACAO_LUA * tempo * self.get_friccao()
+            self.__velocidade_y += (VELOCIDADE_ACELERACAO_LUA/FPS) * tempo * self.get_friccao()
             # diminiu o tamanho do propulsor
-            self.__potencia_propulsor -= VELOCIDADE_ACELERACAO_LUA * tempo * self.get_friccao()
+            self.__potencia_propulsor -= (VELOCIDADE_ACELERACAO_LUA/FPS) * tempo * self.get_friccao()
 
             # caso ele for menor que zero, fique em zero.
             if self.get_potencia_propulsor() < 0:
@@ -329,14 +331,12 @@ class Nova_nave:
 
 
    #for vertice in self.__terreno:
-    def verifica_colisao_terreno(self, mapa):
+    def verifica_colisao_terreno(self, mapa, tela):
 
         lista_vertice = mapa.get_terreno()
-
-        cont = 0
         lista_aux = []
-
-
+        cont = 0
+        # junta os valores das tuplas do terreno e as torna uma lista de valores ao inves de lista de tupla
         for vertice in lista_vertice:
             lista_aux.append(vertice[0])
             lista_aux.append(vertice[1])
@@ -344,36 +344,66 @@ class Nova_nave:
         #print("ofi:", lista_vertice)
         #print("aux :",lista_aux)
 
+        # impede o stouro do indice
         stop = len(lista_aux)-3
-
+        # incrementa os indices para definir o inicio e fim da colisao em x e o inicio e fim da colisao em y
         x_inicio = 0
         x_fim = 2
         y_inicio = 1
         y_fim = 3
 
+
+
         for vertice in lista_aux:
 
             x_vertice_inicio = lista_aux[x_inicio]
             x_vertice_fim = lista_aux[x_fim]
-
             y_vertice_inicio = lista_aux[y_inicio]
             y_vertice_fim = lista_aux[y_fim]
 
-            #if self.get_posicao_x() >= x_vertice_inicio \
-             #       and self.get_posicao_x() + self.get_tamanho_x() <= x_vertice_fim \
-              #      and self.get_posicao_y() + self.get_tamanho_y() >= y_vertice_inicio and y_vertice_fim:
+            #desenha_colisao = pygame.Rect((x_vertice_inicio, x_vertice_fim), (y_vertice_inicio, y_vertice_fim))
+            #desenha_colisao = pygame.Rect((x_vertice_inicio, y_vertice_fim), (x_vertice_inicio, y_vertice_fim))
+            #tela.draw_rect(pygame.Color(255, 0, 0, 10), desenha_colisao)
 
+            # padroniza a colisao retangular de acordo com o vertice y mais  baixo
+            #if y_vertice_inicio <= y_vertice_fim:
+             #   temp = y_vertice_inicio
+              #  y_vertice_inicio = y_vertice_fim
+               # y_vertice_fim = temp
+
+            #padroniza a colisao retangular de acordo com o vertice y mais  alto
+            if y_vertice_inicio >= y_vertice_fim:
+                temp = y_vertice_inicio
+                y_vertice_inicio = y_vertice_fim
+                y_vertice_fim = temp
+
+            sort1 = random.randint(0,255)
+            sort2 = random.randint(0, 255)
+            sort3 = random.randint(0, 255)
+
+            # desenha a area de colisao para eu ter um feedback visual de onde esta ativado a colisao retangular
+            retangulo_colisor = pygame.Surface((abs(x_vertice_inicio), abs(x_vertice_fim)))  # the size of your rect
+            retangulo_colisor.set_alpha(50)  # alpha level
+            retangulo_colisor.fill((255, 0, 0))  # this fills the entire surface
+            tela.blit(retangulo_colisor, ((abs(x_vertice_inicio), abs(y_vertice_inicio))))  # (0,0) are the top-left coordinates
+
+            # veifica a colisao dinamicamente
             if self.get_posicao_x() >= x_vertice_inicio \
                     and self.get_posicao_x()  + self.get_tamanho_x() <= x_vertice_fim \
                     and self.get_posicao_y()  + self.get_tamanho_y() >= y_vertice_inicio and y_vertice_fim:
 
+                # onde a nave colidiu, pinte este retangulo de amarelo
+                retangulo_colisor.set_alpha(100)  # alpha level
+                retangulo_colisor.fill((AMARELO))  # this fills the entire surface
+                tela.blit(retangulo_colisor, ((abs(x_vertice_inicio), abs(y_vertice_inicio))))  # (0,0) are the top-left coordinates
                 self.set_colidiu_terreno(True)
                 print("COLIDIU COM O TERRENO")
 
-                self.set_posicao(self.get_posicao_x(), (self.get_posicao_y()))
             else:
                 self.set_colidiu_terreno(False)
 
+            # impede o stouro do indice
+            # incremento (atualizacao)da posicao de verificacao de colisao
             if y_fim < stop:
                 x_inicio += 2
                 x_fim +=2
@@ -382,6 +412,7 @@ class Nova_nave:
             else:
                 break
 
+            cont+=1
             #print("x inicio :",x_vertice_inicio)
             #print("x fim :", x_vertice_fim)
             #print("y inicio: ", y_vertice_inicio)

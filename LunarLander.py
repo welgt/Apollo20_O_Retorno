@@ -203,6 +203,7 @@ while jogoAtivo:
         nave.set_friccao(FRICCAO_PROPULSOR)
         nave.set_velocidade_rotacao(VELOCIDADE_ROTACAO)
 
+
         velocidade_x = nave.get_velocidade_x()
         velocidade_y = nave.get_velocidade_y()
         posicao_x = nave.get_posicao_x()
@@ -219,7 +220,7 @@ while jogoAtivo:
 
         nave.verifica_colisao_tela()
         nave.verifica_colisao_area_pouso(mapa)
-        nave.verifica_colisao_terreno(mapa)
+        nave.verifica_colisao_terreno(mapa, gamePlay)
 
         # se a nave pousou verifique as condicoes e atribua a pontuacao correta
         if nave.get_colidiu_area_pouso() == True:
