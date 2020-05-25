@@ -10,7 +10,7 @@ import pygame
 
 pygame.init()
 mapa = Mapa_do_jogo()
-gamePlay = Nova_tela("teste", RESOLUCAO)
+gamePlay = Nova_tela("principalGame", RESOLUCAO)
 
 nave = Nova_nave('arquivos/nave.png', 300, 300)
 lua = Nova_nave('arquivos/lua.png', 800, 50)
@@ -198,6 +198,11 @@ while jogoAtivo:
     if game_loop == True:
 
         mapa.desenha_terreno(gamePlay)
+        if mapa.get_existe_area_pouso() ==False:
+            mapa.desenha_terreno(gamePlay)
+            print("NAO FOI POSSIVEL SORTEAR UMA AREA DE POUSO, REDESENHANDO TERRENO")
+
+        #print("existe: ", mapa.get_existe_area_pouso())
         lua.set_tamanho(200, 200)
         nave.set_tamanho(TAMANHO_DA_NAVE_X, TAMANHO_DA_NAVE_y)
         nave.set_friccao(FRICCAO_PROPULSOR)

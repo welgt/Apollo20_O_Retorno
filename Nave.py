@@ -210,8 +210,8 @@ class Nova_nave:
 
     def verifica_colisao_area_pouso(self, mapa):
 
-        # se caso foi sorteado uma area de pouso (por prevencao caso a variavel mapa.get_pouso_nave_line() esteja None)
-        if mapa.get_existe_area_pouso:
+
+        if mapa.get_existe_area_pouso() == True:
 
             #pega o vertice inicial horizontal da area de pouso do terreno
             inicio_area_pouso_horizontal = mapa.get_pouso_nave_line()[0]
@@ -236,47 +236,10 @@ class Nova_nave:
             else:
                 self.set_colidiu_area_pouso(False)
 
-        else:
-            pass
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        #else:
+            #print("NAO FOI POSSIVEL SORTEAR UMA AREA DE POUSO, REDESENHANDO TERRENO")
+            # se caso nao tiver sorteado a area de pouso manda desenhar o terreno denovo
+            #mapa.desenha_terreno(tela)
 
 
 
@@ -324,13 +287,7 @@ class Nova_nave:
 
 
 
-
-
-
-
-
-
-   #for vertice in self.__terreno:
+    # for vertice in self.__terreno:
     def verifica_colisao_terreno(self, mapa, tela):
 
         lista_vertice = mapa.get_terreno()
@@ -341,18 +298,16 @@ class Nova_nave:
             lista_aux.append(vertice[0])
             lista_aux.append(vertice[1])
 
-        #print("ofi:", lista_vertice)
-        #print("aux :",lista_aux)
+        #print("oficial:", lista_vertice)
+        # print("aux :",lista_aux)
 
         # impede o stouro do indice
-        stop = len(lista_aux)-3
+        stop = len(lista_aux) - 3
         # incrementa os indices para definir o inicio e fim da colisao em x e o inicio e fim da colisao em y
         x_inicio = 0
         x_fim = 2
         y_inicio = 1
         y_fim = 3
-
-
 
         for vertice in lista_aux:
 
@@ -361,43 +316,54 @@ class Nova_nave:
             y_vertice_inicio = lista_aux[y_inicio]
             y_vertice_fim = lista_aux[y_fim]
 
-            #desenha_colisao = pygame.Rect((x_vertice_inicio, x_vertice_fim), (y_vertice_inicio, y_vertice_fim))
-            #desenha_colisao = pygame.Rect((x_vertice_inicio, y_vertice_fim), (x_vertice_inicio, y_vertice_fim))
-            #tela.draw_rect(pygame.Color(255, 0, 0, 10), desenha_colisao)
+            # desenha_colisao = pygame.Rect((x_vertice_inicio, x_vertice_fim), (y_vertice_inicio, y_vertice_fim))
+            # desenha_colisao = pygame.Rect((x_vertice_inicio, y_vertice_fim), (x_vertice_inicio, y_vertice_fim))
+            # tela.draw_rect(pygame.Color(255, 0, 0, 10), desenha_colisao)
 
             # padroniza a colisao retangular de acordo com o vertice y mais  baixo
-            #if y_vertice_inicio <= y_vertice_fim:
-             #   temp = y_vertice_inicio
-              #  y_vertice_inicio = y_vertice_fim
-               # y_vertice_fim = temp
+            # if y_vertice_inicio <= y_vertice_fim:
+            #   temp = y_vertice_inicio
+            #  y_vertice_inicio = y_vertice_fim
+            # y_vertice_fim = temp
 
-            #padroniza a colisao retangular de acordo com o vertice y mais  alto
+            # padroniza a colisao retangular de acordo com o vertice y mais  alto
             if y_vertice_inicio >= y_vertice_fim:
                 temp = y_vertice_inicio
                 y_vertice_inicio = y_vertice_fim
                 y_vertice_fim = temp
 
-            sort1 = random.randint(0,255)
-            sort2 = random.randint(0, 255)
-            sort3 = random.randint(0, 255)
+            # calcula a distancia entre as duas alturas sorteadas no terreno e divide por 2 ignorando o sinal(-ou+)
+            y_vertice_intermediario = abs((y_vertice_inicio - y_vertice_fim) / 2)
+            # soma  a altura do y do terreno com o  centro do retangulo maior da geometria para criar a altura do retangulo menor no centro
+            y_vertice_intermediario += y_vertice_inicio
 
-            # desenha a area de colisao para eu ter um feedback visual de onde esta ativado a colisao retangular
-            retangulo_colisor = pygame.Surface((abs(x_vertice_inicio), abs(x_vertice_fim)))  # the size of your rect
-            retangulo_colisor.set_alpha(50)  # alpha level
-            retangulo_colisor.fill((255, 0, 0))  # this fills the entire surface
-            tela.blit(retangulo_colisor, ((abs(x_vertice_inicio), abs(y_vertice_inicio))))  # (0,0) are the top-left coordinates
+            x_vertice_intermediario = abs((x_vertice_inicio - x_vertice_fim) /2 )
+            x_vertice_intermediario += x_vertice_inicio
 
-            # veifica a colisao dinamicamente
-            if self.get_posicao_x() >= x_vertice_inicio \
-                    and self.get_posicao_x()  + self.get_tamanho_x() <= x_vertice_fim \
-                    and self.get_posicao_y()  + self.get_tamanho_y() >= y_vertice_inicio and y_vertice_fim:
+            tamanho_x_colisor_maior = abs(x_vertice_inicio - x_vertice_fim)
+            tamanho_y_colisor_maior = abs(y_vertice_inicio - RESOLUCAO[1])
+
+            # desenha retangulos do tamanho da volumetria da area de colisao para eu ter um feedback visual de onde esta ativado a colisao retangular
+            retangulo_colisor_maior = pygame.Surface((tamanho_x_colisor_maior, tamanho_y_colisor_maior)) 
+            retangulo_colisor_maior.set_alpha(50)  # alpha level
+            retangulo_colisor_maior.fill((255, 0, 0))  # this fills the entire surface
+            #tela.blit(retangulo_colisor_maior,((abs(x_vertice_inicio), abs(y_vertice_intermediario))))
+            tela.blit(retangulo_colisor_maior,((abs(x_vertice_inicio), abs(y_vertice_inicio))))
+
+            # veifica a colisao retangular maior da geometria  dinamicamente
+            # e tambem a geometria retangular fragmentada (y_vertice_intermediario gera de fato retangulos menores)
+            if self.get_posicao_x() + self.get_tamanho_x() >= x_vertice_inicio \
+                    and self.get_posicao_x() <= x_vertice_fim \
+                    and self.get_posicao_y() + self.get_tamanho_y() >= y_vertice_inicio:
+                    #and self.get_posicao_y() + self.get_tamanho_y() >= y_vertice_intermediario:
 
                 # onde a nave colidiu, pinte este retangulo de amarelo
-                retangulo_colisor.set_alpha(100)  # alpha level
-                retangulo_colisor.fill((AMARELO))  # this fills the entire surface
-                tela.blit(retangulo_colisor, ((abs(x_vertice_inicio), abs(y_vertice_inicio))))  # (0,0) are the top-left coordinates
+                retangulo_colisor_maior.set_alpha(180)  # alpha level
+                retangulo_colisor_maior.fill((AMARELO))  # this fills the entire surface
+                #tela.blit(retangulo_colisor_maior,((abs(x_vertice_inicio), abs(y_vertice_intermediario))))
+                tela.blit(retangulo_colisor_maior,((abs(x_vertice_inicio), abs(y_vertice_inicio))))
                 self.set_colidiu_terreno(True)
-                print("COLIDIU COM O TERRENO")
+                #print("COLIDIU COM O TERRENO")
 
             else:
                 self.set_colidiu_terreno(False)
@@ -406,147 +372,17 @@ class Nova_nave:
             # incremento (atualizacao)da posicao de verificacao de colisao
             if y_fim < stop:
                 x_inicio += 2
-                x_fim +=2
-                y_inicio +=2
-                y_fim+=2
+                x_fim += 2
+                y_inicio += 2
+                y_fim += 2
             else:
                 break
 
-            cont+=1
-            #print("x inicio :",x_vertice_inicio)
+            cont += 1
+
+            #print("x inicio :", x_vertice_inicio)
             #print("x fim :", x_vertice_fim)
-            #print("y inicio: ", y_vertice_inicio)
-            #print("y fim :",y_vertice_fim)
-
-
-
-
-
-
-
-
-
-
-
-"""    #for vertice in self.__terreno:
-    def verifica_colisao_terreno(self, mapa, tela):
-
-        lista_vertice = mapa.get_terreno()
-
-
-        cont = 0
-        lista_aux = []
-        desenha_colisao = []
-
-        for vertice in lista_vertice:
-            lista_aux.append(vertice[0])
-            lista_aux.append(vertice[1])
-            desenha_colisao.append((vertice[0], vertice[1]))
-
-        #print("ofi:", lista_vertice)
-        #print("aux :",lista_aux)
-
-
-        stop = len(lista_aux)-3
-
-        x_inicio = 0
-        x_fim = 2
-
-        y_inicio = 1
-        y_fim = 3
-
-
-        x_vertice_inicio = lista_aux[x_inicio]
-        x_vertice_fim = lista_aux[x_fim]
-
-        y_vertice_inicio = lista_aux[y_inicio]
-        y_vertice_fim = lista_aux[y_fim]
-
-        if self.get_posicao_x() >= x_vertice_inicio \
-                and self.get_posicao_x()  + self.get_tamanho_x() <= x_vertice_fim \
-                and self.get_posicao_y()  + self.get_tamanho_y() >= y_vertice_inicio and y_vertice_fim:
-
-
-            self.set_colidiu_terreno(True)
-            print("COLIDIU COM O TERRENO")
-
-            self.set_posicao(self.get_posicao_x(), (self.get_posicao_y()))
-        else:
-            self.set_colidiu_terreno(False)
-
-
-            x_inicio += 2
-            x_fim += 2
-            y_inicio += 2
-            y_fim += 2
-
-
-            x_vertice_inicio = lista_aux[x_inicio]
-            x_vertice_fim = lista_aux[x_fim]
-
-            y_vertice_inicio = lista_aux[y_inicio]
-            y_vertice_fim = lista_aux[y_fim]
-
-
-
-            if self.__posicao_x >= x_vertice_inicio \
-                    and self.__posicao_x + self.get_tamanho_x() <= x_vertice_fim \
-                    and self.__posicao_y + self.__tamanho_y >= y_vertice_inicio and y_vertice_fim:
-
-                self.set_colidiu_terreno(True)
-                print("COLIDIU COM O TERRENO")
-
-                self.set_posicao(self.get_posicao_x(), (self.get_posicao_y()))
-            else:
-                self.set_colidiu_terreno(False)
-
-            x_inicio += 2
-            x_fim += 2
-            y_inicio += 2
-            y_fim += 2
-
-
-            x_vertice_inicio = lista_aux[x_inicio]
-            x_vertice_fim = lista_aux[x_fim]
-
-            y_vertice_inicio = lista_aux[y_inicio]
-            y_vertice_fim = lista_aux[y_fim]
-
-
-
-            if self.__posicao_x >= x_vertice_inicio \
-                    and self.__posicao_x + self.get_tamanho_x() <= x_vertice_fim \
-                    and self.__posicao_y + self.__tamanho_y >= y_vertice_inicio and y_vertice_fim:
-
-                self.set_colidiu_terreno(True)
-                print("COLIDIU COM O TERRENO")
-
-                self.set_posicao(self.get_posicao_x(), (self.get_posicao_y()))
-            else:
-                self.set_colidiu_terreno(False)
-
-
-            x_inicio += 2
-            x_fim += 2
-            y_inicio += 2
-            y_fim += 2
-
-
-            x_vertice_inicio = lista_aux[x_inicio]
-            x_vertice_fim = lista_aux[x_fim]
-
-            y_vertice_inicio = lista_aux[y_inicio]
-            y_vertice_fim = lista_aux[y_fim]
-
-
-
-            if self.__posicao_x >= x_vertice_inicio \
-                    and self.__posicao_x + self.get_tamanho_x() <= x_vertice_fim \
-                    and self.__posicao_y + self.__tamanho_y >= y_vertice_inicio and y_vertice_fim:
-
-                self.set_colidiu_terreno(True)
-                print("COLIDIU COM O TERRENO")
-
-                self.set_posicao(self.get_posicao_x(), (self.get_posicao_y()))
-            else:
-                self.set_colidiu_terreno(False)"""
+            #print('x intermediario ', x_vertice_intermediario)
+            # print("y inicio: ", y_vertice_inicio)
+            # print("y fim :",y_vertice_fim)
+            # print("intermediario: ", y_vertice_intermediario)

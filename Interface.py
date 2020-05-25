@@ -1,3 +1,5 @@
+from random import randint
+
 import pygame
 from Tela import *
 
@@ -48,6 +50,8 @@ class painel:
         self.__largura = 0
         self.__altura = 0
         self.__ativo = False
+
+        self.__borda_botao = None
 
     def get_ativo(self):
         return self.__ativo
@@ -108,11 +112,11 @@ class painel:
 
 
     def __draw_borda(self, tela, cor):
-        borda = [(self.__posicao_x, self.__posicao_y),
+        self.__borda_botao = [(self.__posicao_x, self.__posicao_y),
                  (self.__posicao_x + self.__largura, self.__posicao_y),
                  (self.__posicao_x + self.__largura, self.__posicao_y + self.__altura),
                  (self.__posicao_x, self.__posicao_y + self.__altura)]
-        tela.draw_lines(cor, borda, 3)
+        tela.draw_lines(cor, self.__borda_botao, 3)
 
 
 
@@ -246,7 +250,6 @@ class botao:
             if evento.type == pygame.MOUSEMOTION:
                 # caso tudo for verdadeiro ate aqui mude a cor do botao ao passar o mouse por cima do botao
                 botao.set_cor(AMARELO)
-
         else:
             botao.set_cor(BLACK)
 

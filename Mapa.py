@@ -20,6 +20,8 @@ class Mapa_do_jogo:
         self.__espessura_base_pouso_line = 6
 
 
+
+
         self.__sort1 = 0
         self.__sort2 = 0
         self.__sort3 = 0
@@ -29,11 +31,8 @@ class Mapa_do_jogo:
         return self.__terreno
 
     def get_pouso_nave_line(self):
-        if self.__existe_area_pouso:
-            return self.__base_pouso_line
-        else:
-            print("NAO FOI SORTEADO UMA AREA DE POUSO")
-            return 0
+        return self.__base_pouso_line
+
 
 
     def get_pouso_nave_retangulo(self):
@@ -55,6 +54,12 @@ class Mapa_do_jogo:
     def get_existe_area_pouso(self):
         return self.__existe_area_pouso
 
+    def get_redesenha_terreno(self):
+        return self.__desenha
+
+    def set_redesenha_terreno(self, boleana):
+        self.__desenha = boleana
+
 
     def desenha_terreno(self, tela):
         #print("desenhando solo")
@@ -63,17 +68,17 @@ class Mapa_do_jogo:
         #terreno = [(100, 100), (500, 100),(500, 500), (100, 500)]
 
 
-        if self.__desenha == True:
+        if self.get_redesenha_terreno() == True:
 
 
             # a quantidade de tupla (0, 0) define a qualidade e quantidade de pontos ao logo do horizonte do terreno
             self.__terreno = [(0, 0), (0, 0), (0, 0), (0, 0), (0, 0),
-                              #(0, 0), (0, 0), (0, 0), (0, 0), (0, 0),
+                              (0, 0), (0, 0), (0, 0), (0, 0), (0, 0),
 
-                              #(0, 0), (0, 0), (0, 0), (0, 0), (0, 0),
-                              #(0, 0), (0, 0), (0, 0), (0, 0), (0, 0),
+                              (0, 0), (0, 0), (0, 0), (0, 0), (0, 0),
+                              (0, 0), (0, 0), (0, 0), (0, 0), (0, 0),
 
-                              #(0, 0), (0, 0), (0, 0), (0, 0), (0, 0),
+                              (0, 0), (0, 0), (0, 0), (0, 0), (0, 0),
                               (0, 0), (0, 0), (0, 0),(0, 0), (0, 0)]
 
                             #(0, 0), (0, 0), (0, 0), (1200, 600), (0, 600)]  # nao pode modificar, limite da tela!
@@ -102,19 +107,18 @@ class Mapa_do_jogo:
 
                 # sorteia numeros entre 1 e a quantidade de tuplas-1 da lista de vertices do terreno
                 self.__ramdom_pouso_nave = random.randint(1, self.__qtd_tuplas_terreno-1)
+                teste = random.randint(1, self.__qtd_tuplas_terreno-1)
+
 
                 #define o local de pouso
-                if self.__ramdom_pouso_nave == self.__cont:
+                if self.__ramdom_pouso_nave == self.__cont or teste == self.__cont:
 
                     self.__existe_area_pouso = True
                     # coleta a divisao da abstracao da malha do terreno em x
                     x_vertice_pouso = RESOLUCAO[0]/(self.__qtd_tuplas_terreno)
 
-
-
-
                     # pega o divisao e define o tamanho x e o centro do pouso. determina o vertice1 da direita.
-                    x_inicio_pouso = ((x_vertice_pouso + RESOLUCAO[0] / (self.__qtd_tuplas_terreno)) - TAMANHO_DA_NAVE_X+100)
+                    x_inicio_pouso = ((x_vertice_pouso + RESOLUCAO[0] / (self.__qtd_tuplas_terreno)) - TAMANHO_DA_NAVE_X)
                     # define o inicio do vertice2 da esquerda
                     x_fim_pouso = x_inicio_pouso/2
 
@@ -143,6 +147,7 @@ class Mapa_do_jogo:
                     self.__qtd_tuplas_terreno+=2;
                     x += RESOLUCAO[0] / (self.__qtd_tuplas_terreno)
 
+
                 #incrementa x e define a quantidade de pontos em x da tela
                 x += RESOLUCAO[0]/(self.__qtd_tuplas_terreno)
 
@@ -150,31 +155,24 @@ class Mapa_do_jogo:
                 self.__cont += 1
 
             # repreenche os valores das ultimas duas tuplas que nao deve ser mudado, pois representam as bordas da tela
-            self.__novo_terreno.insert((self.__cont), (RESOLUCAO[0], RESOLUCAO[1]))
-            self.__novo_terreno.insert((self.__cont), (-2, RESOLUCAO[1]))
+            self.__novo_terreno.insert((self.__cont), (RESOLUCAO[0]+5, RESOLUCAO[1]))
+            self.__novo_terreno.insert((self.__cont), (-5, RESOLUCAO[1]))
             self.__cont += 2
             self.__qtd_tuplas_terreno+=2
             self.__terreno = self.__novo_terreno
 
 
-
-
-
-
-
             # permite desenhar o terreno apenas uma vez somente no primeiro frame.
-            self.__desenha = False
+            self.set_redesenha_terreno(False)
 
         self.__debug()
 
         tela.draw_polygon(WHITE, self.__terreno)
-        #tela.draw_line(LARANJA, (798, 0), (798, 598), 2)
 
-        #lista = [(325, 200), (355, 200), (355, 250), (325, 250)]
-        #tela.draw_lines(LARANJA, lista)
-        self.__sort1 = random.randint(0, 255)
-        self.__sort2 = random.randint(0, 255)
-        self.__sort3 = random.randint(0, 255)
+        #self.__sort1 = random.randint(0, 255)
+        #self.__sort2 = random.randint(0, 255)
+        #self.__sort3 = random.randint(0, 255)
+        #tela.draw_lines((self.__sort1 ,0,self.__sort2 ), self.__novo_terreno, 4)
         tela.draw_lines(( LARANJA), self.__novo_terreno, 4)
 
 
@@ -182,7 +180,7 @@ class Mapa_do_jogo:
         if(self.__existe_area_pouso):
             #tela.draw_rect(GREEN, self.__base_pouso)
             #tela.draw_line(RED, (0,0),(1200,600), 20)
-            tela.draw_line(GREY, (self.__base_pouso_line[0], self.__base_pouso_line[1]),
+            tela.draw_line((self.__sort1,self.__sort2,0), (self.__base_pouso_line[0], self.__base_pouso_line[1]),
                                     (self.__base_pouso_line[2], self.__base_pouso_line[3]), self.get_espessura_line_pouso_nave())
 
     def get_line_terreno(self):
