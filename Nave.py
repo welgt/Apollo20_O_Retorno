@@ -306,63 +306,74 @@ class Nova_nave:
 
 
 
-            x1 = lista_vertice[i][0]
-            y1 = lista_vertice[i][1]
-            x2 = lista_vertice[j][0]
-            y2 = lista_vertice[j][1]
+            ponto_principal_x1 = lista_vertice[i][0]
+            ponto_principal_y1 = lista_vertice[i][1]
+            ponto_principal_x2 = lista_vertice[j][0]
+            ponto_principal_y2 = lista_vertice[j][1]
 
 
 
 
-            distancia_entre_p1_p2 = math.sqrt((abs(abs(x2 - x1)**2) + abs(y1 - y2)**2))
-            #print(print("distancia_entre_p1_p2 :",distancia_entre_p1_p2))
-            distancia_entre_p1_p2/=5
+            #distancia_entre_ponto_principal_x1_y1_x2_y2 = math.sqrt((abs(abs(ponto_principal_x2 - ponto_principal_x1)**2) + abs(ponto_principal_y1 - ponto_principal_y2)**2))
+            #print(print("distancia_entre_ponto_principal_x1_y1_x2_y2 :",distancia_entre_ponto_principal_x1_y1_x2_y2))
+            #distancia_entre_ponto_principal_x1_y1_x2_y2/=2
+
+            incremento_x = abs(ponto_principal_x1-ponto_principal_x2)/  (len(lista_vertice)/6)
+            incremento_y = abs(ponto_principal_y1-ponto_principal_y2)/ (len(lista_vertice)/6)
+
+
 
 
             #SO FALTA ACERTAR O CALCULO DESSES NOVOS PONTOS
-            if y1>y2:
-                p1 = (int(x1 + distancia_entre_p1_p2),       int(y1 + (distancia_entre_p1_p2 )))
-                p2 = (int(x1 + (distancia_entre_p1_p2 * 2)), int(y1 + (distancia_entre_p1_p2 * 2)))
-                p3 = (int(x1 + (distancia_entre_p1_p2 * 3)), int(y1 + (distancia_entre_p1_p2 * 3)))
-                p4 = (int(x1 + (distancia_entre_p1_p2 * 4)), int(y1 + (distancia_entre_p1_p2 * 4)))
+            if ponto_principal_y1>ponto_principal_y2:
+                pontos_intermediarios_entre_pontos_principaisp1 = (int(ponto_principal_x1 + (incremento_x * 1)), int(ponto_principal_y1 - (incremento_y * 1)))
+                pontos_intermediarios_entre_pontos_principais_p2 = (int(ponto_principal_x1 + (incremento_x * 2)), int(ponto_principal_y1 - (incremento_y * 2)))
+                pontos_intermediarios_entre_pontos_principais_p3 = (int(ponto_principal_x1 + (incremento_x * 3)), int(ponto_principal_y1 - (incremento_y * 3)))
+                pontos_intermediarios_entre_pontos_principais_p4 = (int(ponto_principal_x1 + (incremento_x * 4)), int(ponto_principal_y1 - (incremento_y * 4)))
+                pontos_intermediarios_entre_pontos_principais_p5 = (int(ponto_principal_x1 + (incremento_x * 5)), int(ponto_principal_y1 - (incremento_y * 5)))
+
             else:
-
-                p1 = (int(x1 - (distancia_entre_p1_p2)),     int(y1 + distancia_entre_p1_p2))
-                p2 = (int(x1 - (distancia_entre_p1_p2 * 2)), int(y1 + (distancia_entre_p1_p2 * 2)))
-                p3 = (int(x1 - (distancia_entre_p1_p2 * 3)), int(y1 + (distancia_entre_p1_p2 * 3)))
-                p4 = (int(x1 - (distancia_entre_p1_p2 * 4)), int(y1 + (distancia_entre_p1_p2 * 4)))
-
-
+                pontos_intermediarios_entre_pontos_principaisp1 = (int(ponto_principal_x1 + (incremento_x * 1)), int(ponto_principal_y1 + (incremento_y * 1)))
+                pontos_intermediarios_entre_pontos_principais_p2 = (int(ponto_principal_x1 + (incremento_x * 2)), int(ponto_principal_y1 + (incremento_y * 2)))
+                pontos_intermediarios_entre_pontos_principais_p3 = (int(ponto_principal_x1 + (incremento_x * 3)), int(ponto_principal_y1 + (incremento_y * 3)))
+                pontos_intermediarios_entre_pontos_principais_p4 = (int(ponto_principal_x1 + (incremento_x * 4)), int(ponto_principal_y1 + (incremento_y * 4)))
+                pontos_intermediarios_entre_pontos_principais_p5 = (int(ponto_principal_x1 + (incremento_x * 5)), int(ponto_principal_y1 + (incremento_y * 5)))
 
 
-
-            lista_aux.append(p1[0])
-            lista_aux.append(p1[1])
+            lista_aux.append(pontos_intermediarios_entre_pontos_principaisp1[0])
+            lista_aux.append(pontos_intermediarios_entre_pontos_principaisp1[1])
             #nova_lista_colisores.append(("x","y"))
-            nova_lista_colisores.append(p1)
+            nova_lista_colisores.append(pontos_intermediarios_entre_pontos_principaisp1)
 
-            lista_aux.append(p2[0])
-            lista_aux.append(p2[1])
+            #lista_aux.append(pontos_intermediarios_entre_pontos_principais_p2[0])
+            #lista_aux.append(pontos_intermediarios_entre_pontos_principais_p2[1])
             #nova_lista_colisores.append(("x", "y"))
-            nova_lista_colisores.append(p2)
+            nova_lista_colisores.append(pontos_intermediarios_entre_pontos_principais_p2)
 
-            lista_aux.append(p3[0])
-            lista_aux.append(p3[1])
+            #lista_aux.append(pontos_intermediarios_entre_pontos_principais_p3[0])
+            #lista_aux.append(pontos_intermediarios_entre_pontos_principais_p3[1])
             #nova_lista_colisores.append(("x", "y"))
-            nova_lista_colisores.append(p3)
+            nova_lista_colisores.append(pontos_intermediarios_entre_pontos_principais_p3)
 
-            lista_aux.append(p4[0])
-            lista_aux.append(p4[1])
+            #lista_aux.append(pontos_intermediarios_entre_pontos_principais_p4[0])
+            #lista_aux.append(pontos_intermediarios_entre_pontos_principais_p4[1])
             #nova_lista_colisores.append(("x", "y"))
-            nova_lista_colisores.append(p4)
+            nova_lista_colisores.append(pontos_intermediarios_entre_pontos_principais_p4)
+
+            #lista_aux.append(pontos_intermediarios_entre_pontos_principais_p4[0])
+            #lista_aux.append(pontos_intermediarios_entre_pontos_principais_p4[1])
+            #nova_lista_colisores.append(("x", "y"))
+            nova_lista_colisores.append(pontos_intermediarios_entre_pontos_principais_p5)
 
             # pegando o centro de baixo da nave
             p_nave = self.get_posicao_x()+ self.get_tamanho_x()/2,   self.get_posicao_y() + self.get_tamanho_y()
             #print(p_nave)
 
             # so falta replicar com os outros pontos(fazer uma funcao)
-            distancia_entre_p_nave_p = math.sqrt((abs(abs(x2 - p_nave[0]) ** 2) + abs(p_nave[1] - y2) ** 2))
-            if distancia_entre_p_nave_p < 15:
+            distancia_entre_ponto_colisor_nave_ponto_principal = math.sqrt((abs(abs(ponto_principal_x2 - p_nave[0]) ** 2) + abs(p_nave[1] - ponto_principal_y2) ** 2))
+
+            distancia_entre_ponto_colisor_nave_ponto_principal = math.sqrt((abs(abs(ponto_principal_x2 - p_nave[0]) ** 2) + abs(p_nave[1] - ponto_principal_y2) ** 2))
+            if distancia_entre_ponto_colisor_nave_ponto_principal < 15:
                 print("KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK")
                 self.set_colidiu_terreno(True)
 
@@ -370,34 +381,37 @@ class Nova_nave:
 
 
 
-            #print("x1:",x1)
-            #print("y1:",y1)
+            print("ponto_principal_x1:",ponto_principal_x1)
+            print("ponto_principal_y1:",ponto_principal_y1)
 
-            #print("x2:",x2)
-            #print("y2:",y2)
-            #print("dividido por 4 :",distancia_entre_p1_p2)
+            print("ponto_principal_x2:",ponto_principal_x2)
+            print("ponto_principal_y2:",ponto_principal_y2)
+            #print("dividido por 4 :",distancia_entre_ponto_principal_x1_y1_x2_y2)
 
 
-            if j <= len(lista_vertice)-2:#6
+            if j < len(lista_vertice)-1:#6
                 i+=1
                 j+=1
-            #print("j:", j)
+
+
+
+            print("j:", j)
 
             #print("lista_vertice", len(lista_vertice))
             #print("lista_aux", len(lista_aux))
 
-        #print("oficial:", lista_vertice)
+        print("oficial:", lista_vertice)
         #print("auxiliar:", lista_aux)
         #print("nova lista colisores: ", nova_lista_colisores)
 
-        tela.draw_lines(( RED), nova_lista_colisores, 1)
+        tela.draw_lines(( RED), nova_lista_colisores, 2)
 
 
 
 
 
 
-            #print("x1:", x1, "y1:", y1, ".......... x2:", x2, "y2:", y2)
+            #print("ponto_principal_x1:", ponto_principal_x1, "ponto_principal_y1:", ponto_principal_y1, ".......... ponto_principal_x2:", ponto_principal_x2, "ponto_principal_y2:", ponto_principal_y2)
 
 
 
