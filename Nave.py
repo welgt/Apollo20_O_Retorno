@@ -292,6 +292,175 @@ class Nova_nave:
 
         lista_vertice = mapa.get_terreno()
         lista_aux = []
+        nova_lista_colisores = []
+
+        i = 0
+        j = 1
+        qtd_novos_numeros = 8
+        # junta os valores das tuplas do terreno e as torna uma lista de valores ao inves de lista de tupla
+        for vertice in lista_vertice:
+
+            lista_aux.append(vertice[0])
+            lista_aux.append(vertice[1])
+            nova_lista_colisores.append((vertice[0], vertice[1]))
+
+
+
+            x1 = lista_vertice[i][0]
+            y1 = lista_vertice[i][1]
+            x2 = lista_vertice[j][0]
+            y2 = lista_vertice[j][1]
+
+
+
+
+            distancia_entre_p1_p2 = math.sqrt((abs(abs(x2 - x1)**2) + abs(y1 - y2)**2))
+            #print(print("distancia_entre_p1_p2 :",distancia_entre_p1_p2))
+            distancia_entre_p1_p2/=5
+
+
+            #SO FALTA ACERTAR O CALCULO DESSES NOVOS PONTOS
+            if y1>y2:
+                p1 = (int(x1 + distancia_entre_p1_p2),       int(y1 + (distancia_entre_p1_p2 )))
+                p2 = (int(x1 + (distancia_entre_p1_p2 * 2)), int(y1 + (distancia_entre_p1_p2 * 2)))
+                p3 = (int(x1 + (distancia_entre_p1_p2 * 3)), int(y1 + (distancia_entre_p1_p2 * 3)))
+                p4 = (int(x1 + (distancia_entre_p1_p2 * 4)), int(y1 + (distancia_entre_p1_p2 * 4)))
+            else:
+
+                p1 = (int(x1 - (distancia_entre_p1_p2)),     int(y1 + distancia_entre_p1_p2))
+                p2 = (int(x1 - (distancia_entre_p1_p2 * 2)), int(y1 + (distancia_entre_p1_p2 * 2)))
+                p3 = (int(x1 - (distancia_entre_p1_p2 * 3)), int(y1 + (distancia_entre_p1_p2 * 3)))
+                p4 = (int(x1 - (distancia_entre_p1_p2 * 4)), int(y1 + (distancia_entre_p1_p2 * 4)))
+
+
+
+
+
+            lista_aux.append(p1[0])
+            lista_aux.append(p1[1])
+            #nova_lista_colisores.append(("x","y"))
+            nova_lista_colisores.append(p1)
+
+            lista_aux.append(p2[0])
+            lista_aux.append(p2[1])
+            #nova_lista_colisores.append(("x", "y"))
+            nova_lista_colisores.append(p2)
+
+            lista_aux.append(p3[0])
+            lista_aux.append(p3[1])
+            #nova_lista_colisores.append(("x", "y"))
+            nova_lista_colisores.append(p3)
+
+            lista_aux.append(p4[0])
+            lista_aux.append(p4[1])
+            #nova_lista_colisores.append(("x", "y"))
+            nova_lista_colisores.append(p4)
+
+            # pegando o centro de baixo da nave
+            p_nave = self.get_posicao_x()+ self.get_tamanho_x()/2,   self.get_posicao_y() + self.get_tamanho_y()
+            #print(p_nave)
+
+            # so falta replicar com os outros pontos(fazer uma funcao)
+            distancia_entre_p_nave_p = math.sqrt((abs(abs(x2 - p_nave[0]) ** 2) + abs(p_nave[1] - y2) ** 2))
+            if distancia_entre_p_nave_p < 15:
+                print("KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK")
+                self.set_colidiu_terreno(True)
+
+
+
+
+
+            #print("x1:",x1)
+            #print("y1:",y1)
+
+            #print("x2:",x2)
+            #print("y2:",y2)
+            #print("dividido por 4 :",distancia_entre_p1_p2)
+
+
+            if j <= len(lista_vertice)-2:#6
+                i+=1
+                j+=1
+            #print("j:", j)
+
+            #print("lista_vertice", len(lista_vertice))
+            #print("lista_aux", len(lista_aux))
+
+        #print("oficial:", lista_vertice)
+        #print("auxiliar:", lista_aux)
+        #print("nova lista colisores: ", nova_lista_colisores)
+
+        tela.draw_lines(( RED), nova_lista_colisores, 1)
+
+
+
+
+
+
+            #print("x1:", x1, "y1:", y1, ".......... x2:", x2, "y2:", y2)
+
+
+
+
+
+
+
+
+
+
+
+
+"""    # for vertice in self.__terreno:
+    def verifica_colisao_terreno(self, mapa, tela):
+
+        lista_vertice = mapa.get_terreno()
+        lista_aux = []
+
+        i = 0
+        j = 1
+        # junta os valores das tuplas do terreno e as torna uma lista de valores ao inves de lista de tupla
+        for vertice in lista_vertice:
+
+            lista_aux.append(vertice[0])
+            lista_aux.append(vertice[1])
+
+            x1 = lista_vertice[0][0]
+            y1 = lista_vertice[0][1]
+            x2 = lista_vertice[1][0]
+            y2 = lista_vertice[1][1]
+
+            lista_aux.append("x")
+            lista_aux.append("y")
+            lista_aux.append("x")
+            lista_aux.append("y")
+            lista_aux.append("x")
+            lista_aux.append("y")
+            lista_aux.append("x")
+            lista_aux.append("y")
+
+
+            i+=1
+            j+=1
+"""
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+"""    # for vertice in self.__terreno:
+    def verifica_colisao_terreno(self, mapa, tela):
+
+        lista_vertice = mapa.get_terreno()
+        lista_aux = []
         cont = 0
         # junta os valores das tuplas do terreno e as torna uma lista de valores ao inves de lista de tupla
         for vertice in lista_vertice:
@@ -323,8 +492,8 @@ class Nova_nave:
             # padroniza a colisao retangular de acordo com o vertice y mais  baixo
             # if y_vertice_inicio <= y_vertice_fim:
             #   temp = y_vertice_inicio
-            #  y_vertice_inicio = y_vertice_fim
-            # y_vertice_fim = temp
+            #   y_vertice_inicio = y_vertice_fim
+            #   y_vertice_fim = temp
 
             # padroniza a colisao retangular de acordo com o vertice y mais  alto
             if y_vertice_inicio >= y_vertice_fim:
@@ -333,37 +502,63 @@ class Nova_nave:
                 y_vertice_fim = temp
 
             # calcula a distancia entre as duas alturas sorteadas no terreno e divide por 2 ignorando o sinal(-ou+)
-            y_vertice_intermediario = abs((y_vertice_inicio - y_vertice_fim) / 2)
+            y_vertice_intermediario_central = abs((y_vertice_inicio - y_vertice_fim) / 2)
             # soma  a altura do y do terreno com o  centro do retangulo maior da geometria para criar a altura do retangulo menor no centro
-            y_vertice_intermediario += y_vertice_inicio
+            y_vertice_intermediario_central += y_vertice_inicio
 
-            x_vertice_intermediario = abs((x_vertice_inicio - x_vertice_fim) /2 )
-            x_vertice_intermediario += x_vertice_inicio
+            x_vertice_intermediario_central = abs((x_vertice_inicio - x_vertice_fim) /2 )
+            x_vertice_intermediario_central += x_vertice_inicio
 
             tamanho_x_colisor_maior = abs(x_vertice_inicio - x_vertice_fim)
             tamanho_y_colisor_maior = abs(y_vertice_inicio - RESOLUCAO[1])
 
+            cremento_tamanho_y = tamanho_y_colisor_maior/6
+
+
+
+            print("oficial:", lista_vertice)
+            print("tamanho_y", tamanho_y_colisor_maior)
+            print("cremento ", cremento_tamanho_y)
+
+
+
             # desenha retangulos do tamanho da volumetria da area de colisao para eu ter um feedback visual de onde esta ativado a colisao retangular
-            retangulo_colisor_maior = pygame.Surface((tamanho_x_colisor_maior, tamanho_y_colisor_maior)) 
-            retangulo_colisor_maior.set_alpha(50)  # alpha level
-            retangulo_colisor_maior.fill((255, 0, 0))  # this fills the entire surface
-            #tela.blit(retangulo_colisor_maior,((abs(x_vertice_inicio), abs(y_vertice_intermediario))))
-            tela.blit(retangulo_colisor_maior,((abs(x_vertice_inicio), abs(y_vertice_inicio))))
+            retangulo_colisor_maior_01 = pygame.Surface((tamanho_x_colisor_maior, tamanho_y_colisor_maior))
+            retangulo_colisor_maior_01.set_alpha(80)  # alpha level
+            retangulo_colisor_maior_01.fill(AMARELO)  # this fills the entire surface
+            tela.blit(retangulo_colisor_maior_01, ((abs(x_vertice_inicio), abs(y_vertice_fim))))
+
+            retangulo_colisor_maior_02 = pygame.Surface((tamanho_x_colisor_maior, tamanho_y_colisor_maior))
+            retangulo_colisor_maior_02.set_alpha(80)  # alpha level
+            retangulo_colisor_maior_02.fill(CYAN)  # this fills the entire surface
+            tela.blit(retangulo_colisor_maior_02,((abs(x_vertice_inicio), abs(y_vertice_fim - cremento_tamanho_y))))
+
 
             # veifica a colisao retangular maior da geometria  dinamicamente
-            # e tambem a geometria retangular fragmentada (y_vertice_intermediario gera de fato retangulos menores)
+            # e tambem a geometria retangular fragmentada (y_vertice_intermediario_central gera de fato retangulos menores)
             if self.get_posicao_x() + self.get_tamanho_x() >= x_vertice_inicio \
                     and self.get_posicao_x() <= x_vertice_fim \
-                    and self.get_posicao_y() + self.get_tamanho_y() >= y_vertice_inicio:
-                    #and self.get_posicao_y() + self.get_tamanho_y() >= y_vertice_intermediario:
-
+                    and self.get_posicao_y() + self.get_tamanho_y() >= y_vertice_fim:
                 # onde a nave colidiu, pinte este retangulo de amarelo
-                retangulo_colisor_maior.set_alpha(180)  # alpha level
-                retangulo_colisor_maior.fill((AMARELO))  # this fills the entire surface
-                #tela.blit(retangulo_colisor_maior,((abs(x_vertice_inicio), abs(y_vertice_intermediario))))
-                tela.blit(retangulo_colisor_maior,((abs(x_vertice_inicio), abs(y_vertice_inicio))))
+                retangulo_colisor_maior_01.set_alpha(180)  # alpha level
+                retangulo_colisor_maior_01.fill((AMARELO))  # this fills the entire surface
+                tela.blit(retangulo_colisor_maior_01, ((abs(x_vertice_inicio), abs(y_vertice_fim))))
+
                 self.set_colidiu_terreno(True)
-                #print("COLIDIU COM O TERRENO")
+                print("COLIDIU COM O TERRENO")
+
+            else:
+                self.set_colidiu_terreno(False)
+
+            if self.get_posicao_x() + self.get_tamanho_x() >= x_vertice_inicio \
+                    and self.get_posicao_x() <= x_vertice_fim \
+                    and self.get_posicao_y() + self.get_tamanho_y() >= y_vertice_fim - cremento_tamanho_y:
+                retangulo_colisor_maior_02.set_alpha(180)  # alpha level
+                retangulo_colisor_maior_02.fill((CYAN))  # this fills the entire surface
+                tela.blit(retangulo_colisor_maior_02,((abs(x_vertice_inicio), abs(y_vertice_fim - cremento_tamanho_y))))
+
+                self.set_colidiu_terreno(True)
+                print("COLIDIU COM O TERRENO")
 
             else:
                 self.set_colidiu_terreno(False)
@@ -382,7 +577,7 @@ class Nova_nave:
 
             #print("x inicio :", x_vertice_inicio)
             #print("x fim :", x_vertice_fim)
-            #print('x intermediario ', x_vertice_intermediario)
+            #print('x intermediario ', x_vertice_intermediario_central)
             # print("y inicio: ", y_vertice_inicio)
             # print("y fim :",y_vertice_fim)
-            # print("intermediario: ", y_vertice_intermediario)
+            # print("intermediario: ", y_vertice_intermediario_central)"""

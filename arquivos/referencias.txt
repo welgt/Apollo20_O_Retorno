@@ -13,3 +13,9 @@ Impressao de textos na surface:
 
 retaqngulo com trasparencia:
     https://www.it-swarm.dev/pt/python/desenhe-um-retangulo-transparente-no-pygame/972567421/
+
+relembrar calculo distancia entre dois pontos rs:
+    https://escolakids.uol.com.br/matematica/distancia-entre-dois-pontos.htm
+
+Geogebra:
+    https://www.geogebra.org/classic?lang=pt

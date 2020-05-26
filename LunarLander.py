@@ -250,6 +250,7 @@ while jogoAtivo:
         if nave.get_colidiu_terreno() == True:
             painel_menu.set_ativo(True)
 
+
         #print("pontos :", dados.get_pontos())
         # futura condicao de dano/perca pontos/morte etc
         #if nave.get_colidiu_tela() == True:

@@ -169,8 +169,8 @@ class Mapa_do_jogo:
 
         tela.draw_polygon(WHITE, self.__terreno)
 
-        #self.__sort1 = random.randint(0, 255)
-        #self.__sort2 = random.randint(0, 255)
+        self.__sort1 = random.randint(0, 255)
+        self.__sort2 = random.randint(0, 255)
         #self.__sort3 = random.randint(0, 255)
         #tela.draw_lines((self.__sort1 ,0,self.__sort2 ), self.__novo_terreno, 4)
         tela.draw_lines(( LARANJA), self.__novo_terreno, 4)
