@@ -10,6 +10,8 @@ import pygame
 
 pygame.init()
 mapa = Mapa_do_jogo()
+mapa.set_cor_terreno(MARRON)
+mapa.set_cor_terreno_borda(WHITE)
 gamePlay = Nova_tela("principalGame", RESOLUCAO)
 
 nave = Nova_nave('arquivos/nave.png', 300, 300)
@@ -202,7 +204,6 @@ while jogoAtivo:
             mapa.desenha_terreno(gamePlay)
             print("NAO FOI POSSIVEL SORTEAR UMA AREA DE POUSO, REDESENHANDO TERRENO")
 
-        #print("existe: ", mapa.get_existe_area_pouso())
         lua.set_tamanho(200, 200)
         nave.set_tamanho(TAMANHO_DA_NAVE_X, TAMANHO_DA_NAVE_y)
         nave.set_friccao(FRICCAO_PROPULSOR)
@@ -248,7 +249,15 @@ while jogoAtivo:
                 print("Voce morreu")
 
         if nave.get_colidiu_terreno() == True:
-            painel_menu.set_ativo(True)
+            print("colidiu", nave.get_colidiu_terreno())
+            #painel_menu.set_ativo(True)
+            #mapa.set_cor_terreno(CYAN)
+            mapa.set_cor_terreno_borda(CYAN)
+        else:
+            nave.set_colidiu_terreno(False)
+            #mapa.set_cor_terreno(MARRON)
+            mapa.set_cor_terreno_borda(WHITE)
+
 
 
         #print("pontos :", dados.get_pontos())

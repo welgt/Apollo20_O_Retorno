@@ -7,6 +7,8 @@ class Mapa_do_jogo:
         self.__qtd_tuplas_terreno = 0
         self.__desenha = True
         self.__terreno = None
+        self.__cor_terreno =0
+        self.__cor_terreno_borda = 0
         self.__novo_terreno = []
         self.__desenha_contorno = (0,0),(0,0)
         self.__random_alturas_diferentes = 0
@@ -25,7 +27,17 @@ class Mapa_do_jogo:
         self.__sort1 = 0
         self.__sort2 = 0
         self.__sort3 = 0
+    def set_cor_terreno(self, cor):
+        self.__cor_terreno = cor
 
+    def get_cor_terreno(self):
+        return self.__cor_terreno
+
+    def set_cor_terreno_borda(self, cor):
+        self.__cor_terreno_borda = cor
+
+    def get_cor_terreno_borda(self):
+        return self.__cor_terreno_borda
 
     def get_terreno(self):
         return self.__terreno
@@ -166,14 +178,13 @@ class Mapa_do_jogo:
             self.set_redesenha_terreno(False)
 
         self.__debug()
-
-        tela.draw_polygon(WHITE, self.__terreno)
+        tela.draw_polygon(self.get_cor_terreno(), self.__terreno)
 
         self.__sort1 = random.randint(0, 255)
         self.__sort2 = random.randint(0, 255)
         #self.__sort3 = random.randint(0, 255)
         #tela.draw_lines((self.__sort1 ,0,self.__sort2 ), self.__novo_terreno, 4)
-        tela.draw_lines(( LARANJA), self.__novo_terreno, 4)
+        tela.draw_lines(( self.get_cor_terreno_borda()), self.__novo_terreno, 4)
 
 
         # só desenha a area de pouso se ela existir, ou seja se caiu no if #define o local de pouso.

@@ -25,7 +25,10 @@ class Nova_nave:
         self.__colidiu_terreno = False
         self.__rotacionou_dir = False
         self.__rotacionou_esq = False
+        self.__nova_lista_colisores_terreno = []
 
+    def get_lista_colisores_terreno(self):
+        return self.__nova_lista_colisores_terreno
 
     def get_surface(self):
         return self.__surface
@@ -290,9 +293,11 @@ class Nova_nave:
     # for vertice in self.__terreno:
     def verifica_colisao_terreno(self, mapa, tela):
 
+        self.set_colidiu_terreno(False)
+
         lista_vertice = mapa.get_terreno()
         lista_aux = []
-        nova_lista_colisores = []
+        #nova_lista_colisores = []
 
         i = 0
         j = 1
@@ -302,7 +307,7 @@ class Nova_nave:
 
             lista_aux.append(vertice[0])
             lista_aux.append(vertice[1])
-            nova_lista_colisores.append((vertice[0], vertice[1]))
+            self.__nova_lista_colisores_terreno.append((vertice[0], vertice[1]))
 
 
 
@@ -326,66 +331,95 @@ class Nova_nave:
 
             #SO FALTA ACERTAR O CALCULO DESSES NOVOS PONTOS
             if ponto_principal_y1>ponto_principal_y2:
-                pontos_intermediarios_entre_pontos_principaisp1 = (int(ponto_principal_x1 + (incremento_x * 1)), int(ponto_principal_y1 - (incremento_y * 1)))
+                pontos_intermediarios_entre_pontos_principais_p1 = (int(ponto_principal_x1 + (incremento_x * 1)), int(ponto_principal_y1 - (incremento_y * 1)))
                 pontos_intermediarios_entre_pontos_principais_p2 = (int(ponto_principal_x1 + (incremento_x * 2)), int(ponto_principal_y1 - (incremento_y * 2)))
                 pontos_intermediarios_entre_pontos_principais_p3 = (int(ponto_principal_x1 + (incremento_x * 3)), int(ponto_principal_y1 - (incremento_y * 3)))
                 pontos_intermediarios_entre_pontos_principais_p4 = (int(ponto_principal_x1 + (incremento_x * 4)), int(ponto_principal_y1 - (incremento_y * 4)))
                 pontos_intermediarios_entre_pontos_principais_p5 = (int(ponto_principal_x1 + (incremento_x * 5)), int(ponto_principal_y1 - (incremento_y * 5)))
 
             else:
-                pontos_intermediarios_entre_pontos_principaisp1 = (int(ponto_principal_x1 + (incremento_x * 1)), int(ponto_principal_y1 + (incremento_y * 1)))
+                pontos_intermediarios_entre_pontos_principais_p1 = (int(ponto_principal_x1 + (incremento_x * 1)), int(ponto_principal_y1 + (incremento_y * 1)))
                 pontos_intermediarios_entre_pontos_principais_p2 = (int(ponto_principal_x1 + (incremento_x * 2)), int(ponto_principal_y1 + (incremento_y * 2)))
                 pontos_intermediarios_entre_pontos_principais_p3 = (int(ponto_principal_x1 + (incremento_x * 3)), int(ponto_principal_y1 + (incremento_y * 3)))
                 pontos_intermediarios_entre_pontos_principais_p4 = (int(ponto_principal_x1 + (incremento_x * 4)), int(ponto_principal_y1 + (incremento_y * 4)))
                 pontos_intermediarios_entre_pontos_principais_p5 = (int(ponto_principal_x1 + (incremento_x * 5)), int(ponto_principal_y1 + (incremento_y * 5)))
 
 
-            lista_aux.append(pontos_intermediarios_entre_pontos_principaisp1[0])
-            lista_aux.append(pontos_intermediarios_entre_pontos_principaisp1[1])
-            #nova_lista_colisores.append(("x","y"))
-            nova_lista_colisores.append(pontos_intermediarios_entre_pontos_principaisp1)
+            lista_aux.append(pontos_intermediarios_entre_pontos_principais_p1[0])
+            lista_aux.append(pontos_intermediarios_entre_pontos_principais_p1[1])
+            #self.__nova_lista_colisores_terreno.append(("x","y"))
+            self.__nova_lista_colisores_terreno.append(pontos_intermediarios_entre_pontos_principais_p1)
 
             #lista_aux.append(pontos_intermediarios_entre_pontos_principais_p2[0])
             #lista_aux.append(pontos_intermediarios_entre_pontos_principais_p2[1])
-            #nova_lista_colisores.append(("x", "y"))
-            nova_lista_colisores.append(pontos_intermediarios_entre_pontos_principais_p2)
+            #self.__nova_lista_colisores_terreno.append(("x", "y"))
+            self.__nova_lista_colisores_terreno.append(pontos_intermediarios_entre_pontos_principais_p2)
 
             #lista_aux.append(pontos_intermediarios_entre_pontos_principais_p3[0])
             #lista_aux.append(pontos_intermediarios_entre_pontos_principais_p3[1])
-            #nova_lista_colisores.append(("x", "y"))
-            nova_lista_colisores.append(pontos_intermediarios_entre_pontos_principais_p3)
+            #self.__nova_lista_colisores_terreno.append(("x", "y"))
+            self.__nova_lista_colisores_terreno.append(pontos_intermediarios_entre_pontos_principais_p3)
 
             #lista_aux.append(pontos_intermediarios_entre_pontos_principais_p4[0])
             #lista_aux.append(pontos_intermediarios_entre_pontos_principais_p4[1])
             #nova_lista_colisores.append(("x", "y"))
-            nova_lista_colisores.append(pontos_intermediarios_entre_pontos_principais_p4)
+            self.__nova_lista_colisores_terreno.append(pontos_intermediarios_entre_pontos_principais_p4)
 
             #lista_aux.append(pontos_intermediarios_entre_pontos_principais_p4[0])
             #lista_aux.append(pontos_intermediarios_entre_pontos_principais_p4[1])
-            #nova_lista_colisores.append(("x", "y"))
-            nova_lista_colisores.append(pontos_intermediarios_entre_pontos_principais_p5)
+            #self.__nova_lista_colisores_terreno.append(("x", "y"))
+            self.__nova_lista_colisores_terreno.append(pontos_intermediarios_entre_pontos_principais_p5)
 
             # pegando o centro de baixo da nave
             p_nave = self.get_posicao_x()+ self.get_tamanho_x()/2,   self.get_posicao_y() + self.get_tamanho_y()
             #print(p_nave)
 
             # so falta replicar com os outros pontos(fazer uma funcao)
-            distancia_entre_ponto_colisor_nave_ponto_principal = math.sqrt((abs(abs(ponto_principal_x2 - p_nave[0]) ** 2) + abs(p_nave[1] - ponto_principal_y2) ** 2))
+            distancia_entre_ponto_colisor_nave_ponto_principal = \
+                math.sqrt((abs(abs(ponto_principal_x2 - p_nave[0]) ** 2) + abs(p_nave[1] - ponto_principal_y2) ** 2))
 
-            distancia_entre_ponto_colisor_nave_ponto_principal = math.sqrt((abs(abs(ponto_principal_x2 - p_nave[0]) ** 2) + abs(p_nave[1] - ponto_principal_y2) ** 2))
-            if distancia_entre_ponto_colisor_nave_ponto_principal < 15:
-                print("KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK")
+            distancia_entre_ponto_colisor_nave_ponto_intermediario_01 = \
+                math.sqrt((abs(abs(pontos_intermediarios_entre_pontos_principais_p1[0] - p_nave[0]) ** 2)
+                             + abs(p_nave[1] - pontos_intermediarios_entre_pontos_principais_p1[1]) ** 2))
+
+            distancia_entre_ponto_colisor_nave_ponto_intermediario_02 = \
+                math.sqrt((abs(abs(pontos_intermediarios_entre_pontos_principais_p2[0] - p_nave[0]) ** 2)
+                           + abs(p_nave[1] - pontos_intermediarios_entre_pontos_principais_p2[1]) ** 2))
+
+            distancia_entre_ponto_colisor_nave_ponto_intermediario_03 = \
+                math.sqrt((abs(abs(pontos_intermediarios_entre_pontos_principais_p3[0] - p_nave[0]) ** 2)
+                           + abs(p_nave[1] - pontos_intermediarios_entre_pontos_principais_p3[1]) ** 2))
+
+            distancia_entre_ponto_colisor_nave_ponto_intermediario_04 = \
+                math.sqrt((abs(abs(pontos_intermediarios_entre_pontos_principais_p4[0] - p_nave[0]) ** 2)
+                           + abs(p_nave[1] - pontos_intermediarios_entre_pontos_principais_p4[1]) ** 2))
+
+            distancia_entre_ponto_colisor_nave_ponto_intermediario_05 = \
+                math.sqrt((abs(abs(pontos_intermediarios_entre_pontos_principais_p5[0] - p_nave[0]) ** 2)
+                           + abs(p_nave[1] - pontos_intermediarios_entre_pontos_principais_p5[1]) ** 2))
+
+            if distancia_entre_ponto_colisor_nave_ponto_principal < 10:
+                self.set_colidiu_terreno(True)
+                #print("COLIDIU PONTO PRINCIPAL")
+
+
+            if distancia_entre_ponto_colisor_nave_ponto_intermediario_01 < 5 \
+                    or distancia_entre_ponto_colisor_nave_ponto_intermediario_02 < 5 \
+                    or distancia_entre_ponto_colisor_nave_ponto_intermediario_03 < 5 \
+                    or distancia_entre_ponto_colisor_nave_ponto_intermediario_04 < 5 \
+                    or distancia_entre_ponto_colisor_nave_ponto_intermediario_05 < 5 :
+                #print("COLIDIU PONTO INTERMEDIARIO")
                 self.set_colidiu_terreno(True)
 
 
 
 
 
-            print("ponto_principal_x1:",ponto_principal_x1)
-            print("ponto_principal_y1:",ponto_principal_y1)
+            #print("ponto_principal_x1:",ponto_principal_x1)
+            #print("ponto_principal_y1:",ponto_principal_y1)
 
-            print("ponto_principal_x2:",ponto_principal_x2)
-            print("ponto_principal_y2:",ponto_principal_y2)
+            #print("ponto_principal_x2:",ponto_principal_x2)
+            #print("ponto_principal_y2:",ponto_principal_y2)
             #print("dividido por 4 :",distancia_entre_ponto_principal_x1_y1_x2_y2)
 
 
@@ -393,25 +427,16 @@ class Nova_nave:
                 i+=1
                 j+=1
 
-
-
-            print("j:", j)
-
-            #print("lista_vertice", len(lista_vertice))
-            #print("lista_aux", len(lista_aux))
-
-        print("oficial:", lista_vertice)
-        #print("auxiliar:", lista_aux)
-        #print("nova lista colisores: ", nova_lista_colisores)
-
-        tela.draw_lines(( RED), nova_lista_colisores, 2)
+        #tela.draw_lines((RED), self.get_lista_colisores_terreno(), 2)
 
 
 
 
 
 
-            #print("ponto_principal_x1:", ponto_principal_x1, "ponto_principal_y1:", ponto_principal_y1, ".......... ponto_principal_x2:", ponto_principal_x2, "ponto_principal_y2:", ponto_principal_y2)
+
+
+
 
 
 
