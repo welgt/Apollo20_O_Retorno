@@ -26,6 +26,20 @@ class Nova_nave:
         self.__rotacionou_dir = False
         self.__rotacionou_esq = False
         self.__nova_lista_colisores_terreno = []
+        self.__combustivel = 1000
+        self.__gravidade_lua = 1.6
+
+    def get_gravidade_lua(self):
+        return self.__gravidade_lua
+
+    def set_gravidade_lua(self, gravidade):
+        self.__gravidade_lua = gravidade
+
+    def get_combustivel(self):
+        return self.__combustivel
+
+    def set_combustivel(self, combustivel):
+        self.__combustivel = combustivel
 
     def get_lista_colisores_terreno(self):
         return self.__nova_lista_colisores_terreno
@@ -193,11 +207,11 @@ class Nova_nave:
         return poligono_rotacionado
 
 
-    def verifica_colisao_tela(self):
+    def verifica_colisao_tela(self, tela):
 
         # se for diferente disso é porque esta fora da tela
-        if self.get_posicao_x()>= 0 and self.__posicao_x <= RESOLUCAO[0] - self.get_tamanho_x()\
-            and self.get_posicao_y()>= 0 and self.__posicao_y <= RESOLUCAO[1] - self.get_tamanho_y():
+        if self.get_posicao_x() >= 0 and self.__posicao_x <= tela.get_resolucao()[0] - self.get_tamanho_x()\
+            and self.get_posicao_y() >= 0 and self.__posicao_y <= tela.get_resolucao()[1] - self.get_tamanho_y():
             #print("nao colidiu")
             self.set_colidiu_tela(False)
         else:
@@ -247,16 +261,19 @@ class Nova_nave:
 
 
     # ACELERACAO do propulsor
-    def aceleracao_propulsor(self, tempo):
+    def aceleracao_propulsor(self, tempo, tela):
 
         if self.get_propulsor_ativo() == True and self.get_colidiu_tela() == False and self.get_colidiu_area_pouso() == False:
-            self.__velocidade_y-= (VELOCIDADE_ACELERACAO_LUA/FPS) * tempo  * self.get_friccao()
+            self.__velocidade_y-= (self.get_gravidade_lua() / tela.get_fps()) * tempo  * self.get_friccao()
+
+            self.set_combustivel(self.get_combustivel()-1)
+            print("acelerei")
 
             # permite aumentar o tamanho do propulsor ate 1
             if self.__potencia_propulsor < 1:
-                self.__potencia_propulsor += (VELOCIDADE_ACELERACAO_LUA/FPS)* tempo  * self.get_friccao()
+                self.__potencia_propulsor += (self.get_gravidade_lua() / tela.get_fps())* tempo  * self.get_friccao()
 
-            if self.get_velocidade_y() <= VELOCIDADE_ACELERACAO_LUA:
+            if self.get_velocidade_y() <= self.get_gravidade_lua():
                 tempo = 0
 
                 # define nova direcao caso a nave esteja inclinada pra direita e propulsor ativo
@@ -269,115 +286,98 @@ class Nova_nave:
 
 
 
-    def gravidade(self, tempo):
+    def gravidade(self, tempo, tela):
 
         # GRAVIDADE
         # se nao tiver acelerando e nao tiver colidido com a tela ou com a area de pouso executa a gravidade
         if self.get_propulsor_ativo() == False and self.get_colidiu_tela() == False \
             and self.get_colidiu_area_pouso() == False:
 
-            self.__velocidade_y += (VELOCIDADE_ACELERACAO_LUA/FPS) * tempo * self.get_friccao()
+            self.__velocidade_y += (self.get_gravidade_lua() / tela.get_fps()) * tempo * self.get_friccao()
             # diminiu o tamanho do propulsor
-            self.__potencia_propulsor -= (VELOCIDADE_ACELERACAO_LUA/FPS) * tempo * self.get_friccao()
+            self.__potencia_propulsor -= (self.get_gravidade_lua() / tela.get_fps()) * tempo * self.get_friccao()
 
             # caso ele for menor que zero, fique em zero.
             if self.get_potencia_propulsor() < 0:
                 self.set_potencia_propulsor(0)
-            if self.get_velocidade_y() >= VELOCIDADE_ACELERACAO_LUA:
+            if self.get_velocidade_y() >= self.get_gravidade_lua():
                 tempo = 0
 
 
-
-
-
-    # for vertice in self.__terreno:
+    # calcula novos pontos(intermediario (x,y)) na lista de vertice existente do terreno e os adiciona dinamicamente.
+    # A cada dois pontos principais(e ja existentes)  é adicionado x quantidade de pontos entre eles para que a deteccao
+    # de colisao seja mais precisa.
     def verifica_colisao_terreno(self, mapa, tela):
 
         self.set_colidiu_terreno(False)
-
+        # recebe a lista de vertice responsavel por desenhar o terreno
         lista_vertice = mapa.get_terreno()
-        lista_aux = []
-        #nova_lista_colisores = []
 
         i = 0
         j = 1
-        qtd_novos_numeros = 8
-        # junta os valores das tuplas do terreno e as torna uma lista de valores ao inves de lista de tupla
+
         for vertice in lista_vertice:
 
-            lista_aux.append(vertice[0])
-            lista_aux.append(vertice[1])
+            # Adiciona o primeiro ponto ja existente
             self.__nova_lista_colisores_terreno.append((vertice[0], vertice[1]))
 
-
-
+            # obtem os valores dos pontos ja existentes
             ponto_principal_x1 = lista_vertice[i][0]
             ponto_principal_y1 = lista_vertice[i][1]
             ponto_principal_x2 = lista_vertice[j][0]
             ponto_principal_y2 = lista_vertice[j][1]
 
+            #distancia_entre_ponto_principal_x1_y1_x2_y2 = math.sqrt((abs(abs(ponto_principal_x2 - ponto_principal_x1)**2) \
+            # + abs(ponto_principal_y1 - ponto_principal_y2)**2))
 
-
-
-            #distancia_entre_ponto_principal_x1_y1_x2_y2 = math.sqrt((abs(abs(ponto_principal_x2 - ponto_principal_x1)**2) + abs(ponto_principal_y1 - ponto_principal_y2)**2))
-            #print(print("distancia_entre_ponto_principal_x1_y1_x2_y2 :",distancia_entre_ponto_principal_x1_y1_x2_y2))
-            #distancia_entre_ponto_principal_x1_y1_x2_y2/=2
-
+            # calcula  quantos vertices serao adicionado entre os vertices ja existente e tambem define
+            # o qual é o tamanho do incremento nas posicoes x,y dos novos vertices que serao criador
             incremento_x = abs(ponto_principal_x1-ponto_principal_x2)/  (len(lista_vertice)/6)
             incremento_y = abs(ponto_principal_y1-ponto_principal_y2)/ (len(lista_vertice)/6)
 
-
-
-
-            #SO FALTA ACERTAR O CALCULO DESSES NOVOS PONTOS
+            # se der tempo tenho que criar funcao
+            # estabiliza o sentido correto do incremento das posicoes dos novos vertices
+            #Se o terreno esta aclive faça:
             if ponto_principal_y1>ponto_principal_y2:
-                pontos_intermediarios_entre_pontos_principais_p1 = (int(ponto_principal_x1 + (incremento_x * 1)), int(ponto_principal_y1 - (incremento_y * 1)))
-                pontos_intermediarios_entre_pontos_principais_p2 = (int(ponto_principal_x1 + (incremento_x * 2)), int(ponto_principal_y1 - (incremento_y * 2)))
-                pontos_intermediarios_entre_pontos_principais_p3 = (int(ponto_principal_x1 + (incremento_x * 3)), int(ponto_principal_y1 - (incremento_y * 3)))
-                pontos_intermediarios_entre_pontos_principais_p4 = (int(ponto_principal_x1 + (incremento_x * 4)), int(ponto_principal_y1 - (incremento_y * 4)))
-                pontos_intermediarios_entre_pontos_principais_p5 = (int(ponto_principal_x1 + (incremento_x * 5)), int(ponto_principal_y1 - (incremento_y * 5)))
-
+                pontos_intermediarios_entre_pontos_principais_p1 = \
+                    (int(ponto_principal_x1 + (incremento_x * 1)), int(ponto_principal_y1 - (incremento_y * 1)))
+                pontos_intermediarios_entre_pontos_principais_p2 = \
+                    (int(ponto_principal_x1 + (incremento_x * 2)), int(ponto_principal_y1 - (incremento_y * 2)))
+                pontos_intermediarios_entre_pontos_principais_p3 = \
+                    (int(ponto_principal_x1 + (incremento_x * 3)), int(ponto_principal_y1 - (incremento_y * 3)))
+                pontos_intermediarios_entre_pontos_principais_p4 = \
+                    (int(ponto_principal_x1 + (incremento_x * 4)), int(ponto_principal_y1 - (incremento_y * 4)))
+                pontos_intermediarios_entre_pontos_principais_p5 = \
+                    (int(ponto_principal_x1 + (incremento_x * 5)), int(ponto_principal_y1 - (incremento_y * 5)))
+            #Se for declive faça:
             else:
-                pontos_intermediarios_entre_pontos_principais_p1 = (int(ponto_principal_x1 + (incremento_x * 1)), int(ponto_principal_y1 + (incremento_y * 1)))
-                pontos_intermediarios_entre_pontos_principais_p2 = (int(ponto_principal_x1 + (incremento_x * 2)), int(ponto_principal_y1 + (incremento_y * 2)))
-                pontos_intermediarios_entre_pontos_principais_p3 = (int(ponto_principal_x1 + (incremento_x * 3)), int(ponto_principal_y1 + (incremento_y * 3)))
-                pontos_intermediarios_entre_pontos_principais_p4 = (int(ponto_principal_x1 + (incremento_x * 4)), int(ponto_principal_y1 + (incremento_y * 4)))
-                pontos_intermediarios_entre_pontos_principais_p5 = (int(ponto_principal_x1 + (incremento_x * 5)), int(ponto_principal_y1 + (incremento_y * 5)))
+                pontos_intermediarios_entre_pontos_principais_p1 = \
+                    (int(ponto_principal_x1 + (incremento_x * 1)), int(ponto_principal_y1 + (incremento_y * 1)))
+                pontos_intermediarios_entre_pontos_principais_p2 = \
+                    (int(ponto_principal_x1 + (incremento_x * 2)), int(ponto_principal_y1 + (incremento_y * 2)))
+                pontos_intermediarios_entre_pontos_principais_p3 = \
+                    (int(ponto_principal_x1 + (incremento_x * 3)), int(ponto_principal_y1 + (incremento_y * 3)))
+                pontos_intermediarios_entre_pontos_principais_p4 = \
+                    (int(ponto_principal_x1 + (incremento_x * 4)), int(ponto_principal_y1 + (incremento_y * 4)))
+                pontos_intermediarios_entre_pontos_principais_p5 = \
+                    (int(ponto_principal_x1 + (incremento_x * 5)), int(ponto_principal_y1 + (incremento_y * 5)))
 
-
-            lista_aux.append(pontos_intermediarios_entre_pontos_principais_p1[0])
-            lista_aux.append(pontos_intermediarios_entre_pontos_principais_p1[1])
-            #self.__nova_lista_colisores_terreno.append(("x","y"))
+            # apos ser calculado, adiciona os novos pontos na lista entre os vertices ja existentes
             self.__nova_lista_colisores_terreno.append(pontos_intermediarios_entre_pontos_principais_p1)
-
-            #lista_aux.append(pontos_intermediarios_entre_pontos_principais_p2[0])
-            #lista_aux.append(pontos_intermediarios_entre_pontos_principais_p2[1])
-            #self.__nova_lista_colisores_terreno.append(("x", "y"))
             self.__nova_lista_colisores_terreno.append(pontos_intermediarios_entre_pontos_principais_p2)
-
-            #lista_aux.append(pontos_intermediarios_entre_pontos_principais_p3[0])
-            #lista_aux.append(pontos_intermediarios_entre_pontos_principais_p3[1])
-            #self.__nova_lista_colisores_terreno.append(("x", "y"))
             self.__nova_lista_colisores_terreno.append(pontos_intermediarios_entre_pontos_principais_p3)
-
-            #lista_aux.append(pontos_intermediarios_entre_pontos_principais_p4[0])
-            #lista_aux.append(pontos_intermediarios_entre_pontos_principais_p4[1])
-            #nova_lista_colisores.append(("x", "y"))
             self.__nova_lista_colisores_terreno.append(pontos_intermediarios_entre_pontos_principais_p4)
-
-            #lista_aux.append(pontos_intermediarios_entre_pontos_principais_p4[0])
-            #lista_aux.append(pontos_intermediarios_entre_pontos_principais_p4[1])
-            #self.__nova_lista_colisores_terreno.append(("x", "y"))
             self.__nova_lista_colisores_terreno.append(pontos_intermediarios_entre_pontos_principais_p5)
 
             # pegando o centro de baixo da nave
             p_nave = self.get_posicao_x()+ self.get_tamanho_x()/2,   self.get_posicao_y() + self.get_tamanho_y()
-            #print(p_nave)
 
-            # so falta replicar com os outros pontos(fazer uma funcao)
+            # se der tempo tenho que criar funcao
+            # calcula a distancia do entre o vertice central inferior da nave e os pontos ja existentes da lista
             distancia_entre_ponto_colisor_nave_ponto_principal = \
                 math.sqrt((abs(abs(ponto_principal_x2 - p_nave[0]) ** 2) + abs(p_nave[1] - ponto_principal_y2) ** 2))
 
+            # Calcula a distancia entre o vertice central inferior da nave e os novos pontos adicionados na lista
             distancia_entre_ponto_colisor_nave_ponto_intermediario_01 = \
                 math.sqrt((abs(abs(pontos_intermediarios_entre_pontos_principais_p1[0] - p_nave[0]) ** 2)
                              + abs(p_nave[1] - pontos_intermediarios_entre_pontos_principais_p1[1]) ** 2))
@@ -398,11 +398,12 @@ class Nova_nave:
                 math.sqrt((abs(abs(pontos_intermediarios_entre_pontos_principais_p5[0] - p_nave[0]) ** 2)
                            + abs(p_nave[1] - pontos_intermediarios_entre_pontos_principais_p5[1]) ** 2))
 
+            # verifica se a distancia é menor que 10, se sim, colidiu com o terreno
             if distancia_entre_ponto_colisor_nave_ponto_principal < 10:
                 self.set_colidiu_terreno(True)
                 #print("COLIDIU PONTO PRINCIPAL")
 
-
+            # verifica se a distancia é menor que 10, se sim, colidiu com o terreno
             if distancia_entre_ponto_colisor_nave_ponto_intermediario_01 < 5 \
                     or distancia_entre_ponto_colisor_nave_ponto_intermediario_02 < 5 \
                     or distancia_entre_ponto_colisor_nave_ponto_intermediario_03 < 5 \
@@ -411,212 +412,8 @@ class Nova_nave:
                 #print("COLIDIU PONTO INTERMEDIARIO")
                 self.set_colidiu_terreno(True)
 
-
-
-
-
-            #print("ponto_principal_x1:",ponto_principal_x1)
-            #print("ponto_principal_y1:",ponto_principal_y1)
-
-            #print("ponto_principal_x2:",ponto_principal_x2)
-            #print("ponto_principal_y2:",ponto_principal_y2)
-            #print("dividido por 4 :",distancia_entre_ponto_principal_x1_y1_x2_y2)
-
-
             if j < len(lista_vertice)-1:#6
                 i+=1
                 j+=1
 
         #tela.draw_lines((RED), self.get_lista_colisores_terreno(), 2)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-"""    # for vertice in self.__terreno:
-    def verifica_colisao_terreno(self, mapa, tela):
-
-        lista_vertice = mapa.get_terreno()
-        lista_aux = []
-
-        i = 0
-        j = 1
-        # junta os valores das tuplas do terreno e as torna uma lista de valores ao inves de lista de tupla
-        for vertice in lista_vertice:
-
-            lista_aux.append(vertice[0])
-            lista_aux.append(vertice[1])
-
-            x1 = lista_vertice[0][0]
-            y1 = lista_vertice[0][1]
-            x2 = lista_vertice[1][0]
-            y2 = lista_vertice[1][1]
-
-            lista_aux.append("x")
-            lista_aux.append("y")
-            lista_aux.append("x")
-            lista_aux.append("y")
-            lista_aux.append("x")
-            lista_aux.append("y")
-            lista_aux.append("x")
-            lista_aux.append("y")
-
-
-            i+=1
-            j+=1
-"""
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-"""    # for vertice in self.__terreno:
-    def verifica_colisao_terreno(self, mapa, tela):
-
-        lista_vertice = mapa.get_terreno()
-        lista_aux = []
-        cont = 0
-        # junta os valores das tuplas do terreno e as torna uma lista de valores ao inves de lista de tupla
-        for vertice in lista_vertice:
-            lista_aux.append(vertice[0])
-            lista_aux.append(vertice[1])
-
-        #print("oficial:", lista_vertice)
-        # print("aux :",lista_aux)
-
-        # impede o stouro do indice
-        stop = len(lista_aux) - 3
-        # incrementa os indices para definir o inicio e fim da colisao em x e o inicio e fim da colisao em y
-        x_inicio = 0
-        x_fim = 2
-        y_inicio = 1
-        y_fim = 3
-
-        for vertice in lista_aux:
-
-            x_vertice_inicio = lista_aux[x_inicio]
-            x_vertice_fim = lista_aux[x_fim]
-            y_vertice_inicio = lista_aux[y_inicio]
-            y_vertice_fim = lista_aux[y_fim]
-
-            # desenha_colisao = pygame.Rect((x_vertice_inicio, x_vertice_fim), (y_vertice_inicio, y_vertice_fim))
-            # desenha_colisao = pygame.Rect((x_vertice_inicio, y_vertice_fim), (x_vertice_inicio, y_vertice_fim))
-            # tela.draw_rect(pygame.Color(255, 0, 0, 10), desenha_colisao)
-
-            # padroniza a colisao retangular de acordo com o vertice y mais  baixo
-            # if y_vertice_inicio <= y_vertice_fim:
-            #   temp = y_vertice_inicio
-            #   y_vertice_inicio = y_vertice_fim
-            #   y_vertice_fim = temp
-
-            # padroniza a colisao retangular de acordo com o vertice y mais  alto
-            if y_vertice_inicio >= y_vertice_fim:
-                temp = y_vertice_inicio
-                y_vertice_inicio = y_vertice_fim
-                y_vertice_fim = temp
-
-            # calcula a distancia entre as duas alturas sorteadas no terreno e divide por 2 ignorando o sinal(-ou+)
-            y_vertice_intermediario_central = abs((y_vertice_inicio - y_vertice_fim) / 2)
-            # soma  a altura do y do terreno com o  centro do retangulo maior da geometria para criar a altura do retangulo menor no centro
-            y_vertice_intermediario_central += y_vertice_inicio
-
-            x_vertice_intermediario_central = abs((x_vertice_inicio - x_vertice_fim) /2 )
-            x_vertice_intermediario_central += x_vertice_inicio
-
-            tamanho_x_colisor_maior = abs(x_vertice_inicio - x_vertice_fim)
-            tamanho_y_colisor_maior = abs(y_vertice_inicio - RESOLUCAO[1])
-
-            cremento_tamanho_y = tamanho_y_colisor_maior/6
-
-
-
-            print("oficial:", lista_vertice)
-            print("tamanho_y", tamanho_y_colisor_maior)
-            print("cremento ", cremento_tamanho_y)
-
-
-
-            # desenha retangulos do tamanho da volumetria da area de colisao para eu ter um feedback visual de onde esta ativado a colisao retangular
-            retangulo_colisor_maior_01 = pygame.Surface((tamanho_x_colisor_maior, tamanho_y_colisor_maior))
-            retangulo_colisor_maior_01.set_alpha(80)  # alpha level
-            retangulo_colisor_maior_01.fill(AMARELO)  # this fills the entire surface
-            tela.blit(retangulo_colisor_maior_01, ((abs(x_vertice_inicio), abs(y_vertice_fim))))
-
-            retangulo_colisor_maior_02 = pygame.Surface((tamanho_x_colisor_maior, tamanho_y_colisor_maior))
-            retangulo_colisor_maior_02.set_alpha(80)  # alpha level
-            retangulo_colisor_maior_02.fill(CYAN)  # this fills the entire surface
-            tela.blit(retangulo_colisor_maior_02,((abs(x_vertice_inicio), abs(y_vertice_fim - cremento_tamanho_y))))
-
-
-            # veifica a colisao retangular maior da geometria  dinamicamente
-            # e tambem a geometria retangular fragmentada (y_vertice_intermediario_central gera de fato retangulos menores)
-            if self.get_posicao_x() + self.get_tamanho_x() >= x_vertice_inicio \
-                    and self.get_posicao_x() <= x_vertice_fim \
-                    and self.get_posicao_y() + self.get_tamanho_y() >= y_vertice_fim:
-                # onde a nave colidiu, pinte este retangulo de amarelo
-                retangulo_colisor_maior_01.set_alpha(180)  # alpha level
-                retangulo_colisor_maior_01.fill((AMARELO))  # this fills the entire surface
-                tela.blit(retangulo_colisor_maior_01, ((abs(x_vertice_inicio), abs(y_vertice_fim))))
-
-                self.set_colidiu_terreno(True)
-                print("COLIDIU COM O TERRENO")
-
-            else:
-                self.set_colidiu_terreno(False)
-
-            if self.get_posicao_x() + self.get_tamanho_x() >= x_vertice_inicio \
-                    and self.get_posicao_x() <= x_vertice_fim \
-                    and self.get_posicao_y() + self.get_tamanho_y() >= y_vertice_fim - cremento_tamanho_y:
-                retangulo_colisor_maior_02.set_alpha(180)  # alpha level
-                retangulo_colisor_maior_02.fill((CYAN))  # this fills the entire surface
-                tela.blit(retangulo_colisor_maior_02,((abs(x_vertice_inicio), abs(y_vertice_fim - cremento_tamanho_y))))
-
-                self.set_colidiu_terreno(True)
-                print("COLIDIU COM O TERRENO")
-
-            else:
-                self.set_colidiu_terreno(False)
-
-            # impede o stouro do indice
-            # incremento (atualizacao)da posicao de verificacao de colisao
-            if y_fim < stop:
-                x_inicio += 2
-                x_fim += 2
-                y_inicio += 2
-                y_fim += 2
-            else:
-                break
-
-            cont += 1
-
-            #print("x inicio :", x_vertice_inicio)
-            #print("x fim :", x_vertice_fim)
-            #print('x intermediario ', x_vertice_intermediario_central)
-            # print("y inicio: ", y_vertice_inicio)
-            # print("y fim :",y_vertice_fim)
-            # print("intermediario: ", y_vertice_intermediario_central)"""

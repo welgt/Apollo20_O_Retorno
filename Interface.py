@@ -95,10 +95,10 @@ class painel:
 
 
     def cria_painel(self, tela, posicao_x, posicao_y, largura, altura):
-        self.__posicao_x = posicao_x + RESOLUCAO[0] / 2 - self.__largura / 2
-        self.__posicao_y = posicao_y + RESOLUCAO[1] / 2 - self.__altura / 2
-        self.__largura = (RESOLUCAO[0] / 1000) * (largura * 10)
-        self.__altura = (RESOLUCAO[1] / 1000) * (altura * 10)
+        self.__posicao_x = posicao_x + tela.get_resolucao()[0] / 2 - self.__largura / 2
+        self.__posicao_y = posicao_y + tela.get_resolucao()[1] / 2 - self.__altura / 2
+        self.__largura = (tela.get_resolucao()[0] / 1000) * (largura * 10)
+        self.__altura = (tela.get_resolucao()[1] / 1000) * (altura * 10)
 
        
 
@@ -241,7 +241,6 @@ class botao:
             if evento.type == pygame.MOUSEBUTTONDOWN:
                 botao.set_mouse_cont(1)
                 botao.set_clicou(True)
-                print("apertou")
                 botao.set_cor(RED)
 
 

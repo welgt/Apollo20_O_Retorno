@@ -1,11 +1,26 @@
 
-Falta fazer o texto dos botoes do menu ficar centralizado dinamicamente.
-    Interface.py
-        prox linha 154
 
-Falta controlar a opacidade do painel e botoes de acordo com o evento.
-Fazer escalonamento no botao de acordo com o click
+HUD
+    - Feedback pontos do pouso
+    - Feedback pontos totais
+    - Feedback aceleracao da nave
+    - Feedback combustivel
+    - Feedback latitude
 
-fazer um deley ao apertar o botao voltar em configuracoes
-    LunarLander.py
-        prox linha 145
+    SE DER TEMPO:
+        - se der tempo, desenhar feedback de estabilidade de pouso
+        - instaciar itens de reparo para a nave
+        - instanciar item de combustivel
+        - Falta fazer o texto dos botoes do menu ficar centralizado dinamicamente.
+        - Feedback danos da nave
+
+
+MENU
+
+    - programar as configuracoes
+    - fazer um deley ao apertar o botao voltar em configuracoes, ou descobrir porque fica ativo a deteccao do botao
+
+    SE DER TEMPO:
+        - se der tempo fazer escalonamento no botao de acordo com o click
+        - controlar a opacidade do painel e botoes de acordo com o evento.
+        - Falta fazer o texto dos botoes do menu ficar centralizado dinamicamente.

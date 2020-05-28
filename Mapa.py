@@ -20,6 +20,7 @@ class Mapa_do_jogo:
         self.__existe_area_pouso = False
         self.__altura_base_pouso = None
         self.__espessura_base_pouso_line = 6
+        self.__qualidade_terreno = 30
 
 
 
@@ -27,13 +28,19 @@ class Mapa_do_jogo:
         self.__sort1 = 0
         self.__sort2 = 0
         self.__sort3 = 0
+
+    def set_qualidade_terreno(self, int):
+        self.__qualidade_terreno = int
+
+    def get_qualidade_terreno(self):
+        return self.__qualidade_terreno
     def set_cor_terreno(self, cor):
         self.__cor_terreno = cor
 
     def get_cor_terreno(self):
         return self.__cor_terreno
 
-    def set_cor_terreno_borda(self, cor):
+    def set_cor_borda_terreno(self, cor):
         self.__cor_terreno_borda = cor
 
     def get_cor_terreno_borda(self):
@@ -84,14 +91,16 @@ class Mapa_do_jogo:
 
 
             # a quantidade de tupla (0, 0) define a qualidade e quantidade de pontos ao logo do horizonte do terreno
-            self.__terreno = [(0, 0), (0, 0), (0, 0), (0, 0), (0, 0),
-                              (0, 0), (0, 0), (0, 0), (0, 0), (0, 0),
+            self.__terreno =[(0,0)]* self.get_qualidade_terreno()
 
-                              (0, 0), (0, 0), (0, 0), (0, 0), (0, 0),
-                              (0, 0), (0, 0), (0, 0), (0, 0), (0, 0),
+            #self.__terreno =  [(0, 0), (0, 0), (0, 0), (0, 0), (0, 0),
+                              #(0, 0), (0, 0), (0, 0), (0, 0), (0, 0),
 
-                              (0, 0), (0, 0), (0, 0), (0, 0), (0, 0),
-                              (0, 0), (0, 0), (0, 0),(0, 0), (0, 0)]
+                              #(0, 0), (0, 0), (0, 0), (0, 0), (0, 0),
+                              #(0, 0), (0, 0), (0, 0), (0, 0), (0, 0),
+
+                              #(0, 0), (0, 0), (0, 0), (0, 0), (0, 0),
+                              #(0, 0), (0, 0), (0, 0),(0, 0), (0, 0)]
 
                             #(0, 0), (0, 0), (0, 0), (1200, 600), (0, 600)]  # nao pode modificar, limite da tela!
 
@@ -105,11 +114,11 @@ class Mapa_do_jogo:
                 self.__qtd_tuplas_terreno = len(self.__terreno)
 
                 # sorteia duas porcentagem de tela para que o morro do terreno alterne entre picos altos e baixos
-                self.__porcento_altura_terreno = random.randint((RESOLUCAO[1] / 1000) * 100, #200
-                                                                (RESOLUCAO[1] / 1000) * 500) #300    # 10% ou 20% da tela
+                self.__porcento_altura_terreno = random.randint((tela.get_resolucao()[1] / 1000) * 200, #200
+                                                                (tela.get_resolucao()[1] / 1000) * 300) #300    # 10% ou 20% da tela
 
                 # faz outro sorteio que recebe como o parametro o sorteio anterior que pode ser 10 ou 20% da tela
-                self.__random_alturas_diferentes = random.randint((RESOLUCAO[1] - self.__porcento_altura_terreno), (RESOLUCAO[1] - 50))
+                self.__random_alturas_diferentes = random.randint((tela.get_resolucao()[1] - self.__porcento_altura_terreno), (tela.get_resolucao()[1] - 50))
 
                 # incrementa o valor do x que contem na tupla e em y adiciona randomicamente
                 vertice_aux = ((vertice[0] + x), (vertice[1] + self.__random_alturas_diferentes))
@@ -127,25 +136,16 @@ class Mapa_do_jogo:
 
                     self.__existe_area_pouso = True
                     # coleta a divisao da abstracao da malha do terreno em x
-                    x_vertice_pouso = RESOLUCAO[0]/(self.__qtd_tuplas_terreno)
+                    x_largura_pouso = tela.get_resolucao()[0] / (self.__qtd_tuplas_terreno)
 
                     # pega o divisao e define o tamanho x e o centro do pouso. determina o vertice1 da direita.
-                    x_inicio_pouso = ((x_vertice_pouso + RESOLUCAO[0] / (self.__qtd_tuplas_terreno)) - TAMANHO_DA_NAVE_X)
+                    x_inicio_pouso = ((x_largura_pouso + tela.get_resolucao()[0] / (self.__qtd_tuplas_terreno)) - TAMANHO_DA_NAVE_X)
                     # define o inicio do vertice2 da esquerda
-                    x_fim_pouso = x_inicio_pouso/2
-
+                    x_fim_pouso = x_inicio_pouso / 2
 
                     # faz o rebaixo do pouso da nave no terreno
                     self.__novo_terreno.insert((self.__cont), ((vertice[0] + x + x_fim_pouso), vertice[1] + self.__random_alturas_diferentes))
-                    self.__novo_terreno.insert((self.__cont), ((vertice[0] + x),               vertice[1] + self.__random_alturas_diferentes))
-
-                    self.__cont+=2
-
-                    # captura a altura do pouso pra usar na colisao entre nave e terreno
-                    self.__altura_base_pouso = self.__random_alturas_diferentes
-
-                    # desenha o feedback da area de pouso com um retangulo
-                    self.__base_pouso = pygame.Rect(((vertice[0] + x)), self.__random_alturas_diferentes, ((x_inicio_pouso/2)), 10)
+                    self.__novo_terreno.insert((self.__cont), ((vertice[0] + x), vertice[1] + self.__random_alturas_diferentes))
 
                     # desenha o feedback da area de pouso com uma line
                     self.__base_pouso_line =   [(vertice[0] + x),
@@ -154,21 +154,33 @@ class Mapa_do_jogo:
                                                 (vertice[0] + x + x_fim_pouso),
                                                 (vertice[1] + self.__random_alturas_diferentes)]
 
+                    # desenha o feedback da area de pouso com um retangulo
+                    self.__base_pouso = pygame.Rect(((vertice[0] + x)), self.__random_alturas_diferentes, ((x_inicio_pouso/2)), 10)
+
+                    self.__cont+=2
+
+                    # captura a altura do pouso pra usar na colisao entre nave e terreno
+                    self.__altura_base_pouso = self.__random_alturas_diferentes
+
+
+
+
+
                     #quando é sorteado um local de pouso(rebaixo do terreno ou feedback) tem que atualizar o tamanho do for
                     # para que continue desenhando os vertices ate o fim da tela
                     self.__qtd_tuplas_terreno+=2;
-                    x += RESOLUCAO[0] / (self.__qtd_tuplas_terreno)
+                    x += tela.get_resolucao()[0] / (self.__qtd_tuplas_terreno)
 
 
                 #incrementa x e define a quantidade de pontos em x da tela
-                x += RESOLUCAO[0]/(self.__qtd_tuplas_terreno)
+                x += tela.get_resolucao()[0]/(self.__qtd_tuplas_terreno)
 
                 # captura a posicao das ultimas duas tuplas para realocar o valor que representa as medidas da resolucao
                 self.__cont += 1
 
             # repreenche os valores das ultimas duas tuplas que nao deve ser mudado, pois representam as bordas da tela
-            self.__novo_terreno.insert((self.__cont), (RESOLUCAO[0]+5, RESOLUCAO[1]))
-            self.__novo_terreno.insert((self.__cont), (-5, RESOLUCAO[1]))
+            self.__novo_terreno.insert((self.__cont), (tela.get_resolucao()[0]+5, tela.get_resolucao()[1]))
+            self.__novo_terreno.insert((self.__cont), (-5, tela.get_resolucao()[1]))
             self.__cont += 2
             self.__qtd_tuplas_terreno+=2
             self.__terreno = self.__novo_terreno

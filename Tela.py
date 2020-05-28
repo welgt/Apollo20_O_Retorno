@@ -2,7 +2,10 @@ import pygame
 from Config import *
 class Nova_tela:
     def __init__(self, titulo, resolucao):
-        self.__tela = pygame.display.set_mode(resolucao)
+        self.__resolucao_tela = resolucao
+        #self.set_resolucao(resolucao)
+        #self.__tela = pygame.display.set_mode(pygame.display.list_modes()[0],pygame.FULLSCREEN | pygame.HWSURFACE)
+        self.__tela = pygame.display.set_mode(self.get_resolucao())
         self.__titulo = pygame.display.set_caption(titulo)
         self.__titulo_da_tela = titulo
         self.__clock = pygame.time.Clock()
@@ -16,16 +19,18 @@ class Nova_tela:
     def get_surface_tela(self):
         return self.__tela
 
-    def get_resolucao_tela(self):
-        return self.__tela
+    def get_resolucao(self):
+        return self.__resolucao_tela
 
-    def set_resolucao_tela(self, nova_resolucao):
-        self.__tela = pygame.display.set_mode(nova_resolucao)
+    def set_resolucao(self, nova_resolucao):
+        self.__resolucao_tela = nova_resolucao
+        self.__tela = pygame.display.set_mode(self.get_resolucao())
+        #self.__tela = pygame.display.set_mode(nova_resolucao, pygame.FULLSCREEN | pygame.HWSURFACE)
 
-    def get_titulo_tela(self):
+    def get_titulo(self):
         return self.__titulo_da_tela
 
-    def set_titulo_tela(self, novo_titulo):
+    def set_titulo(self, novo_titulo):
         self.__titulo_da_tela = novo_titulo
 
     def get_fps(self):
@@ -62,7 +67,7 @@ class Nova_tela:
         # RELOGIO
         if self.__milisegundos < self.get_fps():
             self.__milisegundos += 1
-            #print("milisegundos  : ", self.__milisegundos)
+            print("milisegundos  : ", self.__milisegundos)
         else:
             self.__segundos += 1
             #print("segundos :------------", self.__segundos)
