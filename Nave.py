@@ -7,8 +7,8 @@ from Config import *
 class Nova_nave:
     def __init__(self, surface, posicao_x, posicao_y):
         self.__surface = pygame.image.load(surface)
-        self.__tamanho_x = self.__surface.get_rect()[2]
-        self.__tamanho_y = self.__surface.get_rect()[3]
+        self.__largura_x = self.__surface.get_rect()[2]
+        self.__altura_y = self.__surface.get_rect()[3]
         self.__posicao_x = posicao_x
         self.__posicao_y = posicao_y
         #self.__centro_surface = self.__posicao_x + (self.__tamanho_x / 2), self.get_posicao_y + self.__tamanho_y / 2
@@ -88,18 +88,18 @@ class Nova_nave:
     def set_potencia_propulsor(self, potencia_propulsor):
         self.__potencia_propulsor = potencia_propulsor
 
-    def get_tamanho_x(self):
-        return self.__tamanho_x
+    def get_largura_x(self):
+        return self.__largura_x
 
-    def get_tamanho_y(self):
-        return self.__tamanho_y
+    def get_altura_y(self):
+        return self.__altura_y
 
     def set_tamanho(self, novo_tamanho_x, novo_tamanho_y):
         self.__surface = pygame.transform.scale(self.__surface, (novo_tamanho_x, novo_tamanho_y))
         novo_centro = novo_tamanho_x/2, novo_tamanho_y/2
         self.set_centro(novo_centro)
-        self.__tamanho_x = novo_tamanho_x
-        self.__tamanho_y = novo_tamanho_y
+        self.__largura_x = novo_tamanho_x
+        self.__altura_y = novo_tamanho_y
 
 
     def get_centro_surface(self):
@@ -178,13 +178,13 @@ class Nova_nave:
 
     def criaPoligono_Propulsor(self, largura_poligono, posicao_horizontal, ponto_acelerador_poligono):
 
-        ponto_direito = largura_poligono + self.__posicao_x + self.__tamanho_x / 2 + posicao_horizontal
-        ponto_esquerdo = -largura_poligono + self.__posicao_x + self.__tamanho_x / 2 + posicao_horizontal
-        ponto_acelerador_poligono += self.__posicao_y + self.__tamanho_y
-        altura_base = self.__tamanho_y
+        ponto_direito = largura_poligono + self.__posicao_x + self.__largura_x / 2 + posicao_horizontal
+        ponto_esquerdo = -largura_poligono + self.__posicao_x + self.__largura_x / 2 + posicao_horizontal
+        ponto_acelerador_poligono += self.__posicao_y + self.__altura_y
+        altura_base = self.__altura_y
 
         vertices_propulsor = ((ponto_direito, altura_base + self.__posicao_y),  # (0,3),
-                              (self.__posicao_x + self.__tamanho_x / 2 + posicao_horizontal, ponto_acelerador_poligono),  # (3,-3)
+                              (self.__posicao_x + self.__largura_x / 2 + posicao_horizontal, ponto_acelerador_poligono),  # (3,-3)
                               (ponto_esquerdo, altura_base + self.__posicao_y))  # (-3,-3)
 
         return self.__rotacionaPoligono_propulsor(vertices_propulsor)
@@ -192,7 +192,7 @@ class Nova_nave:
 
     def __rotacionaPoligono_propulsor(self, vertices_propulsor):
 
-        origem_nave = self.__posicao_x + self.__tamanho_x / 2, self.__posicao_y + self.__tamanho_y / 2
+        origem_nave = self.__posicao_x + self.__largura_x / 2, self.__posicao_y + self.__altura_y / 2
         angulo_rotacao = math.radians(-self.get_angulo_rotacao())
 
         poligono_rotacionado = []
@@ -210,8 +210,8 @@ class Nova_nave:
     def verifica_colisao_tela(self, tela):
 
         # se for diferente disso é porque esta fora da tela
-        if self.get_posicao_x() >= 0 and self.__posicao_x <= tela.get_resolucao()[0] - self.get_tamanho_x()\
-            and self.get_posicao_y() >= 0 and self.__posicao_y <= tela.get_resolucao()[1] - self.get_tamanho_y():
+        if self.get_posicao_x() >= 0 and self.__posicao_x <= tela.get_resolucao()[0] - self.get_largura_x()\
+            and self.get_posicao_y() >= 0 and self.__posicao_y <= tela.get_resolucao()[1] - self.get_altura_y():
             #print("nao colidiu")
             self.set_colidiu_tela(False)
         else:
@@ -238,8 +238,8 @@ class Nova_nave:
 
             # verifica a colisao entre a nave e a area de pouso
             if self.get_posicao_x() >= inicio_area_pouso_horizontal \
-                    and self.get_posicao_x() + self.get_tamanho_x() <= fim_area_pouso_horizontal \
-                    and self.get_posicao_y() + self.get_tamanho_y() >= mapa.get_altura_pouso_nave() - mapa.get_espessura_line_pouso_nave()/2:
+                    and self.get_posicao_x() + self.get_largura_x() <= fim_area_pouso_horizontal \
+                    and self.get_posicao_y() + self.get_altura_y() >= mapa.get_altura_pouso_nave() - mapa.get_espessura_line_pouso_nave()/2:
                 self.set_colidiu_area_pouso(True)
                 print("COLIDIU COM A AREA DE POUSO")
                 #se colidiu zere o propulsor
@@ -370,7 +370,7 @@ class Nova_nave:
             self.__nova_lista_colisores_terreno.append(pontos_intermediarios_entre_pontos_principais_p5)
 
             # pegando o centro de baixo da nave
-            p_nave = self.get_posicao_x()+ self.get_tamanho_x()/2,   self.get_posicao_y() + self.get_tamanho_y()
+            p_nave = self.get_posicao_x() + self.get_largura_x() / 2, self.get_posicao_y() + self.get_altura_y()
 
             # se der tempo tenho que criar funcao
             # calcula a distancia do entre o vertice central inferior da nave e os pontos ja existentes da lista

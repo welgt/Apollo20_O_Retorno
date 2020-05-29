@@ -210,9 +210,9 @@ while jogoAtivo:
     #GAMEPLAY
     if game_loop == True:
 
-        mapa.desenha_terreno(gamePlay)
+        mapa.desenha_terreno(gamePlay, nave)
         if mapa.get_existe_area_pouso() == False:
-            mapa.desenha_terreno(gamePlay)
+            mapa.desenha_terreno(gamePlay, nave)
             print("NAO FOI POSSIVEL SORTEAR UMA AREA DE POUSO, REDESENHANDO TERRENO")
 
         terra.set_tamanho(250, 250)

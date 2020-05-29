@@ -20,7 +20,7 @@ class Mapa_do_jogo:
         self.__existe_area_pouso = False
         self.__altura_base_pouso = None
         self.__espessura_base_pouso_line = 6
-        self.__qualidade_terreno = 30
+        self.__qualidade_terreno =60
 
 
 
@@ -80,7 +80,7 @@ class Mapa_do_jogo:
         self.__desenha = boleana
 
 
-    def desenha_terreno(self, tela):
+    def desenha_terreno(self, tela, nave):
         #print("desenhando solo")
         #retangulo = pygame.Rect(500, 300, 60, 60)
         #tela.draw_rect(WHITE, retangulo)
@@ -139,7 +139,7 @@ class Mapa_do_jogo:
                     x_largura_pouso = tela.get_resolucao()[0] / (self.__qtd_tuplas_terreno)
 
                     # pega o divisao e define o tamanho x e o centro do pouso. determina o vertice1 da direita.
-                    x_inicio_pouso = ((x_largura_pouso + tela.get_resolucao()[0] / (self.__qtd_tuplas_terreno)) - TAMANHO_DA_NAVE_X)
+                    x_inicio_pouso = ((x_largura_pouso + tela.get_resolucao()[0] / (self.__qtd_tuplas_terreno)) - nave.get_largura_x())
                     # define o inicio do vertice2 da esquerda
                     x_fim_pouso = x_inicio_pouso / 2
 
