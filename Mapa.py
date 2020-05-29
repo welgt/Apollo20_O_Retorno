@@ -139,13 +139,19 @@ class Mapa_do_jogo:
                     x_largura_pouso = tela.get_resolucao()[0] / (self.__qtd_tuplas_terreno)
 
                     # pega o divisao e define o tamanho x e o centro do pouso. determina o vertice1 da direita.
-                    x_inicio_pouso = ((x_largura_pouso + tela.get_resolucao()[0] / (self.__qtd_tuplas_terreno)) - nave.get_largura_x())
+                    #x_largura_pouso = ((x_largura_pouso + tela.get_resolucao()[0] / (self.__qtd_tuplas_terreno)) - nave.get_largura_x())
+                    x_largura_pouso = nave.get_largura_x()
                     # define o inicio do vertice2 da esquerda
-                    x_fim_pouso = x_inicio_pouso / 2
+                    x_fim_pouso = x_largura_pouso / 2
 
                     # faz o rebaixo do pouso da nave no terreno
-                    self.__novo_terreno.insert((self.__cont), ((vertice[0] + x + x_fim_pouso), vertice[1] + self.__random_alturas_diferentes))
-                    self.__novo_terreno.insert((self.__cont), ((vertice[0] + x), vertice[1] + self.__random_alturas_diferentes))
+                    #self.__novo_terreno.insert((self.__cont), ((vertice[0] + x + x_fim_pouso), vertice[1] + self.__random_alturas_diferentes))
+                    #self.__novo_terreno.insert((self.__cont), ((vertice[0] + x), vertice[1] + self.__random_alturas_diferentes))
+
+                    self.__novo_terreno.append((vertice[0] + x, vertice[1] + self.__random_alturas_diferentes))
+                    self.__novo_terreno.append((vertice[0] + x + x_fim_pouso, vertice[1] + self.__random_alturas_diferentes ))
+
+
 
                     # desenha o feedback da area de pouso com uma line
                     self.__base_pouso_line =   [(vertice[0] + x),
@@ -155,7 +161,7 @@ class Mapa_do_jogo:
                                                 (vertice[1] + self.__random_alturas_diferentes)]
 
                     # desenha o feedback da area de pouso com um retangulo
-                    self.__base_pouso = pygame.Rect(((vertice[0] + x)), self.__random_alturas_diferentes, ((x_inicio_pouso/2)), 10)
+                    self.__base_pouso = pygame.Rect(((vertice[0] + x)), self.__random_alturas_diferentes, ((x_largura_pouso/2)), 10)
 
                     self.__cont+=2
 

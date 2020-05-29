@@ -216,8 +216,8 @@ while jogoAtivo:
             print("NAO FOI POSSIVEL SORTEAR UMA AREA DE POUSO, REDESENHANDO TERRENO")
 
         terra.set_tamanho(250, 250)
-        nave.set_tamanho(TAMANHO_DA_NAVE_X, TAMANHO_DA_NAVE_y)
-        nave.set_friccao(FRICCAO_PROPULSOR)
+        nave.set_tamanho(int((gamePlay.get_resolucao()[0]/1000)*18),int((gamePlay.get_resolucao()[0]/1000)*30))
+        nave.set_friccao(0.1)
         nave.set_velocidade_rotacao(nave.get_gravidade_lua())
 
 
@@ -294,8 +294,8 @@ while jogoAtivo:
 
 
         # cria poligono propulsor e recebe tamanho da calda
-        poligono_propulsor_dir = nave.criaPoligono_Propulsor(2, 4, nave.get_potencia_propulsor() * gamePlay.get_fps())
-        poligono_propulsor_esq = nave.criaPoligono_Propulsor(2, -4, nave.get_potencia_propulsor() * gamePlay.get_fps())
+        poligono_propulsor_dir = nave.criaPoligono_Propulsor(nave.get_largura_x()/10, nave.get_largura_x()/4.5, nave.get_potencia_propulsor() * gamePlay.get_fps())
+        poligono_propulsor_esq = nave.criaPoligono_Propulsor(nave.get_largura_x()/10, -nave.get_largura_x()/5, nave.get_potencia_propulsor() * gamePlay.get_fps())
 
         # rotaciona a (imagem) nave
         nave_rot = nave.rotacaoCentralizada()

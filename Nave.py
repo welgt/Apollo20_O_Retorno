@@ -178,21 +178,21 @@ class Nova_nave:
 
     def criaPoligono_Propulsor(self, largura_poligono, posicao_horizontal, ponto_acelerador_poligono):
 
-        ponto_direito = largura_poligono + self.__posicao_x + self.__largura_x / 2 + posicao_horizontal
-        ponto_esquerdo = -largura_poligono + self.__posicao_x + self.__largura_x / 2 + posicao_horizontal
-        ponto_acelerador_poligono += self.__posicao_y + self.__altura_y
-        altura_base = self.__altura_y
+        ponto_direito = largura_poligono + self.get_posicao_x() + self.get_largura_x() / 2 + posicao_horizontal
+        ponto_esquerdo = -largura_poligono + self.get_posicao_x() + self.get_largura_x() / 2 + posicao_horizontal
+        ponto_acelerador_poligono += self.get_posicao_y() + self.get_altura_y()
+        altura_base = self.get_altura_y()
 
-        vertices_propulsor = ((ponto_direito, altura_base + self.__posicao_y),  # (0,3),
-                              (self.__posicao_x + self.__largura_x / 2 + posicao_horizontal, ponto_acelerador_poligono),  # (3,-3)
-                              (ponto_esquerdo, altura_base + self.__posicao_y))  # (-3,-3)
+        vertices_propulsor = ((ponto_direito, altura_base + self.get_posicao_y()),  # (0,3),
+                              (self.get_posicao_x() + self.get_largura_x() / 2 + posicao_horizontal, ponto_acelerador_poligono),  # (3,-3)
+                              (ponto_esquerdo, altura_base + self.get_posicao_y()))  # (-3,-3)
 
         return self.__rotacionaPoligono_propulsor(vertices_propulsor)
 
 
     def __rotacionaPoligono_propulsor(self, vertices_propulsor):
 
-        origem_nave = self.__posicao_x + self.__largura_x / 2, self.__posicao_y + self.__altura_y / 2
+        origem_nave = self.__posicao_x + self.get_largura_x() / 2, self.get_posicao_y() + self.get_altura_y() / 2
         angulo_rotacao = math.radians(-self.get_angulo_rotacao())
 
         poligono_rotacionado = []
@@ -236,9 +236,9 @@ class Nova_nave:
             # pega o vertice final horizontal da area de pouso do terreno
             fim_area_pouso_horizontal = mapa.get_pouso_nave_line()[2]
 
-            # verifica a colisao entre a nave e a area de pouso
-            if self.get_posicao_x() >= inicio_area_pouso_horizontal \
-                    and self.get_posicao_x() + self.get_largura_x() <= fim_area_pouso_horizontal \
+            # verifica a colisao entre a nave e a area de pouso, permite pousar ate na metade da nave em colisao
+            if self.get_posicao_x()+ self.get_largura_x()/2 >= inicio_area_pouso_horizontal \
+                    and self.get_posicao_x() + self.get_largura_x()/2 <= fim_area_pouso_horizontal \
                     and self.get_posicao_y() + self.get_altura_y() >= mapa.get_altura_pouso_nave() - mapa.get_espessura_line_pouso_nave()/2:
                 self.set_colidiu_area_pouso(True)
                 print("COLIDIU COM A AREA DE POUSO")
@@ -269,8 +269,8 @@ class Nova_nave:
             self.set_combustivel(self.get_combustivel()-1)
             print("acelerei")
 
-            # permite aumentar o tamanho do propulsor ate 1
-            if self.__potencia_propulsor < 1:
+            # permite aumentar o tamanho do propulsor baseado no tamanho dela "%"
+            if self.__potencia_propulsor < self.get_altura_y()/1000*10:
                 self.__potencia_propulsor += (self.get_gravidade_lua() / tela.get_fps())* tempo  * self.get_friccao()
 
             if self.get_velocidade_y() <= self.get_gravidade_lua():
