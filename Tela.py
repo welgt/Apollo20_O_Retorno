@@ -73,7 +73,7 @@ class Nova_tela:
         # RELOGIO
         if self.__milisegundos < self.get_fps():
             self.__milisegundos += 1
-            print("milisegundos  : ", self.__milisegundos)
+
         else:
             self.__segundos += 1
             #print("segundos :------------", self.__segundos)

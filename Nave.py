@@ -29,6 +29,15 @@ class Nova_nave:
         self.__combustivel = 1000
         self.__gravidade_lua = 1.6
         self.__altitude = 0
+        self.__som_propulsor = pygame.mixer.music
+        self.__volume = 0
+
+    def set_volume_propulsor(self, volume):
+        self.__som_propulsor.set_volume(volume)
+
+    def get_volume_propulsor(self):
+        return self.__som_propulsor.get_volume()
+
 
     def set_altitude(self, altitude):
         self.__altitude = altitude
@@ -268,17 +277,17 @@ class Nova_nave:
             else:
                 self.set_colidiu_area_pouso(False)
 
-        #else:
-            #print("NAO FOI POSSIVEL SORTEAR UMA AREA DE POUSO, REDESENHANDO TERRENO")
-            # se caso nao tiver sorteado a area de pouso manda desenhar o terreno denovo
-            #mapa.desenha_terreno(tela)
-
 
 
     # ACELERACAO do propulsor
     def aceleracao_propulsor(self, tempo, tela):
 
         if self.get_propulsor_ativo() == True and self.get_colidiu_tela() == False and self.get_colidiu_area_pouso() == False:
+
+            self.__som_propulsor.load('arquivos/nave/Matt Script-Airplanes & Airports-Walla & Ambience/propulsor.mp3')
+            self.set_volume_propulsor(0.5)
+            self.__som_propulsor.play()
+
             # gasta combustivel ao acelerar
             if self.get_combustivel()>0:
                 self.set_combustivel(self.get_combustivel() - 1)
@@ -287,7 +296,7 @@ class Nova_nave:
 
             #if self.get_velocidade_y() <= self.get_gravidade_lua():
             self.__velocidade_y-= (self.get_gravidade_lua() / tempo)  * self.get_friccao()
-            print("acelerei")
+            #print("acelerei")
 
             # permite aumentar o tamanho do propulsor baseado no tamanho dela "%"
             if self.__potencia_propulsor < self.get_altura_y()/1000*10:
@@ -313,6 +322,9 @@ class Nova_nave:
         if self.get_propulsor_ativo() == False and self.get_colidiu_tela() == False \
             and self.get_colidiu_area_pouso() == False:
 
+            #self.__som_propulsor.fadeout()
+            self.__som_propulsor.fadeout(100)
+
             self.__velocidade_y += (self.get_gravidade_lua() / tempo) * self.get_friccao()*3
             # diminiu o tamanho do propulsor
             self.__potencia_propulsor -= (self.get_gravidade_lua() / tempo)  * self.get_friccao()
@@ -320,6 +332,7 @@ class Nova_nave:
             # caso ele for menor que zero, fique em zero.
             if self.get_potencia_propulsor() < 0:
                 self.set_potencia_propulsor(0)
+
             if self.get_velocidade_y() >= self.get_gravidade_lua():
                 self.set_velocidade_y(self.get_gravidade_lua())
 

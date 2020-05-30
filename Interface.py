@@ -1,6 +1,4 @@
-from random import randint
 
-import pygame
 from Tela import *
 
 pygame.font.init()
@@ -20,7 +18,7 @@ class fonte_texto:
 
 
 
-    def cria_texto(self, tamanho, cor, visivel):
+    def cria(self, tamanho, cor, visivel):
         self.set_tamanho(tamanho)
         fonte_botao = pygame.font.SysFont(self.__fonte_default, self.get_tamanho())
         self.__surface = fonte_botao.render(self.get_texto(), visivel, cor)
@@ -67,8 +65,8 @@ class painel:
         self.__altura = 0
         self.__ativo = False
         self.__opacidade = 100
-
         self.__borda_botao = None
+
 
     def get_ativo(self):
         return self.__ativo
@@ -118,7 +116,7 @@ class painel:
 
 
 
-    def cria_painel(self, tela, posicao_x, posicao_y, largura, altura):
+    def cria(self, tela, posicao_x, posicao_y, largura, altura):
         self.__posicao_x = posicao_x + tela.get_resolucao()[0] / 2 - self.__largura / 2
         self.__posicao_y = posicao_y + tela.get_resolucao()[1] / 2 - self.__altura / 2
         self.__largura = (tela.get_resolucao()[0] / 1000) * (largura * 10)
@@ -141,7 +139,6 @@ class painel:
             tela.blit(self.__painel,(self.__posicao_x, self.__posicao_y))
             self.__draw_borda(tela, AMARELO)
 
-
     def __draw_borda(self, tela, cor):
         self.__borda_botao = [(self.__posicao_x, self.__posicao_y),
                  (self.__posicao_x + self.__largura, self.__posicao_y),
@@ -163,6 +160,14 @@ class botao:
         self.__qtd_botao = 0
         self.__clicou = False
         self.__mouse_cont = 0
+        self.__som_botao = pygame.mixer.music
+        self.__area_colisao = False
+
+    def get_volume(self):
+        return self.__som_botao.get_volume()
+
+    def set_volume(self, volume):
+        self.__som_botao.set_volume(volume)
 
     def get_mouse_cont(self):
         return self.__mouse_cont
@@ -213,16 +218,16 @@ class botao:
 
 
 
-    def criar_botao(self, painel, posicao_x, posicao_y, largura, altura):
-
+    def criar(self, painel, posicao_x, posicao_y, largura, altura):
 
         self.__posicao_x = posicao_x + painel.get_posicao_x() + painel.get_largura() / 2 - self.__largura / 2
         self.__posicao_y = posicao_y + painel.get_posicao_y() + painel.get_altura() / 2 - self.__altura / 2
         self.__largura = (painel.get_largura() / 1000) * (largura * 10)
         self.__altura = (painel.get_altura()/1000)* (altura*10)
 
+        self.__colidiu(painel)
 
-    def draw_botao(self, tela, texto):
+    def draw(self, tela, texto):
 
         self.__botao = pygame.Rect(self.__posicao_x, self.__posicao_y, self.__largura, self.__altura)
         tela.draw_rect(self.get_cor(), self.__botao)
@@ -231,15 +236,11 @@ class botao:
         txt_botao = fonte_texto()
         txt_botao.set_texto(texto, 'Times new roman')
         txt_botao.set_tamanho(int(self.get_largura()/1000*150))
-        txt_botao.cria_texto(txt_botao.get_tamanho(), WHITE, 1)
-
-
-
-
+        txt_botao.cria(txt_botao.get_tamanho(), WHITE, 1)
 
         tela.blit(txt_botao.get_surface(), (self.get_posicao_x() + txt_botao.get_tamanho()*1.5, self.get_posicao_y()))
 
-        self.__draw_borda(RED, tela)
+        self.__draw_borda(WHITE, tela)
 
 
     def __draw_borda(self, cor, tela):
@@ -254,31 +255,38 @@ class botao:
 
 
     # verifica colisao entre a posicao do mouse_x_y e o objeto chamado na funcao
-    def __colidiu(self):
+    def __colidiu(self, painel):
 
-        if pygame.mouse.get_pos()[0] >= self.get_posicao_x() \
-                and pygame.mouse.get_pos()[0] <= self.get_posicao_x() + self.get_largura() \
-                and pygame.mouse.get_pos()[1] >= self.get_posicao_y() \
-                and pygame.mouse.get_pos()[1] <= self.get_posicao_y() + self.get_altura():
+        if painel.get_ativo() == True:
+            if pygame.mouse.get_pos()[0] >= self.get_posicao_x() \
+                    and pygame.mouse.get_pos()[0] <= self.get_posicao_x() + self.get_largura() \
+                    and pygame.mouse.get_pos()[1] >= self.get_posicao_y() \
+                    and pygame.mouse.get_pos()[1] <= self.get_posicao_y() + self.get_altura():
 
-            return True
-        else:
-            self.set_mouse_cont(0)
-            return False
+                self.__area_colisao = True
+                return True
+            else:
+                self.__area_colisao = False
+                self.set_mouse_cont(0)
+                return False
 
 
-    def evento(self, evento, botao):
+
+
+    def evento(self, evento, botao, painel):
 
         # se o botao que me chamou colidiu faça:
-        if botao.__colidiu() == True:
+        if botao.__colidiu(painel) == True:
             #self.set_mouse_cont(0)
 
             #captura o click do mouse caso ele for apertado
             if evento.type == pygame.MOUSEBUTTONDOWN:
+                self.__som_botao.load('arquivos/botao/InspectorJ-UI- Mechanical/UI_Mechanical_Move_40.mp3')
+                self.__som_botao.set_volume(0.3)
+                self.__som_botao.play()
                 botao.set_mouse_cont(1)
                 botao.set_clicou(True)
                 botao.set_cor(RED)
-
 
 
             # captura se o mouse nao esta apertado e nesse caso so se for em cima do botao
@@ -291,6 +299,7 @@ class botao:
 
         if botao.get_clicou() == False:
             botao.set_mouse_cont(0)
+
 
         if evento.type == pygame.MOUSEBUTTONUP:
             botao.set_clicou(False)
