@@ -13,15 +13,9 @@ mapa = Mapa_do_jogo()
 mapa.set_cor_terreno(WHITE)
 mapa.set_cor_borda_terreno(GREEN)
 gamePlay = Nova_tela("Menu", (1200,600))
-
-
-
-
 #gamePlay.set_resolucao_tela((pygame.display.list_modes()[0][0],pygame.display.list_modes()[0][1]))
 
-
-
-nave = Nova_nave('arquivos/nave.png', 300, 300)
+nave = Nova_nave('arquivos/nave.png', gamePlay.get_resolucao()[0]/2, 100)
 print("Combustivel inicial: ", nave.get_combustivel())
 terra = Nova_nave('arquivos/terra3.png', 800, 50)
 
@@ -31,9 +25,22 @@ painel_config = painel()
 painel_config.set_ativo(False)
 painel_sair = painel()
 painel_sair.set_ativo(False)
+painel_hud = painel()
 
-texto_botao_play = 'PLAY'
-msg_exit = fonte_texto()
+texto_velocidade_nave_hud = fonte_texto()
+texto_combustivel_hud = fonte_texto()
+
+texto_altitude_hud = fonte_texto()
+
+
+texto_angulo_nave_hud = fonte_texto()
+texto_contagem_regressiva_hud = fonte_texto()
+
+
+
+texto_botao_play = '   PLAY'
+texto_exit = fonte_texto()
+
 
 botao_play = botao()
 botao_exit = botao()
@@ -62,6 +69,7 @@ jogoAtivo = True
 config = False
 tempo = 0
 nova_resolucao = False
+
 
 
 
@@ -125,18 +133,18 @@ while jogoAtivo:
 
 
         painel_menu .cria_painel(gamePlay, 0, 0, 40, 45)
-        painel_menu.draw_painel(gamePlay,WHITE)
+        painel_menu.draw_painel(gamePlay,AMARELO, 120)
 
         botao_play.criar_botao(painel_menu, 0, -50, 30, 10)
         botao_play.draw_botao(gamePlay, texto_botao_play)
         #botao_play.draw_borda_botao(gamePlay,RED)
 
         botao_confg.criar_botao(painel_menu, 0, 0, 30, 10)
-        botao_confg.draw_botao(gamePlay, 'CONFIG..')
+        botao_confg.draw_botao(gamePlay, ' CONFIG..')
         #botao_confg.draw_borda_botao(gamePlay,RED)
 
         botao_exit.criar_botao(painel_menu, 0, 50, 30, 10)
-        botao_exit.draw_botao(gamePlay, 'EXIT')
+        botao_exit.draw_botao(gamePlay, '    EXIT')
         #botao_exit.draw_borda_botao(gamePlay,RED)
 
         evento_botoes()
@@ -145,9 +153,9 @@ while jogoAtivo:
     if painel_config.get_ativo()== True:
 
         painel_config.cria_painel(gamePlay, -0, 0, 40, 45)
-        painel_config.draw_painel(gamePlay, WHITE)
+        painel_config.draw_painel(gamePlay, AMARELO, 120)
 
-        botao_voltar.criar_botao(painel_config, 0, 100, 30, 10)
+        botao_voltar.criar_botao(painel_config, 0, gamePlay.get_proporcao()[1]*150, 30, 10)
         botao_voltar.draw_botao(gamePlay, 'VOLTAR')
 
         evento_botoes()
@@ -157,21 +165,55 @@ while jogoAtivo:
     if painel_sair.get_ativo() == True:
 
         painel_sair.cria_painel(gamePlay,0,0, 50, 20)
-        painel_sair.draw_painel(gamePlay,AMARELO)
+        painel_sair.draw_painel(gamePlay,WHITE, 120)
 
-        msg_exit.set_texto("Voce tem certeza que quer fechar o jogo?", 'Times new roman')
-        msg_exit.cria_texto(35, WHITE, 1)
-        gamePlay.get_surface_tela().blit(msg_exit.get_surface(), (painel_sair.get_posicao_x() , 110))
-
-
-        botao_sim.criar_botao(painel_sair, -100, 0, 30, 30)
-        botao_sim.draw_botao(gamePlay, 'SIM')
+        texto_exit.set_texto("Voce tem certeza que quer fechar o jogo?", 'Times new roman')
+        texto_exit.cria_texto(int(gamePlay.get_proporcao()[0]*30), WHITE, 1)
+        gamePlay.blit(texto_exit.get_surface(), (painel_sair.get_posicao_x() , 110))
 
 
-        botao_nao.criar_botao(painel_sair, 100, 0, 30, 30)
-        botao_nao.draw_botao(gamePlay, 'NÃO')
+        botao_sim.criar_botao(painel_sair, -gamePlay.get_proporcao()[0]*120, 0, 30, 30)
+        botao_sim.draw_botao(gamePlay, '   SIM')
+
+
+        botao_nao.criar_botao(painel_sair, gamePlay.get_proporcao()[0]*120, 0, 30, 30)
+        botao_nao.draw_botao(gamePlay, '   NÃO')
 
         evento_botoes()
+
+    # HUD
+    if painel_hud.get_ativo() == True:
+
+        painel_hud.cria_painel(gamePlay,0, -gamePlay.get_resolucao()[1]/2 + 30, 98, int(gamePlay.get_proporcao()[1]*10))
+        painel_hud.draw_painel(gamePlay, WHITE, 120)
+
+        if gamePlay.get_cronometro()[2]<6:
+            temp = 5
+            temp -=gamePlay.get_cronometro()[2]
+            texto_contagem_regressiva_hud.set_texto(" {0:4.4s} ".format(str(temp)), 'Times new roman')
+            texto_contagem_regressiva_hud.cria_texto(int(gamePlay.get_proporcao()[1]*100), WHITE, 1)
+            gamePlay.blit(texto_contagem_regressiva_hud.get_surface(),
+                          (gamePlay.get_resolucao()[0] / 2 - texto_contagem_regressiva_hud.get_tamanho() / 2,
+                           gamePlay.get_resolucao()[1] / 2 - texto_contagem_regressiva_hud.get_tamanho() / 2))
+
+        texto_velocidade_nave_hud.set_texto(" Velocidade:{0:4.4s} ".format(str(abs(nave.get_velocidade_y()))) , 'Times new roman')
+        texto_velocidade_nave_hud.cria_texto(int(gamePlay.get_proporcao()[1]*30), BLACK, 1)
+        gamePlay.blit(texto_velocidade_nave_hud.get_surface(), (painel_hud.get_posicao_x(), painel_hud.get_posicao_y()))
+
+        texto_combustivel_hud.set_texto(" Combustivel:{0:4.4s} ".format(str(nave.get_combustivel())) , 'Times new roman')
+        texto_combustivel_hud.cria_texto(int(gamePlay.get_proporcao()[1]*30), BLACK, 1)
+        gamePlay.blit(texto_combustivel_hud.get_surface(), (painel_hud.get_posicao_x()+150, painel_hud.get_posicao_y()))
+
+        texto_altitude_hud.set_texto(" Altitude (arrumar):{0:4.4s} ".format(str(nave.get_posicao_y())) , 'Times new roman')
+        texto_altitude_hud.cria_texto(int(gamePlay.get_proporcao()[1]*30), BLACK, 1)
+        gamePlay.blit(texto_altitude_hud.get_surface(), (painel_hud.get_posicao_x()+350, painel_hud.get_posicao_y()))
+
+
+
+
+        evento_botoes()
+
+
 
 
 
@@ -179,6 +221,7 @@ while jogoAtivo:
     if botao_play.get_clicou() == True:
         game_loop = True
         painel_menu.set_ativo(False)
+        painel_hud.set_ativo(True)
 
 
     if botao_confg.get_clicou() == True:
@@ -210,102 +253,105 @@ while jogoAtivo:
     #GAMEPLAY
     if game_loop == True:
 
-        mapa.desenha_terreno(gamePlay, nave)
-        if mapa.get_existe_area_pouso() == False:
+        gamePlay.cronometro()
+
+        if gamePlay.get_cronometro()[2]>5:
             mapa.desenha_terreno(gamePlay, nave)
-            print("NAO FOI POSSIVEL SORTEAR UMA AREA DE POUSO, REDESENHANDO TERRENO")
+            if mapa.get_existe_area_pouso() == False:
+                mapa.desenha_terreno(gamePlay, nave)
+                print("NAO FOI POSSIVEL SORTEAR UMA AREA DE POUSO, REDESENHANDO TERRENO")
 
-        terra.set_tamanho(250, 250)
-        nave.set_tamanho(int((gamePlay.get_resolucao()[0]/1000)*18),int((gamePlay.get_resolucao()[0]/1000)*30))
-        nave.set_friccao(0.1)
-        nave.set_velocidade_rotacao(nave.get_gravidade_lua())
+            terra.set_tamanho(int(gamePlay.get_proporcao()[0] * 180), int(gamePlay.get_proporcao()[0] * 180))
+            nave.set_tamanho(int(gamePlay.get_proporcao()[0] * 18),
+                             int(gamePlay.get_proporcao()[1] * 50))
+            nave.set_friccao(0.1)
+            nave.set_velocidade_rotacao(nave.get_gravidade_lua())
+            print("main, tamanho da nave :", nave.get_largura_x())
 
-
-        velocidade_x = nave.get_velocidade_x()
-        velocidade_y = nave.get_velocidade_y()
-        posicao_x = nave.get_posicao_x()
-        posicao_y = nave.get_posicao_y()
-        potencia_propulsor = nave.get_potencia_propulsor()
-        angulo = nave.get_angulo_rotacao()
-
-        posicao_x += velocidade_x
-        posicao_y += velocidade_y
-
-        # so tem velocidade caso nao colidiu com a tela
-        if nave.get_colidiu_tela() == False:
-            nave.set_posicao(posicao_x, posicao_y)
-
-        nave.verifica_colisao_tela(gamePlay)
-        nave.verifica_colisao_area_pouso(mapa)
-        nave.verifica_colisao_terreno(mapa, gamePlay)
-
-        # se a nave pousou verifique as condicoes e atribua a pontuacao correta
-        if nave.get_colidiu_area_pouso() == True:
-            painel_menu.set_ativo(True)
+            velocidade_x = nave.get_velocidade_x()
+            velocidade_y = nave.get_velocidade_y()
+            posicao_x = nave.get_posicao_x()
+            posicao_y = nave.get_posicao_y()
+            potencia_propulsor = nave.get_potencia_propulsor()
             angulo = nave.get_angulo_rotacao()
-            nave.set_angulo_rotacao(angulo)
-            if nave.get_angulo_rotacao()<=15 and nave.get_angulo_rotacao() >= -15:
-                pouso_perfeito = 150
-                dados.set_pontos(pouso_perfeito)
 
-            elif nave.get_angulo_rotacao() <= 25 and nave.get_angulo_rotacao() >= -25:
-                pouso_toleravel = 100
-                dados.set_pontos(pouso_toleravel)
+            posicao_x += velocidade_x
+            posicao_y += velocidade_y
 
-            elif nave.get_angulo_rotacao() <= 35 and nave.get_angulo_rotacao() >= -35:
-                pouso_forcado = 50
-                dados.set_pontos(pouso_forcado)
+            # so tem velocidade caso nao colidiu com a tela
+            if nave.get_colidiu_tela() == False:
+                nave.set_posicao(posicao_x, posicao_y)
 
+            nave.verifica_colisao_tela(gamePlay)
+            nave.verifica_colisao_area_pouso(mapa)
+            nave.verifica_colisao_terreno(mapa, gamePlay)
+
+            # se a nave pousou verifique as condicoes e atribua a pontuacao correta
+            if nave.get_colidiu_area_pouso() == True:
+                painel_menu.set_ativo(True)
+                angulo = nave.get_angulo_rotacao()
+                nave.set_angulo_rotacao(angulo)
+                if nave.get_angulo_rotacao() <= 15 and nave.get_angulo_rotacao() >= -15:
+                    pouso_perfeito = 150
+                    dados.set_pontos(pouso_perfeito)
+
+                elif nave.get_angulo_rotacao() <= 25 and nave.get_angulo_rotacao() >= -25:
+                    pouso_toleravel = 100
+                    dados.set_pontos(pouso_toleravel)
+
+                elif nave.get_angulo_rotacao() <= 35 and nave.get_angulo_rotacao() >= -35:
+                    pouso_forcado = 50
+                    dados.set_pontos(pouso_forcado)
+
+                else:
+                    print("Voce morreu")
+
+            if nave.get_colidiu_terreno() == True:
+                print("colidiu", nave.get_colidiu_terreno())
+                # painel_menu.set_ativo(True)
+                # mapa.set_cor_terreno(CYAN)
+                mapa.set_cor_borda_terreno(CYAN)
             else:
-                print("Voce morreu")
+                nave.set_colidiu_terreno(False)
+                # mapa.set_cor_terreno(MARRON)
+                mapa.set_cor_borda_terreno(AMARELO)
 
-        if nave.get_colidiu_terreno() == True:
-            print("colidiu", nave.get_colidiu_terreno())
-            #painel_menu.set_ativo(True)
-            #mapa.set_cor_terreno(CYAN)
-            mapa.set_cor_borda_terreno(CYAN)
-        else:
-            nave.set_colidiu_terreno(False)
-            #mapa.set_cor_terreno(MARRON)
-            mapa.set_cor_borda_terreno(AMARELO)
+            # print("pontos :", dados.get_pontos())
+            # futura condicao de dano/perca pontos/morte etc
+            # if nave.get_colidiu_tela() == True:
+            #   print('colidiu com a a tela')
 
+            # ACELERACAO do propulsor
+            nave.aceleracao_propulsor(tempo, gamePlay)
+            # GRAVIDADE
+            nave.gravidade(tempo, gamePlay)
 
+            # so adiciona angulo do lado esquerdo da nave se for o grau maximo permitido de 90
+            if nave.get_rotacionou_esq() and nave.get_angulo_rotacao() <= 90:
+                angulo += nave.get_velocidade_rotacao()
+                nave.set_angulo_rotacao(angulo)
 
-        #print("pontos :", dados.get_pontos())
-        # futura condicao de dano/perca pontos/morte etc
-        #if nave.get_colidiu_tela() == True:
-         #   print('colidiu com a a tela')
+            # so adiciona angulo do lado direito da nave se for o grau maximo permitido de 90
+            if nave.get_rotacionou_dir() and nave.get_angulo_rotacao() >= -90:
+                angulo -= nave.get_velocidade_rotacao()
+                nave.set_angulo_rotacao(angulo)
 
-        # ACELERACAO do propulsor
-        nave.aceleracao_propulsor(tempo, gamePlay)
-        # GRAVIDADE
-        nave.gravidade(tempo, gamePlay)
+            # cria poligono propulsor e recebe tamanho da calda
+            poligono_propulsor_dir = nave.criaPoligono_Propulsor(nave.get_largura_x() / 10, nave.get_largura_x() / 4.5,
+                                                                 nave.get_potencia_propulsor() * gamePlay.get_fps())
 
-        # so adiciona angulo do lado esquerdo da nave se for o grau maximo permitido de 90
-        if nave.get_rotacionou_esq() and nave.get_angulo_rotacao() <= 90:
-            angulo += nave.get_velocidade_rotacao()
-            nave.set_angulo_rotacao(angulo)
+            poligono_propulsor_esq = nave.criaPoligono_Propulsor(nave.get_largura_x() / 10, -nave.get_largura_x() / 5,
+                                                                 nave.get_potencia_propulsor() * gamePlay.get_fps())
 
-        # so adiciona angulo do lado direito da nave se for o grau maximo permitido de 90
-        if nave.get_rotacionou_dir() and nave.get_angulo_rotacao() >= -90:
-            angulo -= nave.get_velocidade_rotacao()
-            nave.set_angulo_rotacao(angulo)
+            # rotaciona a (imagem) nave
+            nave_rot = nave.rotacaoCentralizada()
 
+            gamePlay.blit(terra.get_surface(), terra.get_posicao())
+            gamePlay.blit(nave_rot[0], nave_rot[1])
+            gamePlay.draw_polygon(CYAN, poligono_propulsor_dir)
+            gamePlay.draw_polygon(CYAN, poligono_propulsor_esq)
 
-
-        # cria poligono propulsor e recebe tamanho da calda
-        poligono_propulsor_dir = nave.criaPoligono_Propulsor(nave.get_largura_x()/10, nave.get_largura_x()/4.5, nave.get_potencia_propulsor() * gamePlay.get_fps())
-        poligono_propulsor_esq = nave.criaPoligono_Propulsor(nave.get_largura_x()/10, -nave.get_largura_x()/5, nave.get_potencia_propulsor() * gamePlay.get_fps())
-
-        # rotaciona a (imagem) nave
-        nave_rot = nave.rotacaoCentralizada()
-
-        gamePlay.blit(terra.get_surface(), terra.get_posicao())
-        gamePlay.blit(nave_rot[0], nave_rot[1])
-        gamePlay.draw_polygon(CYAN, poligono_propulsor_dir)
-        gamePlay.draw_polygon(CYAN, poligono_propulsor_esq)
     tempo+=0.1
-    gamePlay.cronometro()
     gamePlay.flip()
     gamePlay.set_fps(30)
     print("Combustivel :", nave.get_combustivel())

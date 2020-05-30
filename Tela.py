@@ -16,6 +16,11 @@ class Nova_tela:
         self.__minuto = 0
         self.__hora = 0
 
+        self.__proporcao = resolucao[0]/1000, resolucao[1]/1000
+
+    def get_proporcao(self):
+        return self.__proporcao
+
     def get_surface_tela(self):
         return self.__tela
 
@@ -51,6 +56,7 @@ class Nova_tela:
         pygame.display.flip()
 
     def draw_polygon(self, cor, lista_vertice):
+        #pygame.Surface.set_alpha()
         pygame.draw.polygon(self.__tela, cor, lista_vertice)
 
     def draw_rect(self, cor, retangulo):

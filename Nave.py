@@ -88,18 +88,25 @@ class Nova_nave:
     def set_potencia_propulsor(self, potencia_propulsor):
         self.__potencia_propulsor = potencia_propulsor
 
+    def set_largura(self, largura):
+        self.__largura_x = largura
+
     def get_largura_x(self):
         return self.__largura_x
 
+    def set_altura(self, altura):
+        self.__altura_y = altura
+
     def get_altura_y(self):
         return self.__altura_y
+
 
     def set_tamanho(self, novo_tamanho_x, novo_tamanho_y):
         self.__surface = pygame.transform.scale(self.__surface, (novo_tamanho_x, novo_tamanho_y))
         novo_centro = novo_tamanho_x/2, novo_tamanho_y/2
         self.set_centro(novo_centro)
-        self.__largura_x = novo_tamanho_x
-        self.__altura_y = novo_tamanho_y
+        self.set_largura(novo_tamanho_x)
+        self.set_altura(novo_tamanho_y)
 
 
     def get_centro_surface(self):

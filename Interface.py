@@ -9,7 +9,9 @@ class fonte_texto:
         #self.__inicializa_fonte = pygame.font.init()
         self.__fonte_default = pygame.font.get_default_font()
         ##self.__fonte_default = 'Arial'
-        self.__tamanho = 10
+        self.__tamanho = 0
+        self.__posicao_x = 0
+        self.__posicao_y = 0
         self.__fonte_botao = None
         self.__visivel = 0
         self.__cor = 0
@@ -17,10 +19,24 @@ class fonte_texto:
         self.__texto = ""
 
 
-    def cria_texto(self,tamanho, cor, visivel):
+
+    def cria_texto(self, tamanho, cor, visivel):
         self.set_tamanho(tamanho)
         fonte_botao = pygame.font.SysFont(self.__fonte_default, self.get_tamanho())
         self.__surface = fonte_botao.render(self.get_texto(), visivel, cor)
+
+    def get_posicao_x(self):
+        return self.__posicao_x
+
+    def set_posicao_x(self, posicao):
+        self.__posicao_x = posicao
+
+    def get_posicao_y(self):
+        return self.__posicao_y
+
+    def set_posicao_y(self, posicao):
+        self.__posicao_y = posicao
+
 
     def set_tamanho(self, tamanho):
         self.__tamanho = tamanho
@@ -50,6 +66,7 @@ class painel:
         self.__largura = 0
         self.__altura = 0
         self.__ativo = False
+        self.__opacidade = 100
 
         self.__borda_botao = None
 
@@ -92,6 +109,13 @@ class painel:
     def get_painel(self):
         return self.__painel
 
+    def get_opacidade(self):
+        return self.__opacidade
+
+    def set_opacidade(self, opacidade):
+        self.__opacidade = opacidade
+
+
 
 
     def cria_painel(self, tela, posicao_x, posicao_y, largura, altura):
@@ -102,12 +126,19 @@ class painel:
 
        
 
-    def draw_painel(self, tela, cor):
-        self.__painel = pygame.Rect(self.__posicao_x, self.__posicao_y, self.__largura,
-                                    self.__altura)
+    def draw_painel(self, tela, cor, opacidade):
+        #self.__painel = pygame.Rect(self.__posicao_x, self.__posicao_y, self.__largura,
+         #                           self.__altura)
+
+        self.__painel = pygame.Surface((self.__largura, self.__altura))
+        self.set_opacidade(opacidade)
+        self.__painel.set_alpha(self.get_opacidade())
+        self.set_cor(cor)
+        self.__painel.fill(self.get_cor())
 
         if self.get_ativo()== True:
-            tela.draw_rect(cor, self.__painel)
+            #tela.draw_rect(cor, self.__painel)
+            tela.blit(self.__painel,(self.__posicao_x, self.__posicao_y))
             self.__draw_borda(tela, AMARELO)
 
 
@@ -197,11 +228,16 @@ class botao:
         tela.draw_rect(self.get_cor(), self.__botao)
 
 
-        txt_play = fonte_texto()
-        txt_play.set_texto(texto, 'Times new roman')
-        txt_play.cria_texto(20, WHITE, 1)
-        tela.blit(txt_play.get_surface(), (self.get_posicao_x() +
-                                           txt_play.get_tamanho()+5,self.get_posicao_y()))
+        txt_botao = fonte_texto()
+        txt_botao.set_texto(texto, 'Times new roman')
+        txt_botao.set_tamanho(int(self.get_largura()/1000*150))
+        txt_botao.cria_texto(txt_botao.get_tamanho(), WHITE, 1)
+
+
+
+
+
+        tela.blit(txt_botao.get_surface(), (self.get_posicao_x() + txt_botao.get_tamanho()*1.5, self.get_posicao_y()))
 
         self.__draw_borda(RED, tela)
 

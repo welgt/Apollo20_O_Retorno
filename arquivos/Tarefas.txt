@@ -5,7 +5,7 @@ HUD
     - Feedback pontos totais
     - Feedback aceleracao da nave
     - Feedback combustivel
-    - Feedback latitude
+    - Feedback altitude
 
     SE DER TEMPO:
         - se der tempo, desenhar feedback de estabilidade de pouso

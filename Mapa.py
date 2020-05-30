@@ -137,19 +137,22 @@ class Mapa_do_jogo:
                     self.__existe_area_pouso = True
                     # coleta a divisao da abstracao da malha do terreno em x
                     x_largura_pouso = tela.get_resolucao()[0] / (self.__qtd_tuplas_terreno)
+                    if nave.get_largura_x()< x_largura_pouso:
+                        x_largura_pouso = nave.get_largura_x()
 
                     # pega o divisao e define o tamanho x e o centro do pouso. determina o vertice1 da direita.
                     #x_largura_pouso = ((x_largura_pouso + tela.get_resolucao()[0] / (self.__qtd_tuplas_terreno)) - nave.get_largura_x())
-                    x_largura_pouso = nave.get_largura_x()
+                    #x_largura_pouso = nave.get_largura_x()
                     # define o inicio do vertice2 da esquerda
                     x_fim_pouso = x_largura_pouso / 2
 
-                    # faz o rebaixo do pouso da nave no terreno
+
                     #self.__novo_terreno.insert((self.__cont), ((vertice[0] + x + x_fim_pouso), vertice[1] + self.__random_alturas_diferentes))
                     #self.__novo_terreno.insert((self.__cont), ((vertice[0] + x), vertice[1] + self.__random_alturas_diferentes))
 
+                    # faz o rebaixo do pouso da nave no terreno
                     self.__novo_terreno.append((vertice[0] + x, vertice[1] + self.__random_alturas_diferentes))
-                    self.__novo_terreno.append((vertice[0] + x + x_fim_pouso, vertice[1] + self.__random_alturas_diferentes ))
+                    self.__novo_terreno.append((vertice[0] + x + x_largura_pouso, vertice[1] + self.__random_alturas_diferentes ))
 
 
 
@@ -157,7 +160,7 @@ class Mapa_do_jogo:
                     self.__base_pouso_line =   [(vertice[0] + x),
                                                 (vertice[1] + self.__random_alturas_diferentes),
 
-                                                (vertice[0] + x + x_fim_pouso),
+                                                (vertice[0] + x + x_largura_pouso),
                                                 (vertice[1] + self.__random_alturas_diferentes)]
 
                     # desenha o feedback da area de pouso com um retangulo
@@ -196,7 +199,9 @@ class Mapa_do_jogo:
             self.set_redesenha_terreno(False)
 
         self.__debug()
+
         tela.draw_polygon(self.get_cor_terreno(), self.__terreno)
+
 
         self.__sort1 = random.randint(0, 255)
         self.__sort2 = random.randint(0, 255)
