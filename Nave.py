@@ -28,6 +28,14 @@ class Nova_nave:
         self.__nova_lista_colisores_terreno = []
         self.__combustivel = 1000
         self.__gravidade_lua = 1.6
+        self.__altitude = 0
+
+    def set_altitude(self, altitude):
+        self.__altitude = altitude
+
+    def get_altitude(self):
+        return  self.__altitude
+
 
     def get_gravidade_lua(self):
         return self.__gravidade_lua
@@ -271,17 +279,22 @@ class Nova_nave:
     def aceleracao_propulsor(self, tempo, tela):
 
         if self.get_propulsor_ativo() == True and self.get_colidiu_tela() == False and self.get_colidiu_area_pouso() == False:
-            self.__velocidade_y-= (self.get_gravidade_lua() / tela.get_fps()) * tempo  * self.get_friccao()
+            # gasta combustivel ao acelerar
+            if self.get_combustivel()>0:
+                self.set_combustivel(self.get_combustivel() - 1)
+            else:
+                self.set_combustivel(0)
 
-            self.set_combustivel(self.get_combustivel()-1)
+            #if self.get_velocidade_y() <= self.get_gravidade_lua():
+            self.__velocidade_y-= (self.get_gravidade_lua() / tempo)  * self.get_friccao()
             print("acelerei")
 
             # permite aumentar o tamanho do propulsor baseado no tamanho dela "%"
             if self.__potencia_propulsor < self.get_altura_y()/1000*10:
-                self.__potencia_propulsor += (self.get_gravidade_lua() / tela.get_fps())* tempo  * self.get_friccao()
+                self.__potencia_propulsor += (self.get_gravidade_lua() / tempo) * self.get_friccao()
 
-            if self.get_velocidade_y() <= self.get_gravidade_lua():
-                tempo = 0
+            #if self.get_velocidade_y() <= self.get_gravidade_lua():
+                #self.set_velocidade_y(-self.get_gravidade_lua())
 
                 # define nova direcao caso a nave esteja inclinada pra direita e propulsor ativo
                 if self.get_angulo_rotacao()<=1 and self.get_propulsor_ativo():
@@ -300,15 +313,15 @@ class Nova_nave:
         if self.get_propulsor_ativo() == False and self.get_colidiu_tela() == False \
             and self.get_colidiu_area_pouso() == False:
 
-            self.__velocidade_y += (self.get_gravidade_lua() / tela.get_fps()) * tempo * self.get_friccao()
+            self.__velocidade_y += (self.get_gravidade_lua() / tempo) * self.get_friccao()*3
             # diminiu o tamanho do propulsor
-            self.__potencia_propulsor -= (self.get_gravidade_lua() / tela.get_fps()) * tempo * self.get_friccao()
+            self.__potencia_propulsor -= (self.get_gravidade_lua() / tempo)  * self.get_friccao()
 
             # caso ele for menor que zero, fique em zero.
             if self.get_potencia_propulsor() < 0:
                 self.set_potencia_propulsor(0)
             if self.get_velocidade_y() >= self.get_gravidade_lua():
-                tempo = 0
+                self.set_velocidade_y(self.get_gravidade_lua())
 
 
     # calcula novos pontos(intermediario (x,y)) na lista de vertice existente do terreno e os adiciona dinamicamente.

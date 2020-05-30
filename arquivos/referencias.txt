@@ -1,21 +1,27 @@
 
 Rotating Objects 90 Degrees Around The Origin:
-    https://www.youtube.com/watch?v=LifhWhHVXJ0
+	https://www.youtube.com/watch?v=LifhWhHVXJ0
 
 Transformations - rotating shapes (2):
-    https://www.youtube.com/watch?v=F1eURZJ57c8
+    	https://www.youtube.com/watch?v=F1eURZJ57c8
 
 Tuplas e listas:
-    https://cadernoscicomp.com.br/tutorial/introducao-a-programacao-em-python-3/listas-em-python-3/
+    	https://cadernoscicomp.com.br/tutorial/introducao-a-programacao-em-python-3/listas-em-python-3/
 
 Impressao de textos na surface:
-    https://www.youtube.com/watch?v=wxL1hx3MuzA
+    	https://www.youtube.com/watch?v=wxL1hx3MuzA
 
 retaqngulo com trasparencia:
-    https://www.it-swarm.dev/pt/python/desenhe-um-retangulo-transparente-no-pygame/972567421/
+    	https://www.it-swarm.dev/pt/python/desenhe-um-retangulo-transparente-no-pygame/972567421/
 
 relembrar calculo distancia entre dois pontos rs:
-    https://escolakids.uol.com.br/matematica/distancia-entre-dois-pontos.htm
+    	https://escolakids.uol.com.br/matematica/distancia-entre-dois-pontos.htm
 
 Geogebra:
-    https://www.geogebra.org/classic?lang=pt
+    	https://www.geogebra.org/classic?lang=pt
+
+prints:
+    	https://blog.education-ecosystem.com/python-como-transformar-string-para-float-ou-int/
+
+Assuntos gerais:
+	http://programarcadegames.com/index.php?lang=pt-br&chapter=introduction_to_graphics
