@@ -30,7 +30,17 @@ class Nova_nave:
         self.__gravidade_lua = 1.6
         self.__altitude = 0
         self.__som_propulsor = pygame.mixer.music
-        self.__volume = 0
+        self.__cont = 0
+
+        #self.__volume = 0
+        #som = pygame.mixer.music
+        #som.load('arquivos/propulsor.mp3')
+        #som.play()
+        #som.set_volume(0.1)
+
+    def play_som_propulsor(self):
+        self.__som_propulsor.play()
+
 
     def set_volume_propulsor(self, volume):
         self.__som_propulsor.set_volume(volume)
@@ -278,15 +288,18 @@ class Nova_nave:
                 self.set_colidiu_area_pouso(False)
 
 
-
     # ACELERACAO do propulsor
     def aceleracao_propulsor(self, tempo, tela):
 
-        if self.get_propulsor_ativo() == True and self.get_colidiu_tela() == False and self.get_colidiu_area_pouso() == False:
 
-            self.__som_propulsor.load('arquivos/nave/Matt Script-Airplanes & Airports-Walla & Ambience/propulsor.mp3')
-            self.set_volume_propulsor(0.5)
+        if self.get_propulsor_ativo() == True and self.get_colidiu_tela() == False and self.get_colidiu_area_pouso() == False:
+            self.__cont += 1
+
+            #if self.__cont<=1:
+            self.__som_propulsor.load('arquivos/propulsor.mp3')
+
             self.__som_propulsor.play()
+
 
             # gasta combustivel ao acelerar
             if self.get_combustivel()>0:
@@ -323,7 +336,8 @@ class Nova_nave:
             and self.get_colidiu_area_pouso() == False:
 
             #self.__som_propulsor.fadeout()
-            self.__som_propulsor.fadeout(100)
+            self.__som_propulsor.fadeout(700)
+            self.__som_propulsor.stop()
 
             self.__velocidade_y += (self.get_gravidade_lua() / tempo) * self.get_friccao()*3
             # diminiu o tamanho do propulsor

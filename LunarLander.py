@@ -13,7 +13,7 @@ mapa = Mapa_do_jogo()
 mapa.set_cor_terreno(WHITE)
 mapa.set_cor_borda_terreno(GREEN)
 
-gamePlay = Nova_tela("Menu", (1200,700))
+gamePlay = Nova_tela("Menu", (1200,600))
 
 nave = Nova_nave('arquivos/nave.png', gamePlay.get_resolucao()[0]/2, 100)
 nave.set_altitude(abs(nave.get_posicao_y()- gamePlay.get_resolucao()[1]))
@@ -36,8 +36,12 @@ botao_voltar = botao()
 botao_sim = botao()
 botao_nao = botao()
 
-texto_botao_play = '   PLAY'
+botao_aumentar_volume_ambiente = botao()
+botao_diminuir_volume_ambiente = botao()
+
+texto_botao_play = 'PLAY'
 texto_exit = fonte_texto()
+
 
 def evento_botoes():
     botao().evento(event, botao_play, painel_menu)
@@ -46,6 +50,8 @@ def evento_botoes():
     botao().evento(event, botao_voltar, painel_config)
     botao().evento(event, botao_sim, painel_sair)
     botao().evento(event, botao_nao, painel_sair)
+    botao().evento(event, botao_aumentar_volume_ambiente, painel_config)
+
     #botao().verifica_colisao()
 
 texto_velocidade_nave_hud = fonte_texto()
@@ -54,6 +60,9 @@ texto_altitude_hud = fonte_texto()
 texto_angulo_nave_hud = fonte_texto()
 texto_pontos_hud = fonte_texto()
 texto_contagem_regressiva_hud = fonte_texto()
+texto_volume_mais = fonte_texto()
+texto_volume_menos = fonte_texto()
+
 
 dados = Dados()
 
@@ -63,6 +72,8 @@ jogoAtivo = True
 config = False
 tempo = 0
 nova_resolucao = False
+volume_propulsor = 0.1
+nave.set_volume_propulsor(volume_propulsor)
 
 
 
@@ -75,6 +86,8 @@ while jogoAtivo:
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 painel_menu.set_ativo(True)
+
+
 
                 game_loop = False
                 texto_botao_play = 'PAUSADO'
@@ -127,11 +140,11 @@ while jogoAtivo:
         #botao_play.draw_borda_botao(gamePlay,RED)
 
         botao_confg.criar(painel_menu, 0, 0, 30, 10)
-        botao_confg.draw(gamePlay, ' CONFIG..')
+        botao_confg.draw(gamePlay, 'CONFIG')
         #botao_confg.draw_borda_botao(gamePlay,RED)
 
         botao_exit.criar(painel_menu, 0, 50, 30, 10)
-        botao_exit.draw(gamePlay, '    EXIT')
+        botao_exit.draw(gamePlay, 'EXIT')
         #botao_exit.draw_borda_botao(gamePlay,RED)
 
         evento_botoes()
@@ -145,7 +158,17 @@ while jogoAtivo:
         botao_voltar.criar(painel_config, 0, gamePlay.get_proporcao()[1] * 150, 30, 10)
         botao_voltar.draw(gamePlay, 'VOLTAR')
 
+        botao_aumentar_volume_ambiente.criar(painel_config, 0, gamePlay.get_proporcao()[1] * 15, 5, 5)
+        botao_aumentar_volume_ambiente.draw(gamePlay, '+')
+
+        texto_volume_mais.set_texto('+', 'Times new roman')
+        texto_volume_mais.cria(int(gamePlay.get_proporcao()[0] * 30), WHITE, 1)
+        gamePlay.blit(texto_volume_mais.get_surface(), (botao_aumentar_volume_ambiente.get_posicao_x()+texto_volume_mais.get_largura_palavra()/2 ,
+                                                        botao_aumentar_volume_ambiente.get_posicao_y()))
+
         evento_botoes()
+
+
 
 
     # PAINEL CERTEZA DE SAIR
@@ -160,11 +183,11 @@ while jogoAtivo:
 
 
         botao_sim.criar(painel_sair, -gamePlay.get_proporcao()[0] * 120, 0, 30, 30)
-        botao_sim.draw(gamePlay, '   SIM')
+        botao_sim.draw(gamePlay, 'SIM')
 
 
         botao_nao.criar(painel_sair, gamePlay.get_proporcao()[0] * 120, 0, 30, 30)
-        botao_nao.draw(gamePlay, '   NÃO')
+        botao_nao.draw(gamePlay, 'NÃO')
 
         evento_botoes()
 
@@ -180,35 +203,30 @@ while jogoAtivo:
             texto_contagem_regressiva_hud.set_texto(" {0:4.4s} ".format(str(temp)), 'Times new roman')
             texto_contagem_regressiva_hud.cria(int(gamePlay.get_proporcao()[1] * 100), WHITE, 1)
             gamePlay.blit(texto_contagem_regressiva_hud.get_surface(),
-                          (gamePlay.get_resolucao()[0] / 2 - texto_contagem_regressiva_hud.get_tamanho() / 2,
-                           gamePlay.get_resolucao()[1] / 2 - texto_contagem_regressiva_hud.get_tamanho() / 2))
+                          (gamePlay.get_resolucao()[0] / 2 - texto_contagem_regressiva_hud.get_tamanho_letra() / 2,
+                           gamePlay.get_resolucao()[1] / 2 - texto_contagem_regressiva_hud.get_tamanho_letra() / 2))
 
         pos_textos = gamePlay.get_resolucao()[0]/5
-        texto_velocidade_nave_hud.set_texto(" Velocidade: {0:3.4s} ".format(str(abs(nave.get_velocidade_y()))) , 'Times new roman')
+        texto_velocidade_nave_hud.set_texto("Velocidade: {0:3.4s} ".format(str(abs(nave.get_velocidade_y()))) , 'Times new roman')
         texto_velocidade_nave_hud.cria(int(gamePlay.get_proporcao()[0] * 20), BLACK, 1)
         gamePlay.blit(texto_velocidade_nave_hud.get_surface(), (painel_hud.get_posicao_x(), painel_hud.get_posicao_y()))
 
-        texto_combustivel_hud.set_texto(" Combustivel: {0:4.4s} L. ".format(str(nave.get_combustivel())) , 'Times new roman')
+        texto_combustivel_hud.set_texto("Combustivel: {0:4.4s} L. ".format(str(nave.get_combustivel())) , 'Times new roman')
         texto_combustivel_hud.cria(int(gamePlay.get_proporcao()[0] * 20), BLACK, 1)
         gamePlay.blit(texto_combustivel_hud.get_surface(), (painel_hud.get_posicao_x() + gamePlay.get_proporcao()[0]+pos_textos*1, painel_hud.get_posicao_y()))
 
 
-
-        #reversed(temp)
-
-        texto_altitude_hud.set_texto(" Altitude : {0:4.5s} ".format(str(nave.get_altitude())) , 'Times new roman')
+        texto_altitude_hud.set_texto("Altitude : {0:4.5s} ".format(str(nave.get_altitude())) , 'Times new roman')
         texto_altitude_hud.cria(int(gamePlay.get_proporcao()[0] * 20), BLACK, 1)
         gamePlay.blit(texto_altitude_hud.get_surface(), (painel_hud.get_posicao_x()+gamePlay.get_proporcao()[0]+pos_textos*2, painel_hud.get_posicao_y()))
 
-        texto_angulo_nave_hud.set_texto(" Angulo nave : {0:4.4s} ".format(str(abs(nave.get_angulo_rotacao()))) , 'Times new roman')
+        texto_angulo_nave_hud.set_texto("Angulo nave : {0:4.4s} ".format(str(abs(nave.get_angulo_rotacao()))) , 'Times new roman')
         texto_angulo_nave_hud.cria(int(gamePlay.get_proporcao()[0] * 20), BLACK, 1)
         gamePlay.blit(texto_angulo_nave_hud.get_surface(), (painel_hud.get_posicao_x()+gamePlay.get_proporcao()[0]+pos_textos*3, painel_hud.get_posicao_y()))
 
-        texto_pontos_hud.set_texto(" Pontos : {0:4.4s} ".format(str(dados.get_pontos())) , 'Times new roman')
+        texto_pontos_hud.set_texto("Pontos : {0:4.4s} ".format(str(dados.get_pontos())) , 'Times new roman')
         texto_pontos_hud.cria(int(gamePlay.get_proporcao()[0] * 20), BLACK, 1)
         gamePlay.blit(texto_pontos_hud.get_surface(), (painel_hud.get_posicao_x()+gamePlay.get_proporcao()[0]+pos_textos*4, painel_hud.get_posicao_y()))
-
-
 
         evento_botoes()
 
@@ -221,7 +239,6 @@ while jogoAtivo:
         game_loop = True
         painel_menu.set_ativo(False)
         painel_hud.set_ativo(True)
-
 
 
     if botao_confg.get_clicou() == True:
@@ -250,10 +267,19 @@ while jogoAtivo:
         painel_sair.set_ativo(False)
 
 
+    if botao_aumentar_volume_ambiente.get_clicou() == True:
+        volume_propulsor+=0.1
+
+
+
+    print("btn volume propulsor ", botao_aumentar_volume_ambiente.get_clicou())
+    print("volume: ", nave.get_volume_propulsor())
+
     #GAMEPLAY
     if game_loop == True:
 
         gamePlay.cronometro()
+        #nave.set_volume_propulsor(nave.get_volume_propulsor())
 
         if gamePlay.get_cronometro()[2]>3:
 
@@ -266,8 +292,9 @@ while jogoAtivo:
             nave.set_tamanho(int(gamePlay.get_proporcao()[0] * 18),
                              int(gamePlay.get_proporcao()[1] * 50))
 
-            nave.set_friccao(0.5)
+            nave.set_friccao(1)
             nave.set_velocidade_rotacao(nave.get_gravidade_lua())
+            nave.set_volume_propulsor(volume_propulsor)
 
             velocidade_x = nave.get_velocidade_x()
             velocidade_y = nave.get_velocidade_y()
@@ -279,6 +306,8 @@ while jogoAtivo:
 
             posicao_x += velocidade_x
             posicao_y += velocidade_y
+
+
 
 
 
