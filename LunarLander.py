@@ -13,7 +13,7 @@ mapa = Mapa_do_jogo()
 mapa.set_cor_terreno(WHITE)
 mapa.set_cor_borda_terreno(GREEN)
 
-gamePlay = Nova_tela("Menu", (1200,600))
+gamePlay = Nova_tela("Menu", (1200,700))
 
 nave = Nova_nave('arquivos/nave.png', gamePlay.get_resolucao()[0]/2, 100)
 nave.set_altitude(abs(nave.get_posicao_y()- gamePlay.get_resolucao()[1]))
@@ -68,8 +68,6 @@ nova_resolucao = False
 
 while jogoAtivo:
 
-
-
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             jogoAtivo = False
@@ -77,12 +75,9 @@ while jogoAtivo:
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 painel_menu.set_ativo(True)
-                #botao_confg.set_clicou(False)
-                # tem que fazer um pouse aqui pra so depois setar o botao play como falso
-                #botao_play.set_clicou(False)
+
                 game_loop = False
                 texto_botao_play = 'PAUSADO'
-
 
 
             elif event.key == pygame.K_LEFT:
