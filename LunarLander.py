@@ -39,6 +39,7 @@ botao_sim = botao()
 botao_nao = botao()
 botao_slider_volume_ambiente = botao()
 botao_bola_slider_volume_ambiente = botao()
+botao_full_scren = botao()
 
 def evento_botoes():
     botao().evento(event, botao_play, painel_menu)
@@ -48,6 +49,7 @@ def evento_botoes():
     botao().evento(event, botao_sim, painel_sair)
     botao().evento(event, botao_nao, painel_sair)
     botao().evento(event, botao_bola_slider_volume_ambiente, painel_config)
+    botao().evento(event, botao_full_scren, painel_config)
 
 
 texto_velocidade_nave_hud = fonte_texto()
@@ -57,9 +59,11 @@ texto_angulo_nave_hud = fonte_texto()
 texto_pontos_hud = fonte_texto()
 texto_contagem_regressiva_hud = fonte_texto()
 texto_volume_ambiente = fonte_texto()
+texto_fullscreen = fonte_texto()
 
 texto_botao_play = 'PLAY'
 texto_exit = fonte_texto()
+cor_botao_fullscreen = BLACK
 
 
 dados = Dados()
@@ -78,8 +82,6 @@ nave.set_volume_propulsor(volume_propulsor)
 
 
 while jogoAtivo:
-
-    print(pygame.display.list_modes())
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -129,13 +131,11 @@ while jogoAtivo:
     # PAINEL MENU
     if painel_menu.get_ativo() == True:
 
-
         painel_menu .cria(gamePlay, 0, 0, 40, 45)
         painel_menu.draw_painel(gamePlay,AMARELO, 120)
 
         botao_play.criar(painel_menu, 0, -50, 30, 10)
         botao_play.draw(gamePlay, texto_botao_play)
-
 
         botao_confg.criar(painel_menu, 0, 0, 30, 10)
         botao_confg.draw(gamePlay, 'CONFIG')
@@ -154,25 +154,27 @@ while jogoAtivo:
         botao_voltar.criar(painel_config, 0, gamePlay.get_proporcao()[1] * 150, 30, 10)
         botao_voltar.draw(gamePlay, 'VOLTAR')
 
-
-
         botao_slider_volume_ambiente.criar(painel_config, 0, -gamePlay.get_proporcao()[1] * 100, 50, 3)
         botao_slider_volume_ambiente.draw(gamePlay, '-                       +')
 
-        texto_volume_ambiente.set_texto('       VOLUME AMBIENTE', 'Times new roman')
+        texto_volume_ambiente.set_texto('         VOLUME AMBIENTE', 'Times new roman')
         texto_volume_ambiente.cria(int(gamePlay.get_proporcao()[0] * 15), WHITE, 1)
         gamePlay.blit(texto_volume_ambiente.get_surface(), (botao_slider_volume_ambiente.get_posicao_x() ,
                       botao_slider_volume_ambiente.get_posicao_y()+botao_bola_slider_volume_ambiente.get_altura()))
 
         #pos_bola_slider_volume = -botao_slider_volume_ambiente.get_posicao_x() / 2 + botao_bola_slider_volume_ambiente.get_largura() * 2 + 20
         botao_bola_slider_volume_ambiente.criar(painel_config, pos_bola_slider_volume, -gamePlay.get_proporcao()[1] * 100, 6, 5)
-
-
         botao_bola_slider_volume_ambiente.draw(gamePlay, '')
 
+        botao_full_scren.criar(painel_config, -gamePlay.get_proporcao()[0] * 45, gamePlay.get_proporcao()[1] * 20, 3, 5)
+        botao_full_scren.draw(gamePlay, '')
+
+        texto_fullscreen.set_texto('     FULLSCREEN', 'Times new roman')
+        texto_fullscreen.cria(int(gamePlay.get_proporcao()[0] * 15), WHITE, 1)
+        gamePlay.blit(texto_volume_ambiente.get_surface(), (botao_full_scren.get_posicao_x() ,
+                                                            botao_full_scren.get_posicao_y()))
+
         evento_botoes()
-
-
 
 
     # PAINEL CERTEZA DE SAIR
@@ -181,19 +183,18 @@ while jogoAtivo:
         painel_sair.cria(gamePlay, 0, 0, 50, 20)
         painel_sair.draw_painel(gamePlay,WHITE, 120)
 
-        texto_exit.set_texto("Voce tem certeza que quer fechar o jogo?", 'Times new roman')
+        texto_exit.set_texto(" Voce tem certeza que quer fechar o jogo? ", 'Times new roman')
         texto_exit.cria(int(gamePlay.get_proporcao()[0] * 30), WHITE, 1)
         gamePlay.blit(texto_exit.get_surface(), (painel_sair.get_posicao_x() , 110))
 
-
         botao_sim.criar(painel_sair, -gamePlay.get_proporcao()[0] * 120, 0, 30, 30)
         botao_sim.draw(gamePlay, 'SIM')
-
 
         botao_nao.criar(painel_sair, gamePlay.get_proporcao()[0] * 120, 0, 30, 30)
         botao_nao.draw(gamePlay, 'NÃO')
 
         evento_botoes()
+
 
     # HUD
     if painel_hud.get_ativo() == True:
@@ -243,19 +244,15 @@ while jogoAtivo:
         game_loop = True
         painel_menu.set_ativo(False)
         painel_hud.set_ativo(True)
-        gamePlay.set_resolucao((pygame.display.list_modes()[0][0],pygame.display.list_modes()[0][1]-38))
-
 
     if botao_confg.get_clicou() == True:
         painel_menu.set_ativo(False)
         painel_config.set_ativo(True)
         game_loop = False
 
-
     if botao_voltar.get_clicou() == True:
         painel_config.set_ativo(False)
         painel_menu.set_ativo(True)
-
 
     if botao_exit.get_clicou() == True:
         painel_sair.set_ativo(True)
@@ -271,13 +268,7 @@ while jogoAtivo:
         painel_menu.set_ativo(True)
         painel_sair.set_ativo(False)
 
-
-
-
-
-
     if botao_bola_slider_volume_ambiente.get_clicou() == True:
-
 
         if botao_bola_slider_volume_ambiente.get_posicao_x()>= botao_slider_volume_ambiente.get_posicao_x() and \
                 botao_bola_slider_volume_ambiente.get_posicao_x()<= botao_slider_volume_ambiente.get_posicao_x()+ \
@@ -285,6 +276,16 @@ while jogoAtivo:
 
             pos_bola_slider_volume = pygame.mouse.get_pos()[0] - gamePlay.get_resolucao()[0] / 2
 
+
+    if botao_full_scren.get_clicou() == True:
+        cor_botao_fullscreen = WHITE
+
+        texto_botao_fullscreen = '   X   '
+        gamePlay.set_resolucao((pygame.display.list_modes()[0][0], pygame.display.list_modes()[0][1] - 38))
+        gamePlay.fill(BLACK)
+        gamePlay.flip()
+
+    botao_full_scren.set_cor(cor_botao_fullscreen)
 
     #GAMEPLAY
     if game_loop == True:
@@ -316,10 +317,6 @@ while jogoAtivo:
 
             posicao_x += velocidade_x
             posicao_y += velocidade_y
-
-
-
-
 
             # so tem velocidade caso nao colidiu com a tela
             if nave.get_colidiu_tela() == False:
@@ -361,10 +358,6 @@ while jogoAtivo:
                 # mapa.set_cor_terreno(MARRON)
                 mapa.set_cor_borda_terreno(AMARELO)
 
-            # print("pontos :", dados.get_pontos())
-            # futura condicao de dano/perca pontos/morte etc
-            # if nave.get_colidiu_tela() == True:
-            #   print('colidiu com a a tela')
 
             # ACELERACAO do propulsor
             nave.aceleracao_propulsor(tempo, gamePlay)
@@ -422,11 +415,5 @@ while jogoAtivo:
         print("pos bola slider    :", botao_bola_slider_volume_ambiente.get_posicao_x())
         print("posicao slider x :", botao_slider_volume_ambiente.get_posicao_x())
         print("volume propulsor :", nave.get_volume_propulsor())
-
-
-
-
-
-
 
 pygame.quit()
