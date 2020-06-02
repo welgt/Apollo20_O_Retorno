@@ -31,6 +31,7 @@ class Nova_nave:
         self.__altitude = 0
         self.__som_propulsor = pygame.mixer.music
         self.__cont = 0
+        
 
         #self.__volume = 0
         #som = pygame.mixer.music

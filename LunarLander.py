@@ -60,9 +60,12 @@ texto_pontos_hud = fonte_texto()
 texto_contagem_regressiva_hud = fonte_texto()
 texto_volume_ambiente = fonte_texto()
 texto_fullscreen = fonte_texto()
-
-texto_botao_play = 'PLAY'
 texto_exit = fonte_texto()
+texto_feedback_pouso_hud = fonte_texto()
+
+str_botao_play = 'PLAY'
+str_feedback_pouso = ''
+
 cor_botao_fullscreen = BLACK
 
 
@@ -92,7 +95,7 @@ while jogoAtivo:
                 painel_menu.set_ativo(True)
 
                 game_loop = False
-                texto_botao_play = 'PAUSADO'
+                str_botao_play = 'PAUSADO'
 
 
             elif event.key == pygame.K_LEFT:
@@ -135,7 +138,7 @@ while jogoAtivo:
         painel_menu.draw_painel(gamePlay,AMARELO, 120)
 
         botao_play.criar(painel_menu, 0, -50, 30, 10)
-        botao_play.draw(gamePlay, texto_botao_play)
+        botao_play.draw(gamePlay, str_botao_play)
 
         botao_confg.criar(painel_menu, 0, 0, 30, 10)
         botao_confg.draw(gamePlay, 'CONFIG')
@@ -233,6 +236,10 @@ while jogoAtivo:
         texto_pontos_hud.cria(int(gamePlay.get_proporcao()[0] * 20), BLACK, 1)
         gamePlay.blit(texto_pontos_hud.get_surface(), (painel_hud.get_posicao_x()+gamePlay.get_proporcao()[0]+pos_textos*4, painel_hud.get_posicao_y()))
 
+        texto_feedback_pouso_hud.set_texto(str_feedback_pouso, 'Times new roman')
+        texto_feedback_pouso_hud.cria(int(gamePlay.get_proporcao()[0] * 10), WHITE, 1)
+        gamePlay.blit(texto_feedback_pouso_hud.get_surface(), (nave.get_posicao_x()-texto_feedback_pouso_hud.get_largura_palavra()/4 , nave.get_posicao_y()-gamePlay.get_proporcao()[1]*20))
+
         evento_botoes()
 
 
@@ -303,7 +310,7 @@ while jogoAtivo:
             nave.set_tamanho(int(gamePlay.get_proporcao()[0] * 18),
                              int(gamePlay.get_proporcao()[1] * 50))
 
-            nave.set_friccao(1)
+            nave.set_friccao(2)
             nave.set_velocidade_rotacao(nave.get_gravidade_lua())
             nave.set_volume_propulsor(pos_bola_slider_volume)
 
@@ -333,17 +340,21 @@ while jogoAtivo:
                 angulo = nave.get_angulo_rotacao()
                 nave.set_angulo_rotacao(angulo)
 
+
                 if nave.get_angulo_rotacao() <= 15 and nave.get_angulo_rotacao() >= -15:
                     pouso_perfeito = 150
                     dados.set_pontos(pouso_perfeito)
+                    str_feedback_pouso = 'POUSO PERFEITO'
 
                 elif nave.get_angulo_rotacao() <= 25 and nave.get_angulo_rotacao() >= -25:
                     pouso_toleravel = 100
                     dados.set_pontos(pouso_toleravel)
+                    str_feedback_pouso = 'POUSO TOLERÁVEL'
 
                 elif nave.get_angulo_rotacao() <= 35 and nave.get_angulo_rotacao() >= -35:
                     pouso_forcado = 50
                     dados.set_pontos(pouso_forcado)
+                    str_feedback_pouso = 'POUSO FORÇADO'
 
                 else:
                     print("Voce morreu")
