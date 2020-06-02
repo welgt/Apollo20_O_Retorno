@@ -229,3 +229,5 @@ class Mapa_do_jogo:
         #print("self.__novo_terreno ", len(self.__novo_terreno))
         #print(self.__novo_terreno)
         pass
+
+

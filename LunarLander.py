@@ -3,6 +3,7 @@ from Nave import *
 from Mapa import *
 from Interface import *
 from Config import *
+from Item import *
 
 
 import pygame
@@ -19,6 +20,11 @@ gamePlay = Nova_tela("Menu", (1200,600))
 
 nave = Nova_nave('arquivos/nave.png', gamePlay.get_resolucao()[0]/2, 100)
 nave.set_altitude(abs(nave.get_posicao_y()- gamePlay.get_resolucao()[1]))
+
+gasolina = Item('arquivos/gasolina.png', gamePlay.get_resolucao()[0]/2, 300)
+gasolina.posicao_randomica(gamePlay)
+gasolina.set_velocidade_x(1)
+gasolina.set_velocidade_y(1)
 
 terra = Nova_nave('arquivos/terra3.png', 800, 50)
 #gamePlay.set_resolucao_tela((pygame.display.list_modes()[0][0],pygame.display.list_modes()[0][1]))
@@ -78,6 +84,7 @@ config = False
 tempo = 0
 nova_resolucao = False
 volume_propulsor = 0.1
+abasteceu = 0
 
 pos_bola_slider_volume = 0
 nave.set_volume_propulsor(volume_propulsor)
@@ -133,6 +140,7 @@ while jogoAtivo:
 
     # PAINEL MENU
     if painel_menu.get_ativo() == True:
+
 
         painel_menu .cria(gamePlay, 0, 0, 40, 45)
         painel_menu.draw_painel(gamePlay,AMARELO, 120)
@@ -238,7 +246,7 @@ while jogoAtivo:
 
         texto_feedback_pouso_hud.set_texto(str_feedback_pouso, 'Times new roman')
         texto_feedback_pouso_hud.cria(int(gamePlay.get_proporcao()[0] * 10), WHITE, 1)
-        gamePlay.blit(texto_feedback_pouso_hud.get_surface(), (nave.get_posicao_x()-texto_feedback_pouso_hud.get_largura_palavra()/4 , nave.get_posicao_y()-gamePlay.get_proporcao()[1]*20))
+        gamePlay.blit(texto_feedback_pouso_hud.get_surface(), (nave.get_posicao_x()-texto_feedback_pouso_hud.get_largura_palavra()/6 , nave.get_posicao_y()-gamePlay.get_proporcao()[1]*20))
 
         evento_botoes()
 
@@ -325,14 +333,32 @@ while jogoAtivo:
             posicao_x += velocidade_x
             posicao_y += velocidade_y
 
-            # so tem velocidade caso nao colidiu com a tela
-            if nave.get_colidiu_tela() == False:
-                nave.set_posicao(posicao_x, posicao_y)
-                nave.set_altitude(nave.get_altitude() - nave.get_velocidade_y())
+            gasolina.set_tamanho(int(gamePlay.get_proporcao()[0]*15),int(gamePlay.get_proporcao()[1]*30))
+            #gasolina.set_velocidade_x(0.5)
+            #gasolina.set_velocidade_y(0.5)
+            gasolina.gravidade(tempo)
 
             nave.verifica_colisao_tela(gamePlay)
             nave.verifica_colisao_area_pouso(mapa)
             nave.verifica_colisao_terreno(mapa, gamePlay)
+            gasolina.verifica_colisao_nave(nave)
+            gasolina.verifica_colisao_terreno(mapa, gamePlay)
+
+            if gasolina.get_colidiu_terreno() == True:
+                gasolina.set_velocidade_y(0)
+
+
+            if gasolina.get_colidiu_nave() == True:
+
+                if nave.get_combustivel()+200<1000 and abasteceu<1:
+                    nave.set_combustivel(nave.get_combustivel() + 200)
+                    abasteceu = 1
+
+
+            # so tem velocidade caso nao colidiu com a tela
+            if nave.get_colidiu_tela() == False:
+                nave.set_posicao(posicao_x, posicao_y)
+                nave.set_altitude(nave.get_altitude() - nave.get_velocidade_y())
 
             # se a nave pousou verifique as condicoes e atribua a pontuacao correta
             if nave.get_colidiu_area_pouso() == True:
@@ -357,7 +383,7 @@ while jogoAtivo:
                     str_feedback_pouso = 'POUSO FORÇADO'
 
                 else:
-                    print("Voce morreu")
+                    str_feedback_pouso = 'VOCÊ MORREU'
 
             if nave.get_colidiu_terreno() == True:
                 print("colidiu", nave.get_colidiu_terreno())
@@ -399,6 +425,9 @@ while jogoAtivo:
             gamePlay.blit(nave_rot[0], nave_rot[1])
             gamePlay.draw_polygon(CYAN, poligono_propulsor_dir)
             gamePlay.draw_polygon(CYAN, poligono_propulsor_esq)
+            if abasteceu <1:
+                gamePlay.blit(gasolina.get_surface(), (gasolina.get_posicao_x(), gasolina.get_posicao_y()))
+
 
     tempo+=0.1
     gamePlay.flip()

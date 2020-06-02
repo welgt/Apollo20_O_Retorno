@@ -31,6 +31,12 @@ class Nova_nave:
         self.__altitude = 0
         self.__som_propulsor = pygame.mixer.music
         self.__cont = 0
+
+        #cor_transp = self.__surface.get_at((0,0))
+        #self.__surface.set_colorkey((255,255,255,200))
+        #self.__surface = self.__surface.convert()
+
+
         
 
         #self.__volume = 0
@@ -323,9 +329,11 @@ class Nova_nave:
                 if self.get_angulo_rotacao()<=1 and self.get_propulsor_ativo():
                     self.__velocidade_x += self.get_angulo_rotacao()*-1 /180
 
+
                 # define nova direcao caso a nave esteja inclinada pra esquerda e propulsor ativo
                 if self.__angulo_rotacao >= 1 and self.get_propulsor_ativo():
                     self.__velocidade_x -= self.get_angulo_rotacao()/180
+
 
 
 
@@ -447,16 +455,16 @@ class Nova_nave:
                            + abs(p_nave[1] - pontos_intermediarios_entre_pontos_principais_p5[1]) ** 2))
 
             # verifica se a distancia é menor que 10, se sim, colidiu com o terreno
-            if distancia_entre_ponto_colisor_nave_ponto_principal < 10:
+            if distancia_entre_ponto_colisor_nave_ponto_principal < 8:
                 self.set_colidiu_terreno(True)
                 #print("COLIDIU PONTO PRINCIPAL")
 
             # verifica se a distancia é menor que 10, se sim, colidiu com o terreno
-            if distancia_entre_ponto_colisor_nave_ponto_intermediario_01 < 5 \
-                    or distancia_entre_ponto_colisor_nave_ponto_intermediario_02 < 5 \
-                    or distancia_entre_ponto_colisor_nave_ponto_intermediario_03 < 5 \
-                    or distancia_entre_ponto_colisor_nave_ponto_intermediario_04 < 5 \
-                    or distancia_entre_ponto_colisor_nave_ponto_intermediario_05 < 5 :
+            if distancia_entre_ponto_colisor_nave_ponto_intermediario_01 < 8 \
+                    or distancia_entre_ponto_colisor_nave_ponto_intermediario_02 < 8 \
+                    or distancia_entre_ponto_colisor_nave_ponto_intermediario_03 < 8 \
+                    or distancia_entre_ponto_colisor_nave_ponto_intermediario_04 < 8 \
+                    or distancia_entre_ponto_colisor_nave_ponto_intermediario_05 < 8 :
                 #print("COLIDIU PONTO INTERMEDIARIO")
                 self.set_colidiu_terreno(True)
 
