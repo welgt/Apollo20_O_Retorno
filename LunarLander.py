@@ -13,7 +13,9 @@ mapa = Mapa_do_jogo()
 mapa.set_cor_terreno(WHITE)
 mapa.set_cor_borda_terreno(GREEN)
 
+
 gamePlay = Nova_tela("Menu", (1200,600))
+#gamePlay.set_resolucao((pygame.display.list_modes()[0][0],pygame.display.list_modes()[0][1]))
 
 nave = Nova_nave('arquivos/nave.png', gamePlay.get_resolucao()[0]/2, 100)
 nave.set_altitude(abs(nave.get_posicao_y()- gamePlay.get_resolucao()[1]))
@@ -35,13 +37,8 @@ botao_confg = botao()
 botao_voltar = botao()
 botao_sim = botao()
 botao_nao = botao()
-
-botao_aumentar_volume_ambiente = botao()
-botao_diminuir_volume_ambiente = botao()
-
-texto_botao_play = 'PLAY'
-texto_exit = fonte_texto()
-
+botao_slider_volume_ambiente = botao()
+botao_bola_slider_volume_ambiente = botao()
 
 def evento_botoes():
     botao().evento(event, botao_play, painel_menu)
@@ -50,9 +47,8 @@ def evento_botoes():
     botao().evento(event, botao_voltar, painel_config)
     botao().evento(event, botao_sim, painel_sair)
     botao().evento(event, botao_nao, painel_sair)
-    botao().evento(event, botao_aumentar_volume_ambiente, painel_config)
+    botao().evento(event, botao_bola_slider_volume_ambiente, painel_config)
 
-    #botao().verifica_colisao()
 
 texto_velocidade_nave_hud = fonte_texto()
 texto_combustivel_hud = fonte_texto()
@@ -60,8 +56,10 @@ texto_altitude_hud = fonte_texto()
 texto_angulo_nave_hud = fonte_texto()
 texto_pontos_hud = fonte_texto()
 texto_contagem_regressiva_hud = fonte_texto()
-texto_volume_mais = fonte_texto()
-texto_volume_menos = fonte_texto()
+texto_volume_ambiente = fonte_texto()
+
+texto_botao_play = 'PLAY'
+texto_exit = fonte_texto()
 
 
 dados = Dados()
@@ -73,11 +71,15 @@ config = False
 tempo = 0
 nova_resolucao = False
 volume_propulsor = 0.1
+
+pos_bola_slider_volume = 0
 nave.set_volume_propulsor(volume_propulsor)
 
 
 
 while jogoAtivo:
+
+    print(pygame.display.list_modes())
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -86,8 +88,6 @@ while jogoAtivo:
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 painel_menu.set_ativo(True)
-
-
 
                 game_loop = False
                 texto_botao_play = 'PAUSADO'
@@ -116,8 +116,6 @@ while jogoAtivo:
             elif event.key == pygame.K_UP or event.key == pygame.K_DOWN:
                 nave.set_propulsor_ativo(False)
 
-
-            # debugar
             elif event.key == pygame.K_UP or event.key == pygame.K_d:
                 debug = False
 
@@ -137,15 +135,13 @@ while jogoAtivo:
 
         botao_play.criar(painel_menu, 0, -50, 30, 10)
         botao_play.draw(gamePlay, texto_botao_play)
-        #botao_play.draw_borda_botao(gamePlay,RED)
+
 
         botao_confg.criar(painel_menu, 0, 0, 30, 10)
         botao_confg.draw(gamePlay, 'CONFIG')
-        #botao_confg.draw_borda_botao(gamePlay,RED)
 
         botao_exit.criar(painel_menu, 0, 50, 30, 10)
         botao_exit.draw(gamePlay, 'EXIT')
-        #botao_exit.draw_borda_botao(gamePlay,RED)
 
         evento_botoes()
 
@@ -158,13 +154,21 @@ while jogoAtivo:
         botao_voltar.criar(painel_config, 0, gamePlay.get_proporcao()[1] * 150, 30, 10)
         botao_voltar.draw(gamePlay, 'VOLTAR')
 
-        botao_aumentar_volume_ambiente.criar(painel_config, 0, gamePlay.get_proporcao()[1] * 15, 5, 5)
-        botao_aumentar_volume_ambiente.draw(gamePlay, '+')
 
-        texto_volume_mais.set_texto('+', 'Times new roman')
-        texto_volume_mais.cria(int(gamePlay.get_proporcao()[0] * 30), WHITE, 1)
-        gamePlay.blit(texto_volume_mais.get_surface(), (botao_aumentar_volume_ambiente.get_posicao_x()+texto_volume_mais.get_largura_palavra()/2 ,
-                                                        botao_aumentar_volume_ambiente.get_posicao_y()))
+
+        botao_slider_volume_ambiente.criar(painel_config, 0, -gamePlay.get_proporcao()[1] * 100, 50, 3)
+        botao_slider_volume_ambiente.draw(gamePlay, '-                       +')
+
+        texto_volume_ambiente.set_texto('       VOLUME AMBIENTE', 'Times new roman')
+        texto_volume_ambiente.cria(int(gamePlay.get_proporcao()[0] * 15), WHITE, 1)
+        gamePlay.blit(texto_volume_ambiente.get_surface(), (botao_slider_volume_ambiente.get_posicao_x() ,
+                      botao_slider_volume_ambiente.get_posicao_y()+botao_bola_slider_volume_ambiente.get_altura()))
+
+        #pos_bola_slider_volume = -botao_slider_volume_ambiente.get_posicao_x() / 2 + botao_bola_slider_volume_ambiente.get_largura() * 2 + 20
+        botao_bola_slider_volume_ambiente.criar(painel_config, pos_bola_slider_volume, -gamePlay.get_proporcao()[1] * 100, 6, 5)
+
+
+        botao_bola_slider_volume_ambiente.draw(gamePlay, '')
 
         evento_botoes()
 
@@ -239,6 +243,7 @@ while jogoAtivo:
         game_loop = True
         painel_menu.set_ativo(False)
         painel_hud.set_ativo(True)
+        gamePlay.set_resolucao((pygame.display.list_modes()[0][0],pygame.display.list_modes()[0][1]-38))
 
 
     if botao_confg.get_clicou() == True:
@@ -267,19 +272,24 @@ while jogoAtivo:
         painel_sair.set_ativo(False)
 
 
-    if botao_aumentar_volume_ambiente.get_clicou() == True:
-        volume_propulsor+=0.1
 
 
 
-    print("btn volume propulsor ", botao_aumentar_volume_ambiente.get_clicou())
-    print("volume: ", nave.get_volume_propulsor())
+
+    if botao_bola_slider_volume_ambiente.get_clicou() == True:
+
+
+        if botao_bola_slider_volume_ambiente.get_posicao_x()>= botao_slider_volume_ambiente.get_posicao_x() and \
+                botao_bola_slider_volume_ambiente.get_posicao_x()<= botao_slider_volume_ambiente.get_posicao_x()+ \
+                botao_slider_volume_ambiente.get_largura() - botao_bola_slider_volume_ambiente.get_largura():
+
+            pos_bola_slider_volume = pygame.mouse.get_pos()[0] - gamePlay.get_resolucao()[0] / 2
+
 
     #GAMEPLAY
     if game_loop == True:
 
         gamePlay.cronometro()
-        #nave.set_volume_propulsor(nave.get_volume_propulsor())
 
         if gamePlay.get_cronometro()[2]>3:
 
@@ -294,7 +304,7 @@ while jogoAtivo:
 
             nave.set_friccao(1)
             nave.set_velocidade_rotacao(nave.get_gravidade_lua())
-            nave.set_volume_propulsor(volume_propulsor)
+            nave.set_volume_propulsor(pos_bola_slider_volume)
 
             velocidade_x = nave.get_velocidade_x()
             velocidade_y = nave.get_velocidade_y()
@@ -403,9 +413,15 @@ while jogoAtivo:
         #print("botao voltar ativo :", botao_voltar.get_clicou())
         #print("game_loop :", game_loop)
 
-        print("painel menu   :", painel_menu.get_ativo())
-        print("painel config :", painel_config.get_ativo())
-        print("painel sair   :", painel_sair.get_ativo())
+        #print("painel menu   :", painel_menu.get_ativo())
+        #print("painel config :", painel_config.get_ativo())
+        #print("painel sair   :", painel_sair.get_ativo())
+
+        print("pos_bola_slider_volume:", pos_bola_slider_volume / 1000)
+        print("pos mouse oficial  :", pygame.mouse.get_pos()[0])
+        print("pos bola slider    :", botao_bola_slider_volume_ambiente.get_posicao_x())
+        print("posicao slider x :", botao_slider_volume_ambiente.get_posicao_x())
+        print("volume propulsor :", nave.get_volume_propulsor())
 
 
 

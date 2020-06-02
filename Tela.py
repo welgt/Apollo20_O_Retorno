@@ -3,7 +3,7 @@ from Config import *
 class Nova_tela:
     def __init__(self, titulo, resolucao):
         self.__resolucao_tela = resolucao
-        #self.set_resolucao(resolucao)
+        self.set_resolucao(resolucao)
         #self.__tela = pygame.display.set_mode(pygame.display.list_modes()[0],pygame.FULLSCREEN | pygame.HWSURFACE)
         self.__tela = pygame.display.set_mode(self.get_resolucao())
         self.__titulo = pygame.display.set_caption(titulo)
@@ -16,7 +16,8 @@ class Nova_tela:
         self.__minuto = 0
         self.__hora = 0
 
-        self.__proporcao = resolucao[0]/1000, resolucao[1]/1000
+        self.__proporcao = self.get_resolucao()[0]/1000, self.get_resolucao()[1]/1000
+
 
     def get_proporcao(self):
         return self.__proporcao
@@ -29,8 +30,8 @@ class Nova_tela:
 
     def set_resolucao(self, nova_resolucao):
         self.__resolucao_tela = nova_resolucao
-        self.__tela = pygame.display.set_mode(self.get_resolucao())
-        #self.__tela = pygame.display.set_mode(nova_resolucao, pygame.FULLSCREEN | pygame.HWSURFACE)
+        #self.__tela = pygame.display.set_mode(self.get_resolucao())
+        self.__tela = pygame.display.set_mode(self.get_resolucao(), pygame.FULLSCREEN | pygame.HWSURFACE)
 
     def get_titulo(self):
         return self.__titulo_da_tela
