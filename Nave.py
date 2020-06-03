@@ -260,8 +260,7 @@ class Nova_nave:
             self.set_colidiu_tela(True)
             # pega a posicao do momento da colisao e deixa a nave travada nela
             self.set_posicao(self.get_posicao_x(),self.get_posicao_y())
-            #self.set_velocidade_x(0)
-            #self.set_velocidade_y(0)
+
 
 
 
@@ -282,7 +281,7 @@ class Nova_nave:
                     and self.get_posicao_x() + self.get_largura_x()/2 <= fim_area_pouso_horizontal \
                     and self.get_posicao_y() + self.get_altura_y() >= mapa.get_altura_pouso_nave() - mapa.get_espessura_line_pouso_nave()/2:
                 self.set_colidiu_area_pouso(True)
-                print("COLIDIU COM A AREA DE POUSO")
+                #print("COLIDIU COM A AREA DE POUSO")
                 #se colidiu trave a nave
                 self.set_potencia_propulsor(0)
                 self.set_rotacionou_dir(False)
@@ -320,15 +319,46 @@ class Nova_nave:
 
 
                 # define nova direcao caso a nave esteja inclinada pra direita e propulsor ativo
-                if self.get_angulo_rotacao()<=1 and self.get_propulsor_ativo():
-                    self.__velocidade_x += self.get_angulo_rotacao()*-1 /180
+                if self.get_angulo_rotacao()<=0.0001 and self.get_propulsor_ativo():
+                    #self.__velocidade_x += self.get_angulo_rotacao()*-1 /180
+                    angulo = self.get_angulo_rotacao()/10000
+                    print("angulo :", angulo)
+
+                    x = -self.get_posicao_x() * angulo
+                    y = self.get_posicao_y() * angulo
+
+                    self.set_velocidade_x(x+- self.__potencia_propulsor/1000)
+                    self.set_velocidade_y(y+- self.__potencia_propulsor/1000)
 
 
                 # define nova direcao caso a nave esteja inclinada pra esquerda e propulsor ativo
-                if self.__angulo_rotacao >= 1 and self.get_propulsor_ativo():
-                    self.__velocidade_x -= self.get_angulo_rotacao()/180
+                if self.__angulo_rotacao >= 0.0001 and self.get_propulsor_ativo():
+                    #self.__velocidade_x -= self.get_angulo_rotacao()/180
+
+                    angulo = self.get_angulo_rotacao()/10000
+                    print("angulo :", angulo)
+
+                    x = -self.get_posicao_x() * angulo
+                    y = -self.get_posicao_y() * angulo
+                    self.set_velocidade_x(x)
+                    self.set_velocidade_y(y)
 
 
+            #frente = [0, -1]
+            #frente[0] = frente[0] * math.cos(self.get_angulo_rotacao()) - frente[1]  * math.sin(self.get_angulo_rotacao())
+            #frente[1] = frente[0] * math.sin(self.get_angulo_rotacao()) + frente[1] * math.cos(self.get_angulo_rotacao())
+            #self.__posicao_x += frente[0] * self.__velocidade_x
+            #self.__posicao_y += frente[1] * self.__velocidade_x
+
+            #if self.get_angulo_rotacao() <= 1 and self.get_propulsor_ativo() or self.__angulo_rotacao >= 1 and self.get_propulsor_ativo():
+
+             #   angulo = self.get_angulo_rotacao()/1000
+
+              #  x = -self.get_posicao_x()*angulo
+               # y = -self.get_posicao_y()*angulo
+
+                #self.set_velocidade_x(x)
+                #self.set_velocidade_y(y)
 
 
     def gravidade(self, tempo, tela):

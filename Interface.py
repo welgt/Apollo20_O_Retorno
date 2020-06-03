@@ -38,6 +38,7 @@ class fonte_texto:
 
 
 
+
     def get_texto(self):
         return self.__texto
 

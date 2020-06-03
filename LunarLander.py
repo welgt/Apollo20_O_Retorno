@@ -21,7 +21,7 @@ gamePlay = Nova_tela("Menu", (1000,600))
 nave = Nova_nave('arquivos/nave.png', gamePlay.get_resolucao()[0]/2, 100)
 nave.set_altitude(abs(nave.get_posicao_y()- gamePlay.get_resolucao()[1]))
 
-gasolina = Item('arquivos/gasolina.png', gamePlay.get_resolucao()[0]/2, - 200)
+gasolina = Item('arquivos/gasolina.png', gamePlay.get_resolucao()[0]/2, - 100)
 gasolina.set_velocidade_x(0)
 gasolina.set_velocidade_y(0)
 
@@ -175,7 +175,7 @@ while jogoAtivo:
         botao_bola_slider_volume_ambiente.criar(painel_config, pos_bola_slider_volume, -gamePlay.get_proporcao()[1] * 100, 6, 5)
         botao_bola_slider_volume_ambiente.draw(gamePlay, '')
 
-        botao_full_scren.criar(painel_config, -gamePlay.get_proporcao()[0] * 45, gamePlay.get_proporcao()[1] * 20, 3, 5)
+        botao_full_scren.criar(painel_config, -gamePlay.get_proporcao()[0] * 80, gamePlay.get_proporcao()[1] * 20, 3, 5)
         botao_full_scren.draw(gamePlay, '')
 
         texto_fullscreen.set_texto('     FULLSCREEN', 'Times new roman')
@@ -319,8 +319,8 @@ while jogoAtivo:
             nave.set_tamanho(int(gamePlay.get_proporcao()[0] * 18),
                              int(gamePlay.get_proporcao()[1] * 50))
 
-            nave.set_friccao(2)
-            nave.set_velocidade_rotacao(nave.get_gravidade_lua())
+            nave.set_friccao(1)
+            nave.set_velocidade_rotacao(nave.get_gravidade_lua()*2)
             nave.set_volume_propulsor(pos_bola_slider_volume)
 
             velocidade_x = nave.get_velocidade_x()
@@ -328,7 +328,7 @@ while jogoAtivo:
             posicao_x = nave.get_posicao_x()
             posicao_y = nave.get_posicao_y()
             potencia_propulsor = nave.get_potencia_propulsor()
-            angulo = nave.get_angulo_rotacao()
+            velocidade_rotacao = nave.get_angulo_rotacao()
             altitude = nave.get_altitude()
 
             posicao_x += velocidade_x
@@ -348,8 +348,8 @@ while jogoAtivo:
                 gasolina.posicao_randomica(gamePlay)
                 gasolina.set_velocidade_y(1)
 
-            # so sorteia de caso  a gasolina  esta aguardando em cima da tela
-            if nave.get_combustivel() < 900 and sort == 100 and gasolina.get_posicao_y()<0 :
+            # so sorteia se caso  a gasolina  esta aguardando em cima da tela
+            if nave.get_combustivel() < 600 and sort == 100 and gasolina.get_posicao_y()<0 :
                 gasolina.posicao_randomica(gamePlay)
                 gasolina.set_velocidade_y(1)
 
@@ -366,10 +366,6 @@ while jogoAtivo:
                 gasolina.set_velocidade_y(0)
 
 
-            #if nave.get_combustivel()<=0:
-                #nave.set_potencia_propulsor(0)
-
-
             # so tem velocidade caso nao colidiu com a tela
             if nave.get_colidiu_tela() == False:
                 nave.set_posicao(posicao_x, posicao_y)
@@ -378,8 +374,8 @@ while jogoAtivo:
             # se a nave pousou verifique as condicoes e atribua a pontuacao correta
             if nave.get_colidiu_area_pouso() == True:
                 painel_menu.set_ativo(True)
-                angulo = nave.get_angulo_rotacao()
-                nave.set_angulo_rotacao(angulo)
+                velocidade_rotacao = nave.get_angulo_rotacao()
+                nave.set_angulo_rotacao(velocidade_rotacao)
 
 
                 if nave.get_angulo_rotacao() <= 15 and nave.get_angulo_rotacao() >= -15:
@@ -418,13 +414,13 @@ while jogoAtivo:
 
             # so adiciona angulo do lado esquerdo da nave se for o grau maximo permitido de 90
             if nave.get_rotacionou_esq() and nave.get_angulo_rotacao() <= 90:
-                angulo += nave.get_velocidade_rotacao()
-                nave.set_angulo_rotacao(angulo)
+                velocidade_rotacao += nave.get_velocidade_rotacao()
+                nave.set_angulo_rotacao(velocidade_rotacao)
 
             # so adiciona angulo do lado direito da nave se for o grau maximo permitido de 90
             if nave.get_rotacionou_dir() and nave.get_angulo_rotacao() >= -90:
-                angulo -= nave.get_velocidade_rotacao()
-                nave.set_angulo_rotacao(angulo)
+                velocidade_rotacao -= nave.get_velocidade_rotacao()
+                nave.set_angulo_rotacao(velocidade_rotacao)
 
             # cria poligono propulsor e recebe tamanho da calda
             poligono_propulsor_dir = nave.criaPoligono_Propulsor(nave.get_largura_x() / 10, nave.get_largura_x() / 4.5,
@@ -443,7 +439,7 @@ while jogoAtivo:
             #print('Abasteceu :', abasteceu)
             #if abasteceu <1:
             gamePlay.blit(gasolina.get_surface(), (gasolina.get_posicao_x(), gasolina.get_posicao_y()))
-            print(gasolina.get_posicao_y())
+            #print(gasolina.get_posicao_y())
 
 
     tempo+=0.1
