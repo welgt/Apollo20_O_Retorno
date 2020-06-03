@@ -15,16 +15,15 @@ mapa.set_cor_terreno(WHITE)
 mapa.set_cor_borda_terreno(GREEN)
 
 
-gamePlay = Nova_tela("Menu", (1200,600))
+gamePlay = Nova_tela("Menu", (1000,600))
 #gamePlay.set_resolucao((pygame.display.list_modes()[0][0],pygame.display.list_modes()[0][1]))
 
 nave = Nova_nave('arquivos/nave.png', gamePlay.get_resolucao()[0]/2, 100)
 nave.set_altitude(abs(nave.get_posicao_y()- gamePlay.get_resolucao()[1]))
 
-gasolina = Item('arquivos/gasolina.png', gamePlay.get_resolucao()[0]/2, 300)
-gasolina.posicao_randomica(gamePlay)
-gasolina.set_velocidade_x(1)
-gasolina.set_velocidade_y(1)
+gasolina = Item('arquivos/gasolina.png', gamePlay.get_resolucao()[0]/2, - 200)
+gasolina.set_velocidade_x(0)
+gasolina.set_velocidade_y(0)
 
 terra = Nova_nave('arquivos/terra3.png', 800, 50)
 #gamePlay.set_resolucao_tela((pygame.display.list_modes()[0][0],pygame.display.list_modes()[0][1]))
@@ -84,7 +83,6 @@ config = False
 tempo = 0
 nova_resolucao = False
 volume_propulsor = 0.1
-abasteceu = 0
 
 pos_bola_slider_volume = 0
 nave.set_volume_propulsor(volume_propulsor)
@@ -302,6 +300,8 @@ while jogoAtivo:
 
     botao_full_scren.set_cor(cor_botao_fullscreen)
 
+
+
     #GAMEPLAY
     if game_loop == True:
 
@@ -313,6 +313,7 @@ while jogoAtivo:
             if mapa.get_existe_area_pouso() == False:
                 mapa.desenha_terreno(gamePlay, nave)
                 print("NAO FOI POSSIVEL SORTEAR UMA AREA DE POUSO, REDESENHANDO TERRENO")
+
 
             terra.set_tamanho(int(gamePlay.get_proporcao()[0] * 180), int(gamePlay.get_proporcao()[0] * 180))
             nave.set_tamanho(int(gamePlay.get_proporcao()[0] * 18),
@@ -334,8 +335,6 @@ while jogoAtivo:
             posicao_y += velocidade_y
 
             gasolina.set_tamanho(int(gamePlay.get_proporcao()[0]*15),int(gamePlay.get_proporcao()[1]*30))
-            #gasolina.set_velocidade_x(0.5)
-            #gasolina.set_velocidade_y(0.5)
             gasolina.gravidade(tempo)
 
             nave.verifica_colisao_tela(gamePlay)
@@ -344,15 +343,31 @@ while jogoAtivo:
             gasolina.verifica_colisao_nave(nave)
             gasolina.verifica_colisao_terreno(mapa, gamePlay)
 
-            if gasolina.get_colidiu_terreno() == True:
-                gasolina.set_velocidade_y(0)
+            sort = random.randint(0,200)
+            if nave.get_combustivel() == 500:
+                gasolina.posicao_randomica(gamePlay)
+                gasolina.set_velocidade_y(1)
+
+            # so sorteia de caso  a gasolina  esta aguardando em cima da tela
+            if nave.get_combustivel() < 900 and sort == 100 and gasolina.get_posicao_y()<0 :
+                gasolina.posicao_randomica(gamePlay)
+                gasolina.set_velocidade_y(1)
 
 
             if gasolina.get_colidiu_nave() == True:
 
-                if nave.get_combustivel()+200<1000 and abasteceu<1:
-                    nave.set_combustivel(nave.get_combustivel() + 200)
-                    abasteceu = 1
+                if nave.get_combustivel()+300<=1000:
+                    nave.set_combustivel(nave.get_combustivel() + 300)
+                    #abasteceu = 1
+                    gasolina.set_posicao_y(-gasolina.get_altura_y() - 10)
+                    gasolina.set_velocidade_y(0)
+
+            if gasolina.get_colidiu_terreno() == True:
+                gasolina.set_velocidade_y(0)
+
+
+            #if nave.get_combustivel()<=0:
+                #nave.set_potencia_propulsor(0)
 
 
             # so tem velocidade caso nao colidiu com a tela
@@ -425,8 +440,10 @@ while jogoAtivo:
             gamePlay.blit(nave_rot[0], nave_rot[1])
             gamePlay.draw_polygon(CYAN, poligono_propulsor_dir)
             gamePlay.draw_polygon(CYAN, poligono_propulsor_esq)
-            if abasteceu <1:
-                gamePlay.blit(gasolina.get_surface(), (gasolina.get_posicao_x(), gasolina.get_posicao_y()))
+            #print('Abasteceu :', abasteceu)
+            #if abasteceu <1:
+            gamePlay.blit(gasolina.get_surface(), (gasolina.get_posicao_x(), gasolina.get_posicao_y()))
+            print(gasolina.get_posicao_y())
 
 
     tempo+=0.1

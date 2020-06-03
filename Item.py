@@ -114,7 +114,7 @@ class Item:
     def posicao_randomica(self, tela):
         sort1 = random.randint(100, tela.get_resolucao()[0])
         self.set_posicao_x(sort1)
-        self.set_posicao_y(100)
+        self.set_posicao_y(-self.get_altura_y()-10)
 
     def get_colidiu_nave(self):
         return self.__colidiu_nave
@@ -123,25 +123,16 @@ class Item:
         self.__colidiu_nave = colidiu
 
     def verifica_colisao_nave(self, nave):
-        # obtem 3 pontos xy do item
-        p_esquerdo_inferior = self.get_posicao_x() , int(self.get_posicao_y() + self.get_altura_y())
-        p_centro_inferior = int(self.get_posicao_x() + self.get_largura_x()/2), self.get_posicao_y() + self.get_altura_y()
-        p_direito_inferior = int(self.get_posicao_x() + self.get_largura_x()), self.get_posicao_y() + self.get_altura_y()
 
-        #obtem o ponto central inferior da nave
-        p_nave = nave.get_posicao_x() + nave.get_largura_x()/2, nave.get_posicao_y()
 
-        # calcula a distancia entre os pontos do item com o ponto da nave
-        distancia_esquerda_inferior = math.sqrt((abs(abs(p_nave[0] - p_esquerdo_inferior[0]) ** 2) + abs(p_esquerdo_inferior[1] - p_nave[1])**2))
-        distancia_centro_inferior = math.sqrt((abs(abs(p_nave[0] - p_centro_inferior[0]) ** 2) + abs(p_centro_inferior[1] - p_nave[1])**2))
-        distancia_direita_inferior = math.sqrt((abs(abs(p_nave[0] - p_direito_inferior[0]) ** 2) + abs(p_direito_inferior[1] - p_nave[1]) ** 2))
+        if nave.get_posicao_x()+nave.get_largura_x()>= self.get_posicao_x() and nave.get_posicao_x() <= self.get_posicao_x()+ self.get_largura_x()\
+                and nave.get_posicao_y()+nave.get_altura_y()>= self.get_posicao_y() and nave.get_posicao_y()<= self.get_posicao_y()+self.get_altura_y() :
 
-        if distancia_esquerda_inferior <5 or distancia_centro_inferior <5 or distancia_direita_inferior <5:
+            print('Colidiu')
             self.set_colidiu_nave(True)
-            print("Colidiu com a nave")
         else:
-            print("Nao colidiu ")
             self.set_colidiu_nave(False)
+
 
 
 
@@ -244,7 +235,7 @@ class Item:
             # verifica se a distancia é menor que 1, se sim, colidiu com o terreno
             if distancia_entre_ponto_colisor_item_ponto_principal < 5:
                 self.set_colidiu_terreno(True)
-                print("COLIDIU PONTO PRINCIPAL")
+                #print("COLIDIU PONTO PRINCIPAL")
 
             # verifica se a distancia é menor que 1, se sim, colidiu com o terreno
             if distancia_entre_ponto_colisor_item_ponto_intermediario_01 < 5 \
@@ -252,7 +243,7 @@ class Item:
                     or distancia_entre_ponto_colisor_item_ponto_intermediario_03 < 5 \
                     or distancia_entre_ponto_colisor_item_ponto_intermediario_04 < 5 \
                     or distancia_entre_ponto_colisor_item_ponto_intermediario_05 < 5 :
-                print("COLIDIU PONTO INTERMEDIARIO")
+                #print("COLIDIU PONTO INTERMEDIARIO")
                 self.set_colidiu_terreno(True)
 
             if j < len(lista_vertice)-1:#6

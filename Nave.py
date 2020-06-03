@@ -283,13 +283,13 @@ class Nova_nave:
                     and self.get_posicao_y() + self.get_altura_y() >= mapa.get_altura_pouso_nave() - mapa.get_espessura_line_pouso_nave()/2:
                 self.set_colidiu_area_pouso(True)
                 print("COLIDIU COM A AREA DE POUSO")
-                #se colidiu zere o propulsor
+                #se colidiu trave a nave
                 self.set_potencia_propulsor(0)
                 self.set_rotacionou_dir(False)
                 self.set_rotacionou_esq(False)
                 self.set_velocidade_x(0)
                 self.set_velocidade_y(0)
-                #self.set_angulo_rotacao(0)
+                self.set_angulo_rotacao(self.get_angulo_rotacao())
                 self.set_posicao(self.get_posicao_x(), (self.get_posicao_y()))
             else:
                 self.set_colidiu_area_pouso(False)
@@ -298,32 +298,26 @@ class Nova_nave:
     # ACELERACAO do propulsor
     def aceleracao_propulsor(self, tempo, tela):
 
-
         if self.get_propulsor_ativo() == True and self.get_colidiu_tela() == False and self.get_colidiu_area_pouso() == False:
             self.__cont += 1
 
             #if self.__cont<=1:
             self.__som_propulsor.load('arquivos/propulsor.mp3')
-
             self.__som_propulsor.play()
 
-
-            # gasta combustivel ao acelerar
+            # gasta combustivel ao acelerar e so acelera se caso tiver
             if self.get_combustivel()>0:
+                self.__velocidade_y -= (self.get_gravidade_lua() / tempo) * self.get_friccao()
                 self.set_combustivel(self.get_combustivel() - 1)
             else:
                 self.set_combustivel(0)
+                self.set_potencia_propulsor(0)
 
-            #if self.get_velocidade_y() <= self.get_gravidade_lua():
-            self.__velocidade_y-= (self.get_gravidade_lua() / tempo)  * self.get_friccao()
-            #print("acelerei")
 
             # permite aumentar o tamanho do propulsor baseado no tamanho dela "%"
             if self.__potencia_propulsor < self.get_altura_y()/1000*10:
                 self.__potencia_propulsor += (self.get_gravidade_lua() / tempo) * self.get_friccao()
 
-            #if self.get_velocidade_y() <= self.get_gravidade_lua():
-                #self.set_velocidade_y(-self.get_gravidade_lua())
 
                 # define nova direcao caso a nave esteja inclinada pra direita e propulsor ativo
                 if self.get_angulo_rotacao()<=1 and self.get_propulsor_ativo():
@@ -344,7 +338,6 @@ class Nova_nave:
         if self.get_propulsor_ativo() == False and self.get_colidiu_tela() == False \
             and self.get_colidiu_area_pouso() == False:
 
-            #self.__som_propulsor.fadeout()
             self.__som_propulsor.fadeout(700)
             self.__som_propulsor.stop()
 
@@ -457,6 +450,7 @@ class Nova_nave:
             # verifica se a distancia é menor que 10, se sim, colidiu com o terreno
             if distancia_entre_ponto_colisor_nave_ponto_principal < 8:
                 self.set_colidiu_terreno(True)
+                #self.set_velocidade_y(0)
                 #print("COLIDIU PONTO PRINCIPAL")
 
             # verifica se a distancia é menor que 10, se sim, colidiu com o terreno
@@ -467,6 +461,7 @@ class Nova_nave:
                     or distancia_entre_ponto_colisor_nave_ponto_intermediario_05 < 8 :
                 #print("COLIDIU PONTO INTERMEDIARIO")
                 self.set_colidiu_terreno(True)
+                #self.set_velocidade_y(0)
 
             if j < len(lista_vertice)-1:#6
                 i+=1

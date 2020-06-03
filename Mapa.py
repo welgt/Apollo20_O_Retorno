@@ -21,10 +21,6 @@ class Mapa_do_jogo:
         self.__altura_base_pouso = None
         self.__espessura_base_pouso_line = 6
         self.__qualidade_terreno =60
-
-
-
-
         self.__sort1 = 0
         self.__sort2 = 0
         self.__sort3 = 0
@@ -53,7 +49,6 @@ class Mapa_do_jogo:
         return self.__base_pouso_line
 
 
-
     def get_pouso_nave_retangulo(self):
         if self.__existe_area_pouso == False:
             return self.__base_pouso_retangulo
@@ -73,6 +68,9 @@ class Mapa_do_jogo:
     def get_existe_area_pouso(self):
         return self.__existe_area_pouso
 
+    def set_existe_area_pouso(self, existe):
+        self.__existe_area_pouso = existe
+
     def get_redesenha_terreno(self):
         return self.__desenha
 
@@ -81,11 +79,6 @@ class Mapa_do_jogo:
 
 
     def desenha_terreno(self, tela, nave):
-        #print("desenhando solo")
-        #retangulo = pygame.Rect(500, 300, 60, 60)
-        #tela.draw_rect(WHITE, retangulo)
-        #terreno = [(100, 100), (500, 100),(500, 500), (100, 500)]
-
 
         if self.get_redesenha_terreno() == True:
 
@@ -124,37 +117,23 @@ class Mapa_do_jogo:
                 vertice_aux = ((vertice[0] + x), (vertice[1] + self.__random_alturas_diferentes))
                 self.__novo_terreno.append(vertice_aux)
 
-
-
                 # sorteia numeros entre 1 e a quantidade de tuplas-1 da lista de vertices do terreno
                 self.__ramdom_pouso_nave = random.randint(1, self.__qtd_tuplas_terreno-1)
                 teste = random.randint(1, self.__qtd_tuplas_terreno-1)
 
-
                 #define o local de pouso
                 if self.__ramdom_pouso_nave == self.__cont or teste == self.__cont:
 
-                    self.__existe_area_pouso = True
+                    self.set_existe_area_pouso(True)
                     # coleta a divisao da abstracao da malha do terreno em x
                     x_largura_pouso = tela.get_resolucao()[0] / (self.__qtd_tuplas_terreno)
                     if nave.get_largura_x()< x_largura_pouso:
                         x_largura_pouso = nave.get_largura_x()
 
-                    # pega o divisao e define o tamanho x e o centro do pouso. determina o vertice1 da direita.
-                    #x_largura_pouso = ((x_largura_pouso + tela.get_resolucao()[0] / (self.__qtd_tuplas_terreno)) - nave.get_largura_x())
-                    #x_largura_pouso = nave.get_largura_x()
-                    # define o inicio do vertice2 da esquerda
-                    x_fim_pouso = x_largura_pouso / 2
-
-
-                    #self.__novo_terreno.insert((self.__cont), ((vertice[0] + x + x_fim_pouso), vertice[1] + self.__random_alturas_diferentes))
-                    #self.__novo_terreno.insert((self.__cont), ((vertice[0] + x), vertice[1] + self.__random_alturas_diferentes))
 
                     # faz o rebaixo do pouso da nave no terreno
                     self.__novo_terreno.append((vertice[0] + x, vertice[1] + self.__random_alturas_diferentes))
                     self.__novo_terreno.append((vertice[0] + x + x_largura_pouso, vertice[1] + self.__random_alturas_diferentes ))
-
-
 
                     # desenha o feedback da area de pouso com uma line
                     self.__base_pouso_line =   [(vertice[0] + x),
@@ -172,14 +151,10 @@ class Mapa_do_jogo:
                     self.__altura_base_pouso = self.__random_alturas_diferentes
 
 
-
-
-
                     #quando é sorteado um local de pouso(rebaixo do terreno ou feedback) tem que atualizar o tamanho do for
                     # para que continue desenhando os vertices ate o fim da tela
                     self.__qtd_tuplas_terreno+=2;
                     x += tela.get_resolucao()[0] / (self.__qtd_tuplas_terreno)
-
 
                 #incrementa x e define a quantidade de pontos em x da tela
                 x += tela.get_resolucao()[0]/(self.__qtd_tuplas_terreno)
@@ -194,14 +169,13 @@ class Mapa_do_jogo:
             self.__qtd_tuplas_terreno+=2
             self.__terreno = self.__novo_terreno
 
-
-            # permite desenhar o terreno apenas uma vez somente no primeiro frame.
+            # permite randomizar e desenhar o terreno apenas uma vez somente no primeiro frame.
             self.set_redesenha_terreno(False)
+
 
         self.__debug()
 
         tela.draw_polygon(self.get_cor_terreno(), self.__terreno)
-
 
         self.__sort1 = random.randint(0, 255)
         self.__sort2 = random.randint(0, 255)
@@ -212,8 +186,6 @@ class Mapa_do_jogo:
 
         # só desenha a area de pouso se ela existir, ou seja se caiu no if #define o local de pouso.
         if(self.__existe_area_pouso):
-            #tela.draw_rect(GREEN, self.__base_pouso)
-            #tela.draw_line(RED, (0,0),(1200,600), 20)
             tela.draw_line((self.__sort1,self.__sort2,0), (self.__base_pouso_line[0], self.__base_pouso_line[1]),
                                     (self.__base_pouso_line[2], self.__base_pouso_line[3]), self.get_espessura_line_pouso_nave())
 
