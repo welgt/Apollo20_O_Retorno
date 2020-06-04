@@ -56,6 +56,8 @@ class Nova_nave:
         return self.__som_propulsor.get_volume()
 
 
+
+
     def set_altitude(self, altitude):
         self.__altitude = altitude
 
@@ -296,73 +298,47 @@ class Nova_nave:
 
 
     # ACELERACAO do propulsor
-    def aceleracao_propulsor(self, tempo, tela):
+    def aceleracao_propulsor(self,tela):
 
         if self.get_propulsor_ativo() == True and self.get_colidiu_tela() == False and self.get_colidiu_area_pouso() == False:
             self.__cont += 1
 
-            #if self.__cont<=1:
             self.__som_propulsor.load('arquivos/propulsor.mp3')
             self.__som_propulsor.play()
 
+
             # gasta combustivel ao acelerar e so acelera se caso tiver
             if self.get_combustivel()>0:
-                self.__velocidade_y -= (self.get_gravidade_lua() / tempo) * self.get_friccao()
+                #self.__velocidade_y -= (self.get_gravidade_lua() / tempo) * self.get_friccao()
+                self.set_velocidade_y(self.get_velocidade_y() - (self.get_gravidade_lua() / tela.get_cronometro()[2]) * self.get_friccao())
                 self.set_combustivel(self.get_combustivel() - 1)
             else:
                 self.set_combustivel(0)
                 self.set_potencia_propulsor(0)
 
-
             # permite aumentar o tamanho do propulsor baseado no tamanho dela "%"
-            if self.__potencia_propulsor < self.get_altura_y()/1000*10:
-                self.__potencia_propulsor += (self.get_gravidade_lua() / tempo) * self.get_friccao()
-
+            if self.get_potencia_propulsor() < self.get_altura_y()/1000*10:
+                self.set_potencia_propulsor(self.get_potencia_propulsor() + (self.get_gravidade_lua()) * self.get_friccao())
 
                 # define nova direcao caso a nave esteja inclinada pra direita e propulsor ativo
                 if self.get_angulo_rotacao()<=0.0001 and self.get_propulsor_ativo():
-                    #self.__velocidade_x += self.get_angulo_rotacao()*-1 /180
-                    angulo = self.get_angulo_rotacao()/10000
+                    angulo = self.get_angulo_rotacao()/1000*10
                     print("angulo :", angulo)
 
-                    x = -self.get_posicao_x() * angulo
-                    y = self.get_posicao_y() * angulo
-
-                    self.set_velocidade_x(x+- self.__potencia_propulsor/1000)
-                    self.set_velocidade_y(y+- self.__potencia_propulsor/1000)
-
+                    self.set_velocidade_x((-self.get_gravidade_lua()  * angulo)  -self.get_friccao() )
+                    #self.set_velocidade_y(( self.get_gravidade_lua()   * angulo)  -self.get_friccao() )
 
                 # define nova direcao caso a nave esteja inclinada pra esquerda e propulsor ativo
                 if self.__angulo_rotacao >= 0.0001 and self.get_propulsor_ativo():
-                    #self.__velocidade_x -= self.get_angulo_rotacao()/180
-
-                    angulo = self.get_angulo_rotacao()/10000
+                    angulo = self.get_angulo_rotacao()/1000*10
                     print("angulo :", angulo)
 
-                    x = -self.get_posicao_x() * angulo
-                    y = -self.get_posicao_y() * angulo
-                    self.set_velocidade_x(x)
-                    self.set_velocidade_y(y)
+                    self.set_velocidade_x((-self.get_gravidade_lua() * angulo)  -self.get_friccao() )
+                    #self.set_velocidade_y((-self.get_gravidade_lua() * angulo)  -self.get_friccao() )
 
 
-            #frente = [0, -1]
-            #frente[0] = frente[0] * math.cos(self.get_angulo_rotacao()) - frente[1]  * math.sin(self.get_angulo_rotacao())
-            #frente[1] = frente[0] * math.sin(self.get_angulo_rotacao()) + frente[1] * math.cos(self.get_angulo_rotacao())
-            #self.__posicao_x += frente[0] * self.__velocidade_x
-            #self.__posicao_y += frente[1] * self.__velocidade_x
 
-            #if self.get_angulo_rotacao() <= 1 and self.get_propulsor_ativo() or self.__angulo_rotacao >= 1 and self.get_propulsor_ativo():
-
-             #   angulo = self.get_angulo_rotacao()/1000
-
-              #  x = -self.get_posicao_x()*angulo
-               # y = -self.get_posicao_y()*angulo
-
-                #self.set_velocidade_x(x)
-                #self.set_velocidade_y(y)
-
-
-    def gravidade(self, tempo, tela):
+    def gravidade(self,tela):
 
         # GRAVIDADE
         # se nao tiver acelerando e nao tiver colidido com a tela ou com a area de pouso executa a gravidade
@@ -372,9 +348,10 @@ class Nova_nave:
             self.__som_propulsor.fadeout(700)
             self.__som_propulsor.stop()
 
-            self.__velocidade_y += (self.get_gravidade_lua() / tempo) * self.get_friccao()*3
+            self.set_velocidade_y(self.get_velocidade_y() + (self.get_gravidade_lua() / tela.get_cronometro()[2]) * self.get_friccao()*3)
+
             # diminiu o tamanho do propulsor
-            self.__potencia_propulsor -= (self.get_gravidade_lua() / tempo)  * self.get_friccao()
+            self.set_potencia_propulsor(self.get_potencia_propulsor() - (self.get_gravidade_lua() / tela.get_cronometro()[2])  * self.get_friccao())
 
             # caso ele for menor que zero, fique em zero.
             if self.get_potencia_propulsor() < 0:
@@ -387,7 +364,7 @@ class Nova_nave:
     # calcula novos pontos(intermediario (x,y)) na lista de vertice existente do terreno e os adiciona dinamicamente.
     # A cada dois pontos principais(e ja existentes)  é adicionado x quantidade de pontos entre eles para que a deteccao
     # de colisao seja mais precisa.
-    def verifica_colisao_terreno(self, mapa, tela):
+    def verifica_colisao_terreno(self, mapa):
 
         self.set_colidiu_terreno(False)
         # recebe a lista de vertice responsavel por desenhar o terreno

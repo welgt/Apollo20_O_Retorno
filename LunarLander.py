@@ -28,6 +28,8 @@ gasolina.set_velocidade_y(0)
 terra = Nova_nave('arquivos/terra3.png', 800, 50)
 #gamePlay.set_resolucao_tela((pygame.display.list_modes()[0][0],pygame.display.list_modes()[0][1]))
 
+dados = Dados()
+
 painel_menu = painel()
 painel_menu.set_ativo(True)
 painel_config = painel()
@@ -71,22 +73,16 @@ texto_feedback_pouso_hud = fonte_texto()
 
 str_botao_play = 'PLAY'
 str_feedback_pouso = ''
-
 cor_botao_fullscreen = BLACK
-
-
-dados = Dados()
 
 game_loop = False
 debug = False
 jogoAtivo = True
 config = False
-tempo = 0
 nova_resolucao = False
-volume_propulsor = 0.1
 
 pos_bola_slider_volume = 0
-nave.set_volume_propulsor(volume_propulsor)
+nave.set_volume_propulsor(0.1)
 
 
 
@@ -210,7 +206,7 @@ while jogoAtivo:
         painel_hud.cria(gamePlay, 0, -gamePlay.get_resolucao()[1] / 2 + 30, 98, int(gamePlay.get_proporcao()[1] * 10))
         painel_hud.draw_painel(gamePlay, WHITE, 120)
 
-        if gamePlay.get_cronometro()[3]<4:
+        if gamePlay.get_cronometro()[2]<4:
             temp = 3
             temp -=gamePlay.get_cronometro()[2]
 
@@ -249,6 +245,15 @@ while jogoAtivo:
 
 
     # GERENTE DO MENU
+
+    if botao_full_scren.get_clicou() == True:
+        cor_botao_fullscreen = WHITE
+
+        gamePlay.set_resolucao((pygame.display.list_modes()[0][0], pygame.display.list_modes()[0][1] - 38))
+        #gamePlay.fill(BLACK)
+        gamePlay.flip()
+    botao_full_scren.set_cor(cor_botao_fullscreen)
+
     if botao_play.get_clicou() == True:
         game_loop = True
         painel_menu.set_ativo(False)
@@ -287,16 +292,6 @@ while jogoAtivo:
             pos_bola_slider_volume = pygame.mouse.get_pos()[0] - gamePlay.get_resolucao()[0] / 2
 
 
-    if botao_full_scren.get_clicou() == True:
-        cor_botao_fullscreen = WHITE
-
-        texto_botao_fullscreen = '   X   '
-        gamePlay.set_resolucao((pygame.display.list_modes()[0][0], pygame.display.list_modes()[0][1] - 38))
-        gamePlay.fill(BLACK)
-        gamePlay.flip()
-
-    botao_full_scren.set_cor(cor_botao_fullscreen)
-
 
 
     #GAMEPLAY
@@ -304,7 +299,7 @@ while jogoAtivo:
 
         gamePlay.cronometro()
 
-        if gamePlay.get_cronometro()[3]>3:
+        if gamePlay.get_cronometro()[2]>3:
 
             mapa.desenha_terreno(gamePlay, nave)
             if mapa.get_existe_area_pouso() == False:
@@ -316,22 +311,22 @@ while jogoAtivo:
             nave.set_tamanho(int(gamePlay.get_proporcao()[0] * 18),
                              int(gamePlay.get_proporcao()[1] * 50))
 
-            nave.set_friccao(1)
+            nave.set_friccao(00.1)
             nave.set_velocidade_rotacao(nave.get_gravidade_lua()*2)
             nave.set_volume_propulsor(pos_bola_slider_volume)
             nave.set_altitude(nave.get_altitude() - nave.get_velocidade_y())
             nave.update()
             nave.verifica_colisao_tela(gamePlay)
             nave.verifica_colisao_area_pouso(mapa)
-            nave.verifica_colisao_terreno(mapa, gamePlay)
+            nave.verifica_colisao_terreno(mapa)
             gasolina.verifica_colisao_nave(nave)
-            gasolina.verifica_colisao_terreno(mapa, gamePlay)
+            gasolina.verifica_colisao_terreno(mapa)
 
             # ACELERACAO do propulsor
-            nave.aceleracao_propulsor(tempo, gamePlay)
+            nave.aceleracao_propulsor(gamePlay)
             # GRAVIDADE
-            nave.gravidade(tempo, gamePlay)
-            gasolina.gravidade(tempo)
+            nave.gravidade(gamePlay)
+            gasolina.gravidade(gamePlay)
 
 
             if nave.get_combustivel() == 500:
@@ -400,12 +395,10 @@ while jogoAtivo:
             # so adiciona angulo do lado esquerdo da nave se for o grau maximo permitido de 90
             if nave.get_rotacionou_esq() and nave.get_angulo_rotacao() <= 90:
                 nave.set_angulo_rotacao(nave.get_angulo_rotacao()+nave.get_velocidade_rotacao())
-                nave.set_angulo_rotacao(nave.get_angulo_rotacao())
 
             # so adiciona angulo do lado direito da nave se for o grau maximo permitido de 90
             if nave.get_rotacionou_dir() and nave.get_angulo_rotacao() >= -90:
                 nave.set_angulo_rotacao(nave.get_angulo_rotacao()- nave.get_velocidade_rotacao())
-                nave.set_angulo_rotacao(nave.get_angulo_rotacao())
 
             # cria poligono propulsor e recebe tamanho da calda
             poligono_propulsor_dir = nave.criaPoligono_Propulsor(nave.get_largura_x() / 10, nave.get_largura_x() / 4.5,
@@ -427,7 +420,7 @@ while jogoAtivo:
             #print(gasolina.get_posicao_y())
 
 
-    tempo+=0.1
+    #tempo+=0.1
     gamePlay.flip()
     gamePlay.set_fps(30)
 

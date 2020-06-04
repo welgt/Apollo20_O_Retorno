@@ -90,8 +90,9 @@ class Nova_tela:
                 self.__minuto = 0
                 self.__hora+=1
 
+
         #print(self.__hora, ":", self.__minuto, ".", self.__segundos)
         #return self.__hora, self.__minuto, self.__segundos
 
     def get_cronometro(self):
-        return self.__hora, self.__minuto, self.__segundos, self.__segundos_corridos
+        return self.__hora, self.__minuto, self.__segundos, self.__milisegundos, self.__segundos_corridos

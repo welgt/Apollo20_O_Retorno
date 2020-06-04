@@ -26,10 +26,10 @@ class Item:
         self.__colidiu_nave = False
 
 
-    def gravidade(self, tempo):
+    def gravidade(self, tela):
         # GRAVIDADE
 
-        self.__posicao_y += (self.get_gravidade_lua() / tempo) * self.get_friccao() + self.get_velocidade_y()
+        self.set_posicao_y(self.get_posicao_y() + (self.get_gravidade_lua() / tela.get_cronometro()[4]) * self.get_friccao() + self.get_velocidade_y())
 
 
     def get_gravidade_lua(self):
@@ -141,7 +141,7 @@ class Item:
     # calcula novos pontos(intermediario (x,y)) na lista de vertice existente do terreno e os adiciona dinamicamente.
     # A cada dois pontos principais(e ja existentes)  é adicionado x quantidade de pontos entre eles para que a deteccao
     # de colisao seja mais precisa.
-    def verifica_colisao_terreno(self, mapa, tela):
+    def verifica_colisao_terreno(self, mapa):
 
         self.set_colidiu_terreno(False)
         # recebe a lista de vertice responsavel por desenhar o terreno
