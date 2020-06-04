@@ -51,10 +51,11 @@ def evento_botoes():
     botao().evento(event, botao_exit, painel_menu)
     botao().evento(event, botao_confg, painel_menu)
     botao().evento(event, botao_voltar, painel_config)
-    botao().evento(event, botao_sim, painel_sair)
-    botao().evento(event, botao_nao, painel_sair)
     botao().evento(event, botao_bola_slider_volume_ambiente, painel_config)
     botao().evento(event, botao_full_scren, painel_config)
+    botao().evento(event, botao_sim, painel_sair)
+    botao().evento(event, botao_nao, painel_sair)
+
 
 
 texto_velocidade_nave_hud = fonte_texto()
@@ -166,10 +167,10 @@ while jogoAtivo:
         botao_slider_volume_ambiente.criar(painel_config, 0, -gamePlay.get_proporcao()[1] * 100, 50, 3)
         botao_slider_volume_ambiente.draw(gamePlay, '-                       +')
 
-        texto_volume_ambiente.set_texto('         VOLUME AMBIENTE', 'Times new roman')
-        texto_volume_ambiente.cria(int(gamePlay.get_proporcao()[0] * 15), WHITE, 1)
-        gamePlay.blit(texto_volume_ambiente.get_surface(), (botao_slider_volume_ambiente.get_posicao_x() ,
-                      botao_slider_volume_ambiente.get_posicao_y()+botao_bola_slider_volume_ambiente.get_altura()))
+        print("texto_volume_ambiente largura: ", texto_volume_ambiente.get_largura())
+        texto_volume_ambiente.cria("VOLUME AMBIENTE", 'Times new roman', int(gamePlay.get_proporcao()[0] * 15), WHITE)
+        gamePlay.blit(texto_volume_ambiente.get_surface(), (gamePlay.get_resolucao()[0]/2 - texto_volume_ambiente.get_largura()/2,
+            botao_slider_volume_ambiente.get_posicao_y()+botao_bola_slider_volume_ambiente.get_altura()))
 
         #pos_bola_slider_volume = -botao_slider_volume_ambiente.get_posicao_x() / 2 + botao_bola_slider_volume_ambiente.get_largura() * 2 + 20
         botao_bola_slider_volume_ambiente.criar(painel_config, pos_bola_slider_volume, -gamePlay.get_proporcao()[1] * 100, 6, 5)
@@ -178,10 +179,9 @@ while jogoAtivo:
         botao_full_scren.criar(painel_config, -gamePlay.get_proporcao()[0] * 80, gamePlay.get_proporcao()[1] * 20, 3, 5)
         botao_full_scren.draw(gamePlay, '')
 
-        texto_fullscreen.set_texto('     FULLSCREEN', 'Times new roman')
-        texto_fullscreen.cria(int(gamePlay.get_proporcao()[0] * 15), WHITE, 1)
-        gamePlay.blit(texto_volume_ambiente.get_surface(), (botao_full_scren.get_posicao_x() ,
-                                                            botao_full_scren.get_posicao_y()))
+        texto_fullscreen.cria('FULLSCREEN', 'Times new roman', int(gamePlay.get_proporcao()[0] * 15), WHITE)
+        gamePlay.blit(texto_fullscreen.get_surface(), (gamePlay.get_resolucao()[0]/2 - texto_fullscreen.get_largura()/2 ,botao_full_scren.get_posicao_y()))
+
 
         evento_botoes()
 
@@ -192,9 +192,8 @@ while jogoAtivo:
         painel_sair.cria(gamePlay, 0, 0, 50, 20)
         painel_sair.draw_painel(gamePlay,WHITE, 120)
 
-        texto_exit.set_texto(" Voce tem certeza que quer fechar o jogo? ", 'Times new roman')
-        texto_exit.cria(int(gamePlay.get_proporcao()[0] * 30), WHITE, 1)
-        gamePlay.blit(texto_exit.get_surface(), (painel_sair.get_posicao_x() , 110))
+        texto_exit.cria("Você tem certeza que quer sair do jogo?", 'Times new roman', int(gamePlay.get_proporcao()[0] * 30), WHITE)
+        gamePlay.blit(texto_exit.get_surface(), (gamePlay.get_resolucao()[0]/2 - texto_exit.get_largura()/2 , 110))
 
         botao_sim.criar(painel_sair, -gamePlay.get_proporcao()[0] * 120, 0, 30, 30)
         botao_sim.draw(gamePlay, 'SIM')
@@ -211,44 +210,41 @@ while jogoAtivo:
         painel_hud.cria(gamePlay, 0, -gamePlay.get_resolucao()[1] / 2 + 30, 98, int(gamePlay.get_proporcao()[1] * 10))
         painel_hud.draw_painel(gamePlay, WHITE, 120)
 
-        if gamePlay.get_cronometro()[2]<4:
+        if gamePlay.get_cronometro()[3]<4:
             temp = 3
             temp -=gamePlay.get_cronometro()[2]
-            texto_contagem_regressiva_hud.set_texto(" {0:4.4s} ".format(str(temp)), 'Times new roman')
-            texto_contagem_regressiva_hud.cria(int(gamePlay.get_proporcao()[1] * 100), WHITE, 1)
+
+            texto_contagem_regressiva_hud.cria(" {0:4.4s} ".format(str(temp)), 'Times new roman', int(gamePlay.get_proporcao()[1] * 100), WHITE)
             gamePlay.blit(texto_contagem_regressiva_hud.get_surface(),
                           (gamePlay.get_resolucao()[0] / 2 - texto_contagem_regressiva_hud.get_tamanho_letra() / 2,
                            gamePlay.get_resolucao()[1] / 2 - texto_contagem_regressiva_hud.get_tamanho_letra() / 2))
 
         pos_textos = gamePlay.get_resolucao()[0]/5
-        texto_velocidade_nave_hud.set_texto("Velocidade: {0:3.4s} ".format(str(abs(nave.get_velocidade_y()))) , 'Times new roman')
-        texto_velocidade_nave_hud.cria(int(gamePlay.get_proporcao()[0] * 20), BLACK, 1)
+
+        texto_velocidade_nave_hud.cria("Velocidade: {0:3.4s} ".format(str(abs(nave.get_velocidade_y()))), 'Times new roman',
+                                       int(gamePlay.get_proporcao()[0] * 20), BLACK)
         gamePlay.blit(texto_velocidade_nave_hud.get_surface(), (painel_hud.get_posicao_x(), painel_hud.get_posicao_y()))
 
-        texto_combustivel_hud.set_texto("Combustivel: {0:4.4s} L. ".format(str(nave.get_combustivel())) , 'Times new roman')
-        texto_combustivel_hud.cria(int(gamePlay.get_proporcao()[0] * 20), BLACK, 1)
+        texto_combustivel_hud.cria("Combustivel: {0:4.4s} L. ".format(str(nave.get_combustivel())) , 'Times new roman',
+                                   int(gamePlay.get_proporcao()[0] * 20), BLACK)
+
         gamePlay.blit(texto_combustivel_hud.get_surface(), (painel_hud.get_posicao_x() + gamePlay.get_proporcao()[0]+pos_textos*1, painel_hud.get_posicao_y()))
 
+        texto_altitude_hud.cria("Altitude : {0:4.5s} ".format(str(nave.get_altitude())) , 'Times new roman', int(gamePlay.get_proporcao()[0] * 20), BLACK)
+        gamePlay.blit(texto_altitude_hud.get_surface(), (painel_hud.get_posicao_x() + gamePlay.get_proporcao()[0] + pos_textos * 2, painel_hud.get_posicao_y()))
 
-        texto_altitude_hud.set_texto("Altitude : {0:4.5s} ".format(str(nave.get_altitude())) , 'Times new roman')
-        texto_altitude_hud.cria(int(gamePlay.get_proporcao()[0] * 20), BLACK, 1)
-        gamePlay.blit(texto_altitude_hud.get_surface(), (painel_hud.get_posicao_x()+gamePlay.get_proporcao()[0]+pos_textos*2, painel_hud.get_posicao_y()))
+        texto_angulo_nave_hud.cria("Angulo nave : {0:4.4s} ".format(str(abs(nave.get_angulo_rotacao()))) , 'Times new roman', int(gamePlay.get_proporcao()[0] * 20), BLACK)
+        gamePlay.blit(texto_angulo_nave_hud.get_surface(), (painel_hud.get_posicao_x() + gamePlay.get_proporcao()[0] + pos_textos * 3, painel_hud.get_posicao_y()))
 
-        texto_angulo_nave_hud.set_texto("Angulo nave : {0:4.4s} ".format(str(abs(nave.get_angulo_rotacao()))) , 'Times new roman')
-        texto_angulo_nave_hud.cria(int(gamePlay.get_proporcao()[0] * 20), BLACK, 1)
-        gamePlay.blit(texto_angulo_nave_hud.get_surface(), (painel_hud.get_posicao_x()+gamePlay.get_proporcao()[0]+pos_textos*3, painel_hud.get_posicao_y()))
+        texto_pontos_hud.cria("Pontos : {0:4.4s} ".format(str(dados.get_pontos())) , 'Times new roman', int(gamePlay.get_proporcao()[0] * 20), BLACK)
+        gamePlay.blit(texto_pontos_hud.get_surface(), (painel_hud.get_posicao_x() + gamePlay.get_proporcao()[0] + pos_textos * 4, painel_hud.get_posicao_y()))
 
-        texto_pontos_hud.set_texto("Pontos : {0:4.4s} ".format(str(dados.get_pontos())) , 'Times new roman')
-        texto_pontos_hud.cria(int(gamePlay.get_proporcao()[0] * 20), BLACK, 1)
-        gamePlay.blit(texto_pontos_hud.get_surface(), (painel_hud.get_posicao_x()+gamePlay.get_proporcao()[0]+pos_textos*4, painel_hud.get_posicao_y()))
+        texto_feedback_pouso_hud.cria(str_feedback_pouso, 'Times new roman', int(gamePlay.get_proporcao()[0] * 10), WHITE)
+        if game_loop == True:
+            gamePlay.blit(texto_feedback_pouso_hud.get_surface(), (nave.get_posicao_x() - texto_feedback_pouso_hud.get_largura() / 6 , nave.get_posicao_y() - gamePlay.get_proporcao()[1] * 20))
 
-        texto_feedback_pouso_hud.set_texto(str_feedback_pouso, 'Times new roman')
-        texto_feedback_pouso_hud.cria(int(gamePlay.get_proporcao()[0] * 10), WHITE, 1)
-        gamePlay.blit(texto_feedback_pouso_hud.get_surface(), (nave.get_posicao_x()-texto_feedback_pouso_hud.get_largura_palavra()/6 , nave.get_posicao_y()-gamePlay.get_proporcao()[1]*20))
 
         evento_botoes()
-
-
 
 
 
@@ -280,6 +276,7 @@ while jogoAtivo:
     if botao_nao.get_clicou() == True:
         painel_menu.set_ativo(True)
         painel_sair.set_ativo(False)
+        painel_config.set_ativo(False)
 
     if botao_bola_slider_volume_ambiente.get_clicou() == True:
 
@@ -307,14 +304,14 @@ while jogoAtivo:
 
         gamePlay.cronometro()
 
-        if gamePlay.get_cronometro()[2]>3:
+        if gamePlay.get_cronometro()[3]>3:
 
             mapa.desenha_terreno(gamePlay, nave)
             if mapa.get_existe_area_pouso() == False:
                 mapa.desenha_terreno(gamePlay, nave)
                 print("NAO FOI POSSIVEL SORTEAR UMA AREA DE POUSO, REDESENHANDO TERRENO")
 
-
+            gasolina.set_tamanho(int(gamePlay.get_proporcao()[0] * 15), int(gamePlay.get_proporcao()[1] * 30))
             terra.set_tamanho(int(gamePlay.get_proporcao()[0] * 180), int(gamePlay.get_proporcao()[0] * 180))
             nave.set_tamanho(int(gamePlay.get_proporcao()[0] * 18),
                              int(gamePlay.get_proporcao()[1] * 50))
@@ -322,33 +319,27 @@ while jogoAtivo:
             nave.set_friccao(1)
             nave.set_velocidade_rotacao(nave.get_gravidade_lua()*2)
             nave.set_volume_propulsor(pos_bola_slider_volume)
-
-            velocidade_x = nave.get_velocidade_x()
-            velocidade_y = nave.get_velocidade_y()
-            posicao_x = nave.get_posicao_x()
-            posicao_y = nave.get_posicao_y()
-            potencia_propulsor = nave.get_potencia_propulsor()
-            velocidade_rotacao = nave.get_angulo_rotacao()
-            altitude = nave.get_altitude()
-
-            posicao_x += velocidade_x
-            posicao_y += velocidade_y
-
-            gasolina.set_tamanho(int(gamePlay.get_proporcao()[0]*15),int(gamePlay.get_proporcao()[1]*30))
-            gasolina.gravidade(tempo)
-
+            nave.set_altitude(nave.get_altitude() - nave.get_velocidade_y())
+            nave.update()
             nave.verifica_colisao_tela(gamePlay)
             nave.verifica_colisao_area_pouso(mapa)
             nave.verifica_colisao_terreno(mapa, gamePlay)
             gasolina.verifica_colisao_nave(nave)
             gasolina.verifica_colisao_terreno(mapa, gamePlay)
 
-            sort = random.randint(0,200)
+            # ACELERACAO do propulsor
+            nave.aceleracao_propulsor(tempo, gamePlay)
+            # GRAVIDADE
+            nave.gravidade(tempo, gamePlay)
+            gasolina.gravidade(tempo)
+
+
             if nave.get_combustivel() == 500:
                 gasolina.posicao_randomica(gamePlay)
                 gasolina.set_velocidade_y(1)
 
             # so sorteia se caso  a gasolina  esta aguardando em cima da tela
+            sort = random.randint(0, 200)
             if nave.get_combustivel() < 600 and sort == 100 and gasolina.get_posicao_y()<0 :
                 gasolina.posicao_randomica(gamePlay)
                 gasolina.set_velocidade_y(1)
@@ -366,22 +357,18 @@ while jogoAtivo:
                 gasolina.set_velocidade_y(0)
 
 
-            # so tem velocidade caso nao colidiu com a tela
-            if nave.get_colidiu_tela() == False:
-                nave.set_posicao(posicao_x, posicao_y)
-                nave.set_altitude(nave.get_altitude() - nave.get_velocidade_y())
-
             # se a nave pousou verifique as condicoes e atribua a pontuacao correta
             if nave.get_colidiu_area_pouso() == True:
                 painel_menu.set_ativo(True)
                 velocidade_rotacao = nave.get_angulo_rotacao()
-                nave.set_angulo_rotacao(velocidade_rotacao)
+                nave.set_angulo_rotacao(nave.get_angulo_rotacao())
 
 
                 if nave.get_angulo_rotacao() <= 15 and nave.get_angulo_rotacao() >= -15:
                     pouso_perfeito = 150
                     dados.set_pontos(pouso_perfeito)
                     str_feedback_pouso = 'POUSO PERFEITO'
+
 
                 elif nave.get_angulo_rotacao() <= 25 and nave.get_angulo_rotacao() >= -25:
                     pouso_toleravel = 100
@@ -396,31 +383,29 @@ while jogoAtivo:
                 else:
                     str_feedback_pouso = 'VOCÊ MORREU'
 
-            if nave.get_colidiu_terreno() == True:
+            if nave.get_colidiu_terreno() == True and nave.get_colidiu_area_pouso() == False:
                 print("colidiu", nave.get_colidiu_terreno())
-                # painel_menu.set_ativo(True)
+                #game_loop = False
+                painel_menu.set_ativo(True)
                 # mapa.set_cor_terreno(CYAN)
                 mapa.set_cor_borda_terreno(CYAN)
+                str_botao_play = 'IR DENOVO'
+
             else:
                 nave.set_colidiu_terreno(False)
                 # mapa.set_cor_terreno(MARRON)
                 mapa.set_cor_borda_terreno(AMARELO)
 
 
-            # ACELERACAO do propulsor
-            nave.aceleracao_propulsor(tempo, gamePlay)
-            # GRAVIDADE
-            nave.gravidade(tempo, gamePlay)
-
             # so adiciona angulo do lado esquerdo da nave se for o grau maximo permitido de 90
             if nave.get_rotacionou_esq() and nave.get_angulo_rotacao() <= 90:
-                velocidade_rotacao += nave.get_velocidade_rotacao()
-                nave.set_angulo_rotacao(velocidade_rotacao)
+                nave.set_angulo_rotacao(nave.get_angulo_rotacao()+nave.get_velocidade_rotacao())
+                nave.set_angulo_rotacao(nave.get_angulo_rotacao())
 
             # so adiciona angulo do lado direito da nave se for o grau maximo permitido de 90
             if nave.get_rotacionou_dir() and nave.get_angulo_rotacao() >= -90:
-                velocidade_rotacao -= nave.get_velocidade_rotacao()
-                nave.set_angulo_rotacao(velocidade_rotacao)
+                nave.set_angulo_rotacao(nave.get_angulo_rotacao()- nave.get_velocidade_rotacao())
+                nave.set_angulo_rotacao(nave.get_angulo_rotacao())
 
             # cria poligono propulsor e recebe tamanho da calda
             poligono_propulsor_dir = nave.criaPoligono_Propulsor(nave.get_largura_x() / 10, nave.get_largura_x() / 4.5,

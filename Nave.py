@@ -11,7 +11,6 @@ class Nova_nave:
         self.__altura_y = self.__surface.get_rect()[3]
         self.__posicao_x = posicao_x
         self.__posicao_y = posicao_y
-        #self.__centro_surface = self.__posicao_x + (self.__tamanho_x / 2), self.get_posicao_y + self.__tamanho_y / 2
         self.__velocidade_x = 0
         self.__velocidade_y = 0
         self.__potencia_propulsor = 0
@@ -29,21 +28,22 @@ class Nova_nave:
         self.__combustivel = 1000
         self.__gravidade_lua = 1.6
         self.__altitude = 0
-        self.__som_propulsor = pygame.mixer.music
         self.__cont = 0
+        self.__som_propulsor = pygame.mixer.music
 
         #cor_transp = self.__surface.get_at((0,0))
         #self.__surface.set_colorkey((255,255,255,200))
         #self.__surface = self.__surface.convert()
-
-
-        
 
         #self.__volume = 0
         #som = pygame.mixer.music
         #som.load('arquivos/propulsor.mp3')
         #som.play()
         #som.set_volume(0.1)
+
+    def update(self):
+        self.set_posicao_x(self.get_posicao_x() + self.get_velocidade_x())
+        self.set_posicao_y(self.get_posicao_y() + self.get_velocidade_y())
 
     def play_som_propulsor(self):
         self.__som_propulsor.play()
@@ -259,7 +259,8 @@ class Nova_nave:
             #print("colidiu")
             self.set_colidiu_tela(True)
             # pega a posicao do momento da colisao e deixa a nave travada nela
-            self.set_posicao(self.get_posicao_x(),self.get_posicao_y())
+            self.set_velocidade_x(0)
+            self.set_velocidade_y(0)
 
 
 
@@ -480,7 +481,13 @@ class Nova_nave:
             # verifica se a distancia é menor que 10, se sim, colidiu com o terreno
             if distancia_entre_ponto_colisor_nave_ponto_principal < 8:
                 self.set_colidiu_terreno(True)
-                #self.set_velocidade_y(0)
+                self.set_potencia_propulsor(0)
+                self.set_rotacionou_dir(False)
+                self.set_rotacionou_esq(False)
+                self.set_posicao(self.get_posicao_x(), self.get_posicao_y())
+                self.set_velocidade_x(0)
+                self.set_velocidade_y(0)
+                self.set_gravidade_lua(0)
                 #print("COLIDIU PONTO PRINCIPAL")
 
             # verifica se a distancia é menor que 10, se sim, colidiu com o terreno
@@ -489,9 +496,17 @@ class Nova_nave:
                     or distancia_entre_ponto_colisor_nave_ponto_intermediario_03 < 8 \
                     or distancia_entre_ponto_colisor_nave_ponto_intermediario_04 < 8 \
                     or distancia_entre_ponto_colisor_nave_ponto_intermediario_05 < 8 :
+                self.set_colidiu_terreno(True)
+                self.set_potencia_propulsor(0)
+                self.set_rotacionou_dir(False)
+                self.set_rotacionou_esq(False)
+                self.set_posicao(self.get_posicao_x(), self.get_posicao_y())
+                self.set_velocidade_x(0)
+                self.set_velocidade_y(0)
+                self.set_gravidade_lua(0)
                 #print("COLIDIU PONTO INTERMEDIARIO")
                 self.set_colidiu_terreno(True)
-                #self.set_velocidade_y(0)
+
 
             if j < len(lista_vertice)-1:#6
                 i+=1
