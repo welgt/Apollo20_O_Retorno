@@ -311,7 +311,7 @@ while jogoAtivo:
             nave.set_tamanho(int(gamePlay.get_proporcao()[0] * 18),
                              int(gamePlay.get_proporcao()[1] * 50))
 
-            nave.set_friccao(3)
+            nave.set_friccao(6)
             nave.set_velocidade_rotacao(nave.get_gravidade_lua()*2)
             nave.set_volume_propulsor(pos_bola_slider_volume)
             nave.set_altitude(nave.get_altitude() - nave.get_velocidade_y())
