@@ -206,9 +206,9 @@ while jogoAtivo:
         painel_hud.cria(gamePlay, 0, -gamePlay.get_resolucao()[1] / 2 + 30, 98, int(gamePlay.get_proporcao()[1] * 10))
         painel_hud.draw_painel(gamePlay, WHITE, 120)
 
-        if gamePlay.get_cronometro()[2]<4:
+        if gamePlay.get_cronometro()[4]<4:
             temp = 3
-            temp -=gamePlay.get_cronometro()[2]
+            temp -=gamePlay.get_cronometro()[4]
 
             texto_contagem_regressiva_hud.cria(" {0:4.4s} ".format(str(temp)), 'Times new roman', int(gamePlay.get_proporcao()[1] * 100), WHITE)
             gamePlay.blit(texto_contagem_regressiva_hud.get_surface(),
@@ -236,8 +236,7 @@ while jogoAtivo:
         gamePlay.blit(texto_pontos_hud.get_surface(), (painel_hud.get_posicao_x() + gamePlay.get_proporcao()[0] + pos_textos * 4, painel_hud.get_posicao_y()))
 
         texto_feedback_pouso_hud.cria(str_feedback_pouso, 'Times new roman', int(gamePlay.get_proporcao()[0] * 10), WHITE)
-        if game_loop == True:
-            gamePlay.blit(texto_feedback_pouso_hud.get_surface(), (nave.get_posicao_x() - texto_feedback_pouso_hud.get_largura() / 6 , nave.get_posicao_y() - gamePlay.get_proporcao()[1] * 20))
+        gamePlay.blit(texto_feedback_pouso_hud.get_surface(), (nave.get_posicao_x() - texto_feedback_pouso_hud.get_largura() / 6 , nave.get_posicao_y() - gamePlay.get_proporcao()[1] * 20))
 
 
         evento_botoes()
@@ -248,6 +247,7 @@ while jogoAtivo:
 
     if botao_full_scren.get_clicou() == True:
         cor_botao_fullscreen = WHITE
+
 
         gamePlay.set_resolucao((pygame.display.list_modes()[0][0], pygame.display.list_modes()[0][1] - 38))
         #gamePlay.fill(BLACK)
@@ -299,7 +299,7 @@ while jogoAtivo:
 
         gamePlay.cronometro()
 
-        if gamePlay.get_cronometro()[2]>3:
+        if gamePlay.get_cronometro()[4]>3:
 
             mapa.desenha_terreno(gamePlay, nave)
             if mapa.get_existe_area_pouso() == False:
@@ -311,7 +311,7 @@ while jogoAtivo:
             nave.set_tamanho(int(gamePlay.get_proporcao()[0] * 18),
                              int(gamePlay.get_proporcao()[1] * 50))
 
-            nave.set_friccao(00.1)
+            nave.set_friccao(3)
             nave.set_velocidade_rotacao(nave.get_gravidade_lua()*2)
             nave.set_volume_propulsor(pos_bola_slider_volume)
             nave.set_altitude(nave.get_altitude() - nave.get_velocidade_y())
@@ -322,10 +322,13 @@ while jogoAtivo:
             gasolina.verifica_colisao_nave(nave)
             gasolina.verifica_colisao_terreno(mapa)
 
-            # ACELERACAO do propulsor
-            nave.aceleracao_propulsor(gamePlay)
+
             # GRAVIDADE
             nave.gravidade(gamePlay)
+
+            # ACELERACAO do propulsor
+            nave.aceleracao_propulsor(gamePlay)
+
             gasolina.gravidade(gamePlay)
 
 
@@ -375,16 +378,15 @@ while jogoAtivo:
                     dados.set_pontos(pouso_forcado)
                     str_feedback_pouso = 'POUSO FORÇADO'
 
-                else:
-                    str_feedback_pouso = 'VOCÊ MORREU'
-
             if nave.get_colidiu_terreno() == True and nave.get_colidiu_area_pouso() == False:
+                str_feedback_pouso = 'VOCÊ MORREU'
+                str_botao_play = 'IR DENOVO'
                 print("colidiu", nave.get_colidiu_terreno())
                 #game_loop = False
                 painel_menu.set_ativo(True)
                 # mapa.set_cor_terreno(CYAN)
                 mapa.set_cor_borda_terreno(CYAN)
-                str_botao_play = 'IR DENOVO'
+
 
             else:
                 nave.set_colidiu_terreno(False)
