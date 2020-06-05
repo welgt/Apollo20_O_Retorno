@@ -217,7 +217,7 @@ while jogoAtivo:
 
         pos_textos = gamePlay.get_resolucao()[0]/5
 
-        texto_velocidade_nave_hud.cria("Velocidade: {0:3.4s} ".format(str(abs(nave.get_velocidade_y()))), 'Times new roman',
+        texto_velocidade_nave_hud.cria("Velocidade: {0:3.4s} ".format(str(abs(nave.get_velocidade_media()))), 'Times new roman',
                                        int(gamePlay.get_proporcao()[0] * 20), BLACK)
         gamePlay.blit(texto_velocidade_nave_hud.get_surface(), (painel_hud.get_posicao_x(), painel_hud.get_posicao_y()))
 
@@ -311,7 +311,7 @@ while jogoAtivo:
             nave.set_tamanho(int(gamePlay.get_proporcao()[0] * 18),
                              int(gamePlay.get_proporcao()[1] * 50))
 
-            nave.set_friccao(6)
+            nave.set_friccao(5)
             nave.set_velocidade_rotacao(nave.get_gravidade_lua()*2)
             nave.set_volume_propulsor(pos_bola_slider_volume)
             nave.set_altitude(nave.get_altitude() - nave.get_velocidade_y())
