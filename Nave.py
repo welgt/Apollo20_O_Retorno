@@ -19,6 +19,7 @@ class Nova_nave:
         self.__propulsor = False
         self.__colidiu_tela = False
         self.__colidiu_pouso = False
+        self.__colisao_antecipada = False
         self.__colidiu_terreno = False
         self.__rotacionou_dir = False
         self.__rotacionou_esq = False
@@ -200,6 +201,12 @@ class Nova_nave:
     def set_colidiu_terreno(self, booleana):
         self.__colidiu_terreno = booleana
 
+    def get_verifica_colisao_antecipada(self):
+        return self.__colisao_antecipada
+
+    def set_colisao_antecipada(self, booleana):
+        self.__colisao_antecipada =  booleana
+
     def get_rotacionou_dir(self):
         return self.__rotacionou_dir
 
@@ -304,10 +311,10 @@ class Nova_nave:
                 self.set_potencia_propulsor(self.get_potencia_propulsor()+00.01)
 
 
-            print("angulo :", angulo)
+            #print("angulo :", angulo)
             # define nova direcao caso a nave esteja inclinada pra direita  ou esquerda
             self.set_velocidade_x((self.get_velocidade_x() + (00.01 * -angulo * self.get_friccao())))
-            print("v:", self.get_velocidade_x())
+            #print("v:", self.get_velocidade_x())
 
             # significa que ela esta executando nova direcao, entao aplica mais força de gravidade de acordo com o angulo
             if self.get_velocidade_y() < self.get_gravidade_lua():
@@ -360,6 +367,17 @@ class Nova_nave:
                 self.set_posicao(self.get_posicao_x(), (self.get_posicao_y()))
             else:
                 self.set_colidiu_area_pouso(False)
+
+            # tenho que fazer essa verificacao pois quando a nave pousa tbm colide com o terreno, isso é pra destinguir
+            # que a nave pousou e nao colidiucom o terreno e morreu
+
+            if self.get_posicao_x()+ self.get_largura_x()/2 >= inicio_area_pouso_horizontal and \
+                    self.get_posicao_x() + self.get_largura_x()/2 <= fim_area_pouso_horizontal:
+                self.set_colisao_antecipada(True)
+                #print("Colisao antecipada :", self.get_verifica_colisao_antecipada())
+            else:
+                self.set_colisao_antecipada(False)
+
 
 
 
@@ -463,9 +481,9 @@ class Nova_nave:
                 self.set_potencia_propulsor(0)
                 self.set_rotacionou_dir(False)
                 self.set_rotacionou_esq(False)
-                self.set_posicao(self.get_posicao_x(), self.get_posicao_y())
-                self.set_velocidade_x(0)
-                self.set_velocidade_y(0)
+                #self.set_posicao(self.get_posicao_x(), self.get_posicao_y())
+                #self.set_velocidade_x(0)
+                #self.set_velocidade_y(0)
                 self.set_gravidade_lua(0)
                 #print("COLIDIU PONTO PRINCIPAL")
 
@@ -479,9 +497,10 @@ class Nova_nave:
                 self.set_potencia_propulsor(0)
                 self.set_rotacionou_dir(False)
                 self.set_rotacionou_esq(False)
-                self.set_posicao(self.get_posicao_x(), self.get_posicao_y())
-                self.set_velocidade_x(0)
-                self.set_velocidade_y(0)
+                if self.get_colidiu_area_pouso() == False and self.get_verifica_colisao_antecipada() == False:
+                    self.set_posicao(self.get_posicao_x(), self.get_posicao_y())
+                    self.set_velocidade_x(0)
+                    self.set_velocidade_y(0)
                 self.set_gravidade_lua(0)
                 #print("COLIDIU PONTO INTERMEDIARIO")
                 self.set_colidiu_terreno(True)
