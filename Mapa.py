@@ -45,6 +45,10 @@ class Mapa_do_jogo:
     def get_terreno(self):
         return self.__terreno
 
+    def set_terreno(self, lista_vertices):
+        self.__terreno = lista_vertices
+
+
     def get_pouso_nave_line(self):
         return self.__base_pouso_line
 
@@ -76,6 +80,51 @@ class Mapa_do_jogo:
 
     def set_redesenha_terreno(self, boleana):
         self.__desenha = boleana
+
+    def reset(self):
+        #self.__terreno =[(0,0)]* self.get_qualidade_terreno()
+        #self.set_existe_area_pouso(False)
+        #self.set_redesenha_terreno(True)
+        #self.__cont = 1
+        #self.set_qualidade_terreno(60)
+        #self.__qtd_tuplas_terreno = 0
+
+        #self.set_cor_borda_terreno(WHITE)
+
+        self.__qtd_tuplas_terreno = 0
+        self.__desenha = True
+        self.__terreno = None
+        self.__cor_terreno = self.get_cor_terreno()
+        self.__cor_terreno_borda = 0
+        self.__novo_terreno = []
+        self.__desenha_contorno = (0,0),(0,0)
+        self.__random_alturas_diferentes = 0
+        self.__ramdom_pouso_nave = 0
+        self.__cont = 1
+        self.__base_pouso_retangulo = None
+        self.__base_pouso_line = None
+        self.__porcento_altura_terreno = None
+        self.__existe_area_pouso = False
+        self.__altura_base_pouso = None
+        self.__espessura_base_pouso_line = 6
+        self.__qualidade_terreno =60
+        self.__sort1 = 0
+        self.__sort2 = 0
+        self.__sort3 = 0
+
+    def copia(self, tela):
+
+
+        self.set_terreno(self.get_terreno())
+        tela.draw_lines((self.get_cor_terreno_borda()), self.__terreno, 4)
+
+
+        tela.draw_line((self.__sort1,self.__sort2,0), (self.__base_pouso_line[0], self.__base_pouso_line[1]),
+                                (self.__base_pouso_line[2], self.__base_pouso_line[3]), self.get_espessura_line_pouso_nave())
+
+
+
+
 
 
     def desenha_terreno(self, tela, nave):
@@ -181,7 +230,7 @@ class Mapa_do_jogo:
         self.__sort2 = random.randint(0, 255)
         #self.__sort3 = random.randint(0, 255)
         #tela.draw_lines((self.__sort1 ,0,self.__sort2 ), self.__novo_terreno, 4)
-        tela.draw_lines(( self.get_cor_terreno_borda()), self.__novo_terreno, 4)
+        tela.draw_lines(( self.get_cor_terreno_borda()), self.__terreno, 4)
 
 
         # só desenha a area de pouso se ela existir, ou seja se caiu no if #define o local de pouso.

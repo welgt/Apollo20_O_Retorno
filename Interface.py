@@ -7,10 +7,12 @@ class fonte_texto:
         self.__largura = 0
         self.__altura  = 0
         self.__font = None
-        self.__texto = None
+        self.__str = None
         self.__tamanho_fonte = 0
         self.__altura = 0
         self.__largura = 0
+
+        self.__texto = ''
 
 
 
@@ -18,12 +20,15 @@ class fonte_texto:
 
     def cria(self, texto, fonte, tamanho_fonte, cor ):
         font = pygame.font.SysFont(fonte, tamanho_fonte, True, False)
-        text = font.render(texto, True, cor)
+        #text =
+
+        self.set_str(texto)
+
         self.__font = font
-        self.__texto = text
-        self.__largura = self.__texto .get_rect()[2]
-        self.__altura  = self.__texto .get_rect()[3]
-        self.set_surface(text)
+        self.__str = font.render(self.get_str(), True, cor)
+        self.__largura = self.__str .get_rect()[2]
+        self.__altura  = self.__str .get_rect()[3]
+        self.set_surface(self.__str)
         self.set_tamanho_fonte(tamanho_fonte)
 
 
@@ -42,8 +47,13 @@ class fonte_texto:
     def get_tamanho_letra(self):
         return self.__tamanho_fonte
 
-    def get_texto(self):
+    def get_str(self):
         return self.__texto
+
+    def set_str(self, str):
+        self.__texto = str
+
+
 
     def get_fonte(self):
         return self.__tipo_fonte
@@ -88,7 +98,8 @@ class fonte_texto:
         self.__posicao_y = posicao
 
     def get_centro(self):
-        return self.__texto.get_rect().center
+        return self.__str.get_rect().center
+
 
 
 
@@ -198,7 +209,13 @@ class botao:
         self.__mouse_cont = 0
         self.__som_botao = pygame.mixer.music
         self.__area_colisao = False
+        self.__str_botao = ''
 
+    def get_str_botao(self):
+        return self.__str_botao
+
+    def set_str_botao(self, str_botao):
+        self.__str_botao = str_botao
 
     def get_volume(self):
         return self.__som_botao.get_volume()
@@ -269,6 +286,7 @@ class botao:
         self.__botao = pygame.Rect(self.__posicao_x, self.__posicao_y, self.__largura, self.__altura)
         tela.draw_rect(self.get_cor(), self.__botao)
 
+        self.set_str_botao(texto)
         txt_botao = fonte_texto()
         txt_botao.cria(texto,'Times new roman', int(self.get_largura()/1000*150), WHITE)
         tela.blit(txt_botao.get_surface(), (self.get_posicao_x() + txt_botao.get_tamanho_letra() * 7 / 2 - txt_botao.get_centro()[0],

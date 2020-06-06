@@ -17,8 +17,16 @@ class Nova_tela:
         self.__minuto = 0
         self.__hora = 0
 
+        self.__game_loop = False
+
         self.__proporcao = self.get_resolucao()[0]/1000, self.get_resolucao()[1]/1000
 
+
+    def get_game_loop(self):
+        return self.__game_loop
+
+    def set_game_loop(self, booleana):
+        self.__game_loop = booleana
 
     def get_proporcao(self):
         return self.__proporcao

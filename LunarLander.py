@@ -28,7 +28,7 @@ gasolina.set_velocidade_y(0)
 terra = Nova_nave('arquivos/terra3.png', 800, 50)
 #gamePlay.set_resolucao_tela((pygame.display.list_modes()[0][0],pygame.display.list_modes()[0][1]))
 
-dados = Dados(nave)
+
 
 painel_menu = painel()
 painel_menu.set_ativo(True)
@@ -39,6 +39,7 @@ painel_sair.set_ativo(False)
 painel_hud = painel()
 
 botao_play = botao()
+botao_play.set_str_botao('PLAY')
 botao_exit = botao()
 botao_confg = botao()
 botao_voltar = botao()
@@ -47,6 +48,8 @@ botao_nao = botao()
 botao_slider_volume_ambiente = botao()
 botao_bola_slider_volume_ambiente = botao()
 botao_full_scren = botao()
+
+#cor_botao_fullscreen = BLACK
 
 def evento_botoes():
     botao().evento(event, botao_play, painel_menu)
@@ -70,12 +73,12 @@ texto_volume_ambiente = fonte_texto()
 texto_fullscreen = fonte_texto()
 texto_exit = fonte_texto()
 texto_feedback_pouso_hud = fonte_texto()
+texto_feedback_pouso_hud.set_str('')
 
-str_botao_play = 'PLAY'
-str_feedback_pouso = ''
-cor_botao_fullscreen = BLACK
 
-game_loop = False
+
+
+#game_loop = False
 debug = False
 jogoAtivo = True
 config = False
@@ -86,12 +89,15 @@ nave.set_volume_propulsor(0.1)
 
 
 
-
+dados = Dados(gamePlay.get_game_loop(), botao_play, nave, gamePlay, mapa)
 
 
 while jogoAtivo:
 
+
+
     dados.get_dados()
+
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -101,8 +107,10 @@ while jogoAtivo:
             if event.key == pygame.K_ESCAPE:
                 painel_menu.set_ativo(True)
 
-                game_loop = False
-                str_botao_play = 'PAUSADO'
+                #game_loop = False
+                gamePlay.set_game_loop(False)
+                #str_botao_play = 'PAUSADO'
+                botao_play.set_str_botao('PAUSADO')
 
 
             elif event.key == pygame.K_LEFT:
@@ -146,7 +154,7 @@ while jogoAtivo:
         painel_menu.draw_painel(gamePlay,AMARELO, 120)
 
         botao_play.criar(painel_menu, 0, -50, 30, 10)
-        botao_play.draw(gamePlay, str_botao_play)
+        botao_play.draw(gamePlay, botao_play.get_str_botao())
 
         botao_confg.criar(painel_menu, 0, 0, 30, 10)
         botao_confg.draw(gamePlay, 'CONFIG')
@@ -240,8 +248,8 @@ while jogoAtivo:
         texto_pontos_hud.cria("Pontos : {0:4.4s} ".format(str(dados.get_pontos())) , 'Times new roman', int(gamePlay.get_proporcao()[0] * 20), BLACK)
         gamePlay.blit(texto_pontos_hud.get_surface(), (painel_hud.get_posicao_x() + gamePlay.get_proporcao()[0] + pos_textos * 4, painel_hud.get_posicao_y()))
 
-        texto_feedback_pouso_hud.cria(str_feedback_pouso, 'Times new roman', int(gamePlay.get_proporcao()[0] * 10), WHITE)
-        if game_loop == True:
+        texto_feedback_pouso_hud.cria(texto_feedback_pouso_hud.get_str(), 'Times new roman', int(gamePlay.get_proporcao()[0] * 10), WHITE)
+        if gamePlay.get_game_loop() == True:
             gamePlay.blit(texto_feedback_pouso_hud.get_surface(), (
             nave.get_posicao_x() - texto_feedback_pouso_hud.get_largura() / 6,
             nave.get_posicao_y() - gamePlay.get_proporcao()[1] * 20))
@@ -254,33 +262,41 @@ while jogoAtivo:
     # GERENTE DO MENU
 
     if botao_full_scren.get_clicou() == True:
-        cor_botao_fullscreen = WHITE
-
-
         gamePlay.set_resolucao((pygame.display.list_modes()[0][0], pygame.display.list_modes()[0][1] - 38))
         #gamePlay.fill(BLACK)
         gamePlay.flip()
-    botao_full_scren.set_cor(cor_botao_fullscreen)
 
-    if botao_play.get_clicou() == True:
-        game_loop = True
+    if gamePlay.get_resolucao()[0] == pygame.display.list_modes()[0][0]:
+        botao_full_scren.set_cor(WHITE)
+
+    if botao_play.get_clicou() == True and botao_play.get_str_botao() == 'PLAY':
+        gamePlay.set_game_loop(True)
         painel_menu.set_ativo(False)
         painel_hud.set_ativo(True)
+    elif botao_play.get_clicou() == True and botao_play.get_str_botao() == 'PAUSADO':
+        gamePlay.set_game_loop(True)
+        painel_menu.set_ativo(False)
 
 
-        if str_botao_play == 'IR DENOVO' and botao_play.get_clicou() == True:
-            
-            #posicao = dados.get_info(False, 'nave', 1)
-            #nave.set_posicao((dados.get_info(False, 'nave', 1)[0]), (dados.get_info(False, 'nave', 1)[1]))
-            #dados.reset_game()
-            str_feedback_pouso = ""
-            str_botao_play = 'PLAY'
+    if  botao_play.get_clicou() == True and botao_play.get_str_botao() == 'IR DENOVO' :
+        gamePlay.set_game_loop(True)
+        #mapa.set_redesenha_terreno(True)
+        #mapa.reset()
+        dados.reset_game()
+        #mapa.desenha_terreno(gamePlay, nave)
+
+
+        #str_feedback_pouso = ""
+        texto_feedback_pouso_hud.set_str('')
+        #str_botao_play = 'PLAY'
+        botao_play.set_str_botao('PLAY')
+        #gamePlay.flip()
 
 
     if botao_confg.get_clicou() == True:
         painel_menu.set_ativo(False)
         painel_config.set_ativo(True)
-        game_loop = False
+        gamePlay.set_game_loop(False)
 
     if botao_voltar.get_clicou() == True:
         painel_config.set_ativo(False)
@@ -290,11 +306,11 @@ while jogoAtivo:
         painel_sair.set_ativo(True)
         painel_config.set_ativo(False)
         painel_menu.set_ativo(False)
-        game_loop = False
+        gamePlay.set_game_loop(False)
 
     if botao_sim.get_clicou() == True:
         jogoAtivo = False
-        game_loop = False
+        gamePlay.set_game_loop(False)
 
     if botao_nao.get_clicou() == True:
         painel_menu.set_ativo(True)
@@ -312,9 +328,11 @@ while jogoAtivo:
 
 
     #GAMEPLAY
-    if game_loop == True:
+    if gamePlay.get_game_loop() == True:
 
+        #mapa.set_terreno([(-2, 426), (14.666666666666668, 535), (31.333333333333336, 494), (48.0, 467), (64.66666666666667, 506), (81.33333333333334, 532), (98.00000000000001, 549), (114.66666666666669, 439), (131.33333333333334, 507), (148.0, 550), (164.66666666666666, 478), (181.33333333333331, 479), (197.99999999999997, 473), (214.66666666666663, 509), (231.3333333333333, 476), (247.99999999999994, 525), (264.66666666666663, 522), (281.3333333333333, 475), (298.0, 478), (314.6666666666667, 487), (331.33333333333337, 441), (348.00000000000006, 445), (364.66666666666674, 513), (381.3333333333334, 546), (398.0000000000001, 484), (414.6666666666668, 531), (431.3333333333335, 524), (448.00000000000017, 476), (464.66666666666686, 505), (481.33333333333354, 468), (498.0000000000002, 537), (514.6666666666669, 457), (531.3333333333335, 476), (548.0000000000001, 437), (564.6666666666667, 470), (581.3333333333334, 548), (598.0, 431), (614.6666666666666, 485), (631.3333333333333, 503), (647.9999999999999, 523), (664.6666666666665, 545), (681.3333333333331, 525), (697.9999999999998, 508), (697.9999999999998, 508), (714.6666666666664, 508), (730.2580645161288, 444), (746.9247311827954, 509), (763.591397849462, 461), (780.2580645161287, 528), (796.9247311827953, 474), (813.5913978494619, 433), (830.2580645161286, 529), (846.9247311827952, 524), (863.5913978494618, 512), (880.2580645161285, 508), (896.9247311827951, 528), (913.5913978494617, 482), (930.2580645161283, 489), (946.924731182795, 481), (963.5913978494616, 480), (980.2580645161282, 490), (996.9247311827949, 436), (1005, 600), (-5, 600)])
 
+        #print(mapa.get_terreno())
 
         gamePlay.cronometro()
 
@@ -323,7 +341,9 @@ while jogoAtivo:
 
             mapa.desenha_terreno(gamePlay, nave)
             if mapa.get_existe_area_pouso() == False:
-                mapa.desenha_terreno(gamePlay, nave)
+                gamePlay.fill(BLACK)
+                dados.reset_game()
+                #botao_play.set_str_botao('IR DENOVO')
                 print("NAO FOI POSSIVEL SORTEAR UMA AREA DE POUSO, REDESENHANDO TERRENO")
 
             gasolina.set_tamanho(int(gamePlay.get_proporcao()[0] * 15), int(gamePlay.get_proporcao()[1] * 30))
@@ -336,13 +356,15 @@ while jogoAtivo:
             nave.set_friccao(5)
             nave.set_velocidade_rotacao(nave.get_gravidade_lua()*2)
             nave.set_volume_propulsor(pos_bola_slider_volume)
-            nave.set_altitude(nave.get_altitude() - nave.get_velocidade_y())
+            nave.set_altitude(abs(nave.get_posicao_y()- gamePlay.get_resolucao()[1]))
             nave.update()
             nave.verifica_colisao_tela(gamePlay)
             nave.verifica_colisao_area_pouso(mapa)
             nave.verifica_colisao_terreno(mapa)
             gasolina.verifica_colisao_nave(nave)
             gasolina.verifica_colisao_terreno(mapa)
+
+
 
 
             # GRAVIDADE
@@ -381,40 +403,58 @@ while jogoAtivo:
             # verificacao antecipada distingue se pousou na area de pouso, pois de fato ela tbm colide com o terreno
             if nave.get_colidiu_area_pouso() == True and nave.get_verifica_colisao_antecipada() == True:
                 painel_menu.set_ativo(True)
-                velocidade_rotacao = nave.get_angulo_rotacao()
                 nave.set_angulo_rotacao(nave.get_angulo_rotacao())
 
 
                 if nave.get_angulo_rotacao() <= 15 and nave.get_angulo_rotacao() >= -15:
                     pouso_perfeito = 150
                     dados.set_pontos(pouso_perfeito)
-                    str_feedback_pouso = 'POUSO PERFEITO'
+                    #str_feedback_pouso = 'POUSO PERFEITO'
+                    texto_feedback_pouso_hud.set_str('POUSO PERFEITO')
 
 
                 elif nave.get_angulo_rotacao() <= 25 and nave.get_angulo_rotacao() >= -25:
                     pouso_toleravel = 100
                     dados.set_pontos(pouso_toleravel)
-                    str_feedback_pouso = 'POUSO TOLERÁVEL'
+                    #str_feedback_pouso = 'POUSO TOLERÁVEL'
+                    texto_feedback_pouso_hud.set_str('POUSO TOLERÁVEL')
 
                 elif nave.get_angulo_rotacao() <= 35 and nave.get_angulo_rotacao() >= -35:
                     pouso_forcado = 50
                     dados.set_pontos(pouso_forcado)
-                    str_feedback_pouso = 'POUSO FORÇADO'
+                    #str_feedback_pouso = 'POUSO FORÇADO'
+                    texto_feedback_pouso_hud.set_str('POUSO FORÇADO')
                 else:
-                    str_feedback_pouso = 'VOCÊ MORREU'
+                    #str_feedback_pouso = 'VOCÊ MORREU'
+                    texto_feedback_pouso_hud.set_str('VOCÊ MORREU')
                     str_botao_play = 'IR DENOVO'
-                    game_loop = False
+                    gamePlay.set_game_loop(False)
 
 
 
 
             if nave.get_colidiu_terreno() == True and nave.get_verifica_colisao_antecipada() == False:
-                str_feedback_pouso = 'VOCÊ MORREU'
-                str_botao_play = 'IR DENOVO'
-                #game_loop = False
+                #str_feedback_pouso = 'VOCÊ MORREU'
+                texto_feedback_pouso_hud.set_str('VOCÊ MORREU')
+                nave.set_vida(0)
+                botao_play.set_str_botao('IR DENOVO')
+                gamePlay.set_game_loop(False)
                 painel_menu.set_ativo(True)
                 # mapa.set_cor_terreno(CYAN)
                 mapa.set_cor_borda_terreno(CYAN)
+
+
+                nave.set_posicao(nave.get_posicao_x(), nave.get_posicao_y())
+                nave.set_potencia_propulsor(0)
+                nave.set_rotacionou_dir(False)
+                nave.set_rotacionou_esq(False)
+                nave.set_gravidade_lua(0)
+                nave.set_velocidade_x(0)
+                nave.set_velocidade_y(0)
+                nave.set_angulo_rotacao(nave.get_angulo_rotacao())
+
+
+
 
 
             else:
@@ -450,7 +490,7 @@ while jogoAtivo:
             gamePlay.blit(gasolina.get_surface(), (gasolina.get_posicao_x(), gasolina.get_posicao_y()))
             #print(gasolina.get_posicao_y())
 
-            print("str play,:", str_botao_play)
+
 
     #tempo+=0.1
     gamePlay.flip()
@@ -464,10 +504,11 @@ while jogoAtivo:
         #print("exit   :", botao_exit.get_mouse_cont())
         #print("voltar :", botao_voltar.get_mouse_cont())
 
-        print("botao play ativo   :", botao_play.get_clicou())
+        #print("botao play ativo   :", botao_play.get_clicou())
         #print("botao config ativo :", botao_confg.get_clicou())
         #print("botao exit ativo   :", botao_exit.get_clicou())
         #print("botao voltar ativo :", botao_voltar.get_clicou())
+        #print("str play,:", str_botao_play)
         #print("game_loop :", game_loop)
 
         #print("painel menu   :", painel_menu.get_ativo())
@@ -480,8 +521,22 @@ while jogoAtivo:
         #print("posicao slider x :", botao_slider_volume_ambiente.get_posicao_x())
         #print("volume propulsor :", nave.get_volume_propulsor())
 
-        print("colisao terreno:", nave.get_colidiu_terreno())
-        print("colisao pouso  :", nave.get_colidiu_area_pouso())
-        print("colisao antecip:", nave.get_verifica_colisao_antecipada())
+        #print("colisao terreno:", nave.get_colidiu_terreno())
+        #print("colisao pouso  :", nave.get_colidiu_area_pouso())
+        #print("colisao antecip:", nave.get_verifica_colisao_antecipada())
+
+        #print("vida", nave.get_vida())
+        #print("game loop", gamePlay.get_game_loop())
+        #print("botao play:", botao_play.get_str_botao())
+
+        print("altitude reset :", dados.get_info(False, 'nave', 2))
+        print("angulo rotacao :", dados.get_info(False, 'nave', 3))
+
+        print("angulo rotacao :", nave.get_angulo_rotacao())
+        print("colidiu terreno :", dados.get_info(False, 'nave', 4))
+
+        print(texto_feedback_pouso_hud.get_str())
+        print("game_loop :", gamePlay.get_game_loop())
+
 
 pygame.quit()
