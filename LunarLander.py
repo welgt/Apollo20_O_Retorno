@@ -88,7 +88,6 @@ nave.set_volume_propulsor(0.1)
 save = False
 carregar_save = False
 reiniciar = False
-
 marca_save = 0
 
 dados = Dados(gamePlay, mapa, nave, gasolina)
@@ -120,13 +119,13 @@ while jogoAtivo:
                 pass
             elif event.key == pygame.K_s:
                 #debug = True
-                #save = True
-                pass
+                save = True
+
 
             elif event.key == pygame.K_r:
                 #debug = True
-                #carregar_save = True
-                pass
+                carregar_save = True
+
 
 
         elif event.type == pygame.KEYUP:
@@ -139,13 +138,14 @@ while jogoAtivo:
 
             elif event.key == pygame.K_UP or event.key == pygame.K_s:
                 #debug = False
-                #save = False
-                pass
+                save = False
+
 
             elif event.key == pygame.K_UP or event.key == pygame.K_r:
                 #debug = False
-                #carregar_save = False
-                pass
+                carregar_save = False
+
+
 
 
 
@@ -311,21 +311,24 @@ while jogoAtivo:
             botao_save.set_str_botao('SAVE VAZIO')
 
         if marca_save == 1:
-            botao_save.set_str_botao('CONTINUAR')
+            botao_save.set_str_botao('JOGAR SAVE')
 
         if marca_save == 1 and botao_play.get_str_botao() == 'PLAY':
-            botao_save.set_str_botao('CONTINUAR')
+            botao_save.set_str_botao('JOGAR SAVE')
+
 
         if marca_save == 0 and botao_play.get_str_botao() == 'PAUSADO':
             botao_save.set_str_botao('SALVAR')
 
         elif marca_save == 1:
-            botao_save.set_str_botao('CONTINUAR')
+            botao_save.set_str_botao('JOGAR SAVE')
 
         if marca_save == 1 and botao_play.get_str_botao() == 'PAUSADO':
-            botao_save.set_str_botao('SALV0')
+            botao_save.set_str_botao('SALVO')
+            save = False
 
-
+        if marca_save == 1 and botao_save.get_str_botao() == 'SALVO':
+            botao_save.set_str_botao('RESALVAR')
 
 
 
@@ -337,18 +340,25 @@ while jogoAtivo:
 
     if botao_save.get_clicou() == True and botao_play.get_str_botao() == 'PAUSADO':
         marca_save = 1
+        mapa.salvar()
+        nave.salvar()
+        gasolina.salvar()
         save = True
-    else:
-        save = False
 
-
-
-    if botao_save.get_clicou() == True and botao_save.get_str_botao() == 'CONTINUAR' and botao_play.get_str_botao() == 'IR DENOVO' and marca_save == 1:
+    if botao_save.get_clicou() == True and botao_save.get_str_botao() == 'JOGAR SAVE' and botao_play.get_str_botao() == 'IR DENOVO' and marca_save == 1:
+        painel_menu.set_ativo(False)
+        texto_feedback_pouso_hud.set_str('')
+        mapa.carregar_save()
+        nave.carregar_save()
+        gasolina.carregar_save()
         carregar_save = True
-        marca_save = 0
+
+
+
 
     print("marca save :", marca_save)
     print("save :", save)
+
 
 
 
@@ -405,8 +415,7 @@ while jogoAtivo:
 
             pos_bola_slider_volume = pygame.mouse.get_pos()[0] - gamePlay.get_resolucao()[0] / 2
 
-    if save == True:
-        nave.salvar()
+
 
 
     #GAMEPLAY
@@ -433,18 +442,18 @@ while jogoAtivo:
                     gasolina.reiniciar()
                     print("NAO FOI POSSIVEL SORTEAR UMA AREA DE POUSO, REDESENHANDO TERRENO [RANDON]")
 
-            if save == True and mapa.get_existe_area_pouso() == True:
+            #if save == True and mapa.get_existe_area_pouso() == True:
                 #mapa.copia(gamePlay)
                 #mapa.set_terreno(mapa.get_copia_vertices_terreno())
-                mapa.salvar()
-                nave.salvar()
-                gasolina.salvar()
+             #   mapa.salvar()
+              #  nave.salvar()
+               # gasolina.salvar()
 
 
-            if carregar_save == True:
-                mapa.carregar_save()
-                nave.carregar_save()
-                gasolina.carregar_save()
+            #if carregar_save == True:
+             #   mapa.carregar_save()
+              #  nave.carregar_save()
+               # gasolina.carregar_save()
 
 
 
