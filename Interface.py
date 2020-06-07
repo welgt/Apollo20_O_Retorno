@@ -11,21 +11,27 @@ class fonte_texto:
         self.__tamanho_fonte = 0
         self.__altura = 0
         self.__largura = 0
+        self.__cor = 0
 
         self.__texto = ''
 
+    def set_cor(self, cor):
+        self.__cor = cor
 
+    def get_cor(self):
+        return self.__cor
 
 
 
     def cria(self, texto, fonte, tamanho_fonte, cor ):
+        self.set_cor(cor)
         font = pygame.font.SysFont(fonte, tamanho_fonte, True, False)
         #text =
 
         self.set_str(texto)
 
         self.__font = font
-        self.__str = font.render(self.get_str(), True, cor)
+        self.__str = font.render(self.get_str(), True, self.get_cor())
         self.__largura = self.__str .get_rect()[2]
         self.__altura  = self.__str .get_rect()[3]
         self.set_surface(self.__str)
@@ -211,6 +217,8 @@ class botao:
         self.__area_colisao = False
         self.__str_botao = ''
 
+
+
     def get_str_botao(self):
         return self.__str_botao
 
@@ -281,14 +289,18 @@ class botao:
 
         self.__colidiu(painel)
 
-    def draw(self, tela, texto):
+    def draw(self, tela, texto,  cor):
 
         self.__botao = pygame.Rect(self.__posicao_x, self.__posicao_y, self.__largura, self.__altura)
         tela.draw_rect(self.get_cor(), self.__botao)
 
         self.set_str_botao(texto)
         txt_botao = fonte_texto()
-        txt_botao.cria(texto,'Times new roman', int(self.get_largura()/1000*150), WHITE)
+
+
+
+
+        txt_botao.cria(texto,'Times new roman', int(self.get_largura()/1000*150), cor)
         tela.blit(txt_botao.get_surface(), (self.get_posicao_x() + txt_botao.get_tamanho_letra() * 7 / 2 - txt_botao.get_centro()[0],
                                             self.get_posicao_y() ))
 
@@ -342,6 +354,13 @@ class botao:
             if evento.type == pygame.MOUSEMOTION:
                 # caso tudo for verdadeiro ate aqui mude a cor do botao ao passar o mouse por cima do botao
                 botao.set_cor(AMARELO)
+
+                # no hiligth pinte os botao de sair  e de save vazio de vermeho
+                if botao.get_str_botao() == 'SIM':
+                    botao.set_cor(RED)
+                if botao.get_str_botao() == 'SAVE VAZIO':
+                    botao.set_cor(RED)
+
         else:
             botao.set_cor(BLACK)
 
