@@ -3,7 +3,7 @@ import random
 
 import pygame
 
-from Nave import Nova_nave
+import Nave
 from Tela import Nova_tela
 
 
@@ -24,6 +24,24 @@ class Item:
         self.__som_item = pygame.mixer.music
         self.__nova_lista_colisores_terreno = []
         self.__colidiu_nave = False
+
+
+    def reset(self):
+        self.__posicao_x = 500
+        self.__posicao_y = -100
+        self.__velocidade_x = 0
+        self.__velocidade_y = 0
+        #self.__largura_x = self.__surface.get_rect()[2]
+        #self.__altura_y = self.__surface.get_rect()[3]
+        #self.__colidiu_pouso = False
+        #self.__colidiu_terreno = False
+        self.__gravidade_lua = 1.6
+        self.__friccao = 0
+        self.__centro_surface = 0
+        #self.__som_item = pygame.mixer.music
+        #self.__nova_lista_colisores_terreno = []
+        #self.__colidiu_nave = False
+
 
 
     def gravidade(self, tela):

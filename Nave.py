@@ -1,6 +1,8 @@
 import math
 from Config import *
 
+
+
 class Nova_nave:
     def __init__(self, surface, posicao_x, posicao_y):
         self.__surface = pygame.image.load(surface)
@@ -41,6 +43,28 @@ class Nova_nave:
         #som.play()
         #som.set_volume(0.1)
 
+    def reset(self):
+        self.__posicao_x = 500
+        self.__posicao_y = 100
+        self.__velocidade_x = 0
+        self.__velocidade_y = 0
+        self.__velocidade_media = 0
+        self.__potencia_propulsor = 0
+        self.__friccao = 0
+        self.__angulo_rotacao = 0
+        self.__velocidade_rotacao = 0
+        self.__combustivel = 1000
+        self.__gravidade_lua = 5#1.6
+        self.__vida = 1
+
+    def save(self):
+
+        self.__r_posicao_x = self.get_posicao_x()
+        self.__r_posicao_y = self.get_posicao_y()
+
+    def reload(self):
+        self.set_posicao_x(self.__r_posicao_x)
+        self.set_posicao_y(self.__r_posicao_y)
 
     def set_vida(self, vida):
         self.__vida = vida
