@@ -336,14 +336,14 @@ class Nova_nave:
         # se for diferente disso é porque esta fora da tela
         if self.get_posicao_x() >= 0 and self.__posicao_x <= tela.get_resolucao()[0] - self.get_largura_x()\
             and self.get_posicao_y() >= 0 and self.__posicao_y <= tela.get_resolucao()[1] - self.get_altura_y():
-            #print("nao colidiu")
+            #print("nao colidiu com a tela")
             self.set_colidiu_tela(False)
         else:
-            #print("colidiu")
+            #print("colidiu com a tela")
             self.set_colidiu_tela(True)
             # pega a posicao do momento da colisao e deixa a nave travada nela
-            #self.set_velocidade_x(0)
-            #self.set_velocidade_y(0)
+            self.set_velocidade_x(0)
+            self.set_velocidade_y(0)
 
 
 

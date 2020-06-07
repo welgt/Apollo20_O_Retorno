@@ -1,11 +1,12 @@
 class Dados:
-    def __init__(self, game_loop, botao_play, nave, tela, mapa):
+    def __init__(self, game_loop, botao_play, nave, tela, mapa, item_gasolina):
         self.__pontos = 0
 
 
         self.__obj_nave = nave
         self.__obj_tela = tela
         self.__obj_mapa = mapa
+        self.__obj_item_gasolina = item_gasolina
         self.__obj_botao_play = botao_play
         self.__dados_reset = []
         self.__dados_save = []
@@ -41,6 +42,7 @@ class Dados:
                          (self.__obj_nave.get_gravidade_lua()), \
                          [self.__obj_nave.get_friccao()], \
                          [self.__obj_nave.get_gravidade_lua() * 2], \
+                         [self.__obj_nave.get_combustivel()]
                          #[self.__obj_nave.get_velocidade_x()], \
                          #[self.__obj_nave.get_velocidade_x()]
                          #[self.__obj_nave.get_potencia_propulsor()-00.01]
@@ -53,6 +55,9 @@ class Dados:
 
             dados_mapa = ["mapa"], [self.__obj_mapa.get_terreno()]
             self.__dados_save.insert(2, dados_mapa)
+
+            dados_item = ["item_gasolina"],[self.__obj_item_gasolina.get_posicao_x(), self.__obj_item_gasolina.get_posicao_x()]
+            self.__dados_save.insert(3, dados_item)
 
 
 
@@ -82,6 +87,7 @@ class Dados:
                          (self.__obj_nave.get_gravidade_lua()), \
                          [self.__obj_nave.get_friccao()], \
                          [self.__obj_nave.get_gravidade_lua() * 2], \
+                         (self.__obj_nave.get_combustivel())
 
 
                          #[self.__obj_nave.get_velocidade_x()], \
@@ -93,10 +99,13 @@ class Dados:
 
 
             dados_pontos_pouso = ["pontos"], [self.get_pontos()]
-            self.__dados_save.insert(1, dados_pontos_pouso)
+            self.__dados_reset.insert(1, dados_pontos_pouso)
 
             dados_mapa = ["mapa"], [self.__obj_mapa.get_terreno()]
-            self.__dados_save.insert(2, dados_mapa)
+            self.__dados_reset.insert(2, dados_mapa)
+
+            dados_item = ["item_gasolina"],[self.__obj_item_gasolina.get_posicao_x(), self.__obj_item_gasolina.get_posicao_x()]
+            self.__dados_reset.insert(3, dados_item)
 
             # dados_tela = ["tela"], [self.__obj_tela.get_cronometro()[]]
 
@@ -119,19 +128,30 @@ class Dados:
 
         if nome_objeto == 'nave':
             nome_objeto = 0
-
             if in_loop == True:
-                #print("passei no save")
                 return  self.__dados_save[nome_objeto][posicao_informacao]
             if in_loop == False:
-                #print("passei no reset")
                 return self.__dados_reset[nome_objeto][posicao_informacao]
 
 
         if nome_objeto == 'pontos':
-
             nome_objeto = 1
+            if in_loop == True:
+                return self.__dados_save[nome_objeto][posicao_informacao]
+            if in_loop == False:
+                return self.__dados_reset[nome_objeto][posicao_informacao]
 
+
+        if nome_objeto == 'mapa':
+            nome_objeto = 2
+            if in_loop == True:
+                return self.__dados_save[nome_objeto][posicao_informacao]
+            if in_loop == False:
+                return self.__dados_reset[nome_objeto][posicao_informacao]
+
+
+        if nome_objeto == 'item_gasolina':
+            nome_objeto = 3
             if in_loop == True:
                 return self.__dados_save[nome_objeto][posicao_informacao]
             if in_loop == False:
@@ -147,23 +167,30 @@ class Dados:
         self.__obj_nave.set_angulo_rotacao(0)
 
         #atualiza sozinho ao nave ser realocada, nao precisa
-        self.__obj_nave.set_colidiu_terreno(self.get_info(False, 'nave', 4))
+        #self.__obj_nave.set_colidiu_terreno(self.get_info(False, 'nave', 4))
         #atualiza sozinho ao nave ser realocada, nao precisa
-        self.__obj_nave.set_colidiu_area_pouso(self.get_info(False, 'nave', 5))
+        #self.__obj_nave.set_colidiu_area_pouso(self.get_info(False, 'nave', 5))
         #atualiza sozinho ao nave ser realocada, nao precisa
-        self.__obj_nave.set_colidiu_tela(self.get_info(False, 'nave', 6))
+        #self.__obj_nave.set_colidiu_tela(self.get_info(False, 'nave', 6))
 
         self.__obj_nave.set_rotacionou_dir(self.get_info(False, 'nave', 7))
         self.__obj_nave.set_rotacionou_esq(self.get_info(False, 'nave', 8))
         self.__obj_nave.set_gravidade_lua(self.get_info(False, 'nave', 9))
-        self.__obj_nave.set_friccao(self.get_info(False, 'nave', 9))
-        self.__obj_nave.set_velocidade_rotacao(self.get_info(False, 'nave', 10))
-
-
+        self.__obj_nave.set_friccao(self.get_info(False, 'nave', 10))
+        self.__obj_nave.set_velocidade_rotacao(self.get_info(False, 'nave', 11))
+        self.__obj_nave.set_combustivel(self.get_info(False, 'nave', 12))
 
         self.__obj_mapa.reset()
         self.__obj_mapa.desenha_terreno(self.__obj_tela, self.__obj_nave)
 
+        self.__obj_item_gasolina.set_posicao_x(self.get_info(False, 'item_gasolina', 1)[0])
+        self.__obj_item_gasolina.set_posicao_y(self.get_info(False, 'item_gasolina', 1)[1])
+
+        #self.__obj_nave.verifica_colisao_tela(self.__obj_tela)
+        #self.__obj_nave.verifica_colisao_area_pouso(self.__obj_mapa)
+        #self.__obj_nave.verifica_colisao_terreno(self.__obj_mapa)
+        #gasolina.verifica_colisao_nave(self.__obj_nave)
+        #gasolina.verifica_colisao_terreno(mapa)
 
         # CONCERTAR ESSES
         #self.__obj_nave.set_velocidade_x(self.get_info(False, 'nave', 11))

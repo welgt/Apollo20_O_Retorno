@@ -8,8 +8,9 @@ class Mapa_do_jogo:
         self.__desenha = True
         self.__terreno = None
         self.__cor_terreno =0
-        self.__cor_terreno_borda = 0
         self.__novo_terreno = []
+
+        self.__cor_terreno_borda = 0
         self.__desenha_contorno = (0,0),(0,0)
         self.__random_alturas_diferentes = 0
         self.__ramdom_pouso_nave = 0
@@ -24,6 +25,25 @@ class Mapa_do_jogo:
         self.__sort1 = 0
         self.__sort2 = 0
         self.__sort3 = 0
+
+        self.__copia_terreno_vertices_terreno = []
+        self.__copiou = False
+        self.__copia_base_pouso_line = None
+
+    def get_copia_vertices_terreno(self):
+        return self.__copia_terreno_vertices_terreno
+
+
+    def set_copia_vertices_terreno(self, copia):
+        self.__copia_terreno_vertices_terreno = copia
+
+    def set_copia_base_pouso_line(self, lista):
+        self.__copia_base_pouso_line = lista
+
+
+
+
+
 
     def set_qualidade_terreno(self, int):
         self.__qualidade_terreno = int
@@ -112,15 +132,40 @@ class Mapa_do_jogo:
         self.__sort2 = 0
         self.__sort3 = 0
 
+
     def copia(self, tela):
 
+        copia_provisoria = [(-2, 426), (14.666666666666668, 535), (31.333333333333336, 494), (48.0, 467), (64.66666666666667, 506), (81.33333333333334, 532),
+                          (98.00000000000001, 549), (114.66666666666669, 439), (131.33333333333334, 507), (148.0, 550), (164.66666666666666, 478),
+                          (181.33333333333331, 479), (197.99999999999997, 473), (214.66666666666663, 509), (231.3333333333333, 476),
+                          (247.99999999999994, 525), (264.66666666666663, 522), (281.3333333333333, 475), (298.0, 478), (314.6666666666667, 487),
+                          (331.33333333333337, 441), (348.00000000000006, 445), (364.66666666666674, 513), (381.3333333333334, 546),
+                          (398.0000000000001, 484), (414.6666666666668, 531), (431.3333333333335, 524), (448.00000000000017, 476),
+                          (464.66666666666686, 505), (481.33333333333354, 468), (498.0000000000002, 537), (514.6666666666669, 457),
+                          (531.3333333333335, 476), (548.0000000000001, 437), (564.6666666666667, 470), (581.3333333333334, 548),
+                          (598.0, 431), (614.6666666666666, 485), (631.3333333333333, 503), (647.9999999999999, 523), (664.6666666666665, 545),
+                          (681.3333333333331, 525), (697.9999999999998, 508), (697.9999999999998, 508), (714.6666666666664, 508),
+                          (730.2580645161288, 444), (746.9247311827954, 509), (763.591397849462, 461), (780.2580645161287, 528),
+                          (796.9247311827953, 474), (813.5913978494619, 433), (830.2580645161286, 529), (846.9247311827952, 524),
+                          (863.5913978494618, 512), (880.2580645161285, 508), (896.9247311827951, 528), (913.5913978494617, 482),
+                          (930.2580645161283, 489), (946.924731182795, 481), (963.5913978494616, 480), (980.2580645161282, 490),
+                          (996.9247311827949, 436), (1005, 600), (-5, 600)]
 
-        self.set_terreno(self.get_terreno())
-        tela.draw_lines((self.get_cor_terreno_borda()), self.__terreno, 4)
 
 
-        tela.draw_line((self.__sort1,self.__sort2,0), (self.__base_pouso_line[0], self.__base_pouso_line[1]),
-                                (self.__base_pouso_line[2], self.__base_pouso_line[3]), self.get_espessura_line_pouso_nave())
+        self.set_terreno(self.__copia_terreno_vertices_terreno)
+        tela.draw_polygon(self.get_cor_terreno(), self.__terreno)
+        tela.draw_lines((self.get_cor_terreno_borda()), self.__copia_terreno_vertices_terreno, 4)
+
+        self.__sort1 = random.randint(0, 255)
+        self.__sort2 = random.randint(0, 255)
+
+        if (self.__existe_area_pouso):
+            tela.draw_line((self.__sort1, self.__sort2, 0), (self.__copia_base_pouso_line[0], self.__copia_base_pouso_line[1]),
+                           (self.__copia_base_pouso_line[2], self.__copia_base_pouso_line[3]),
+                           self.get_espessura_line_pouso_nave())
+
+
 
 
 
@@ -191,6 +236,9 @@ class Mapa_do_jogo:
                                                 (vertice[0] + x + x_largura_pouso),
                                                 (vertice[1] + self.__random_alturas_diferentes)]
 
+                    if self.__copiou == False:
+                        self.set_copia_base_pouso_line(self.__base_pouso_line)
+
                     # desenha o feedback da area de pouso com um retangulo
                     self.__base_pouso = pygame.Rect(((vertice[0] + x)), self.__random_alturas_diferentes, ((x_largura_pouso/2)), 10)
 
@@ -218,8 +266,12 @@ class Mapa_do_jogo:
             self.__qtd_tuplas_terreno+=2
             self.__terreno = self.__novo_terreno
 
+            if self.__copiou == False:
+                self.set_copia_vertices_terreno(self.__terreno)
+
             # permite randomizar e desenhar o terreno apenas uma vez somente no primeiro frame.
             self.set_redesenha_terreno(False)
+            self.__copiou = True
 
 
         self.__debug()
@@ -230,6 +282,7 @@ class Mapa_do_jogo:
         self.__sort2 = random.randint(0, 255)
         #self.__sort3 = random.randint(0, 255)
         #tela.draw_lines((self.__sort1 ,0,self.__sort2 ), self.__novo_terreno, 4)
+
         tela.draw_lines(( self.get_cor_terreno_borda()), self.__terreno, 4)
 
 

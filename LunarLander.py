@@ -87,9 +87,9 @@ nova_resolucao = False
 pos_bola_slider_volume = 0
 nave.set_volume_propulsor(0.1)
 
+teste_save = False
 
-
-dados = Dados(gamePlay.get_game_loop(), botao_play, nave, gamePlay, mapa)
+dados = Dados(gamePlay.get_game_loop(), botao_play, nave, gamePlay, mapa, gasolina)
 
 
 while jogoAtivo:
@@ -127,6 +127,7 @@ while jogoAtivo:
                 pass
             elif event.key == pygame.K_d:
                 debug = True
+                teste_save = True
 
         elif event.type == pygame.KEYUP:
             if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
@@ -283,6 +284,7 @@ while jogoAtivo:
         #mapa.set_redesenha_terreno(True)
         #mapa.reset()
         dados.reset_game()
+
         #mapa.desenha_terreno(gamePlay, nave)
 
 
@@ -327,6 +329,7 @@ while jogoAtivo:
 
 
 
+
     #GAMEPLAY
     if gamePlay.get_game_loop() == True:
 
@@ -336,15 +339,31 @@ while jogoAtivo:
 
         gamePlay.cronometro()
 
+        #print("tela :", nave.get_colidiu_tela())
+        #print("pouso :", nave.get_colidiu_area_pouso())
+        #print("terreno :", nave.get_colidiu_terreno())
+        print("antecipada :", nave.get_verifica_colisao_antecipada())
+
+
         # só inicia apos 3 segundos
         if gamePlay.get_cronometro()[4]>3:
 
-            mapa.desenha_terreno(gamePlay, nave)
-            if mapa.get_existe_area_pouso() == False:
-                gamePlay.fill(BLACK)
-                dados.reset_game()
-                #botao_play.set_str_botao('IR DENOVO')
-                print("NAO FOI POSSIVEL SORTEAR UMA AREA DE POUSO, REDESENHANDO TERRENO")
+            if teste_save == False:
+                mapa.desenha_terreno(gamePlay, nave)
+                if mapa.get_existe_area_pouso() == False:
+                    gamePlay.fill(BLACK)
+                    dados.reset_game()
+                    # botao_play.set_str_botao('IR DENOVO')
+                    print("NAO FOI POSSIVEL SORTEAR UMA AREA DE POUSO, REDESENHANDO TERRENO [RANDON]")
+
+            #teste_save = True
+
+            if teste_save == True and mapa.get_existe_area_pouso() == True:
+                mapa.copia(gamePlay)
+                mapa.set_terreno(mapa.get_copia_vertices_terreno())
+                print("Copia", mapa.get_copia_vertices_terreno())
+
+            print("random", mapa.get_terreno())
 
             gasolina.set_tamanho(int(gamePlay.get_proporcao()[0] * 15), int(gamePlay.get_proporcao()[1] * 30))
             terra.set_tamanho(int(gamePlay.get_proporcao()[0] * 180), int(gamePlay.get_proporcao()[0] * 180))
@@ -434,13 +453,12 @@ while jogoAtivo:
 
 
             if nave.get_colidiu_terreno() == True and nave.get_verifica_colisao_antecipada() == False:
-                #str_feedback_pouso = 'VOCÊ MORREU'
+
                 texto_feedback_pouso_hud.set_str('VOCÊ MORREU')
                 nave.set_vida(0)
                 botao_play.set_str_botao('IR DENOVO')
-                gamePlay.set_game_loop(False)
+                #gamePlay.set_game_loop(False)
                 painel_menu.set_ativo(True)
-                # mapa.set_cor_terreno(CYAN)
                 mapa.set_cor_borda_terreno(CYAN)
 
 
@@ -529,14 +547,15 @@ while jogoAtivo:
         #print("game loop", gamePlay.get_game_loop())
         #print("botao play:", botao_play.get_str_botao())
 
-        print("altitude reset :", dados.get_info(False, 'nave', 2))
-        print("angulo rotacao :", dados.get_info(False, 'nave', 3))
+        #print("altitude reset :", dados.get_info(False, 'nave', 2))
+        #print("angulo rotacao :", dados.get_info(False, 'nave', 3))
 
-        print("angulo rotacao :", nave.get_angulo_rotacao())
-        print("colidiu terreno :", dados.get_info(False, 'nave', 4))
+        #print("angulo rotacao :", nave.get_angulo_rotacao())
+        #print("colidiu terreno :", dados.get_info(False, 'nave', 4))
 
-        print(texto_feedback_pouso_hud.get_str())
-        print("game_loop :", gamePlay.get_game_loop())
+        #print(texto_feedback_pouso_hud.get_str())
+        #print("game_loop :", gamePlay.get_game_loop())
+        pass
 
 
 pygame.quit()
