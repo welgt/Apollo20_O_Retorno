@@ -25,23 +25,63 @@ class Item:
         self.__nova_lista_colisores_terreno = []
         self.__colidiu_nave = False
 
+        self.__posicao_inicial_x = 0
+        self.__posicao_inicial_y = 0
 
-    def reset(self):
-        self.__posicao_x = 500
-        self.__posicao_y = -100
-        self.__velocidade_x = 0
-        self.__velocidade_y = 0
+
+
+    def reiniciar(self):
+
+        self.set_posicao_x(self.get_posicao_inicial_x())
+        self.set_posicao_y(self.get_posicao_inicial_y())
+        self.set_velocidade_x(0)
+        self.set_velocidade_y(0)
+        self.set_gravidade_lua(1.6)
+        self.set_friccao(0)
+
         #self.__largura_x = self.__surface.get_rect()[2]
         #self.__altura_y = self.__surface.get_rect()[3]
         #self.__colidiu_pouso = False
         #self.__colidiu_terreno = False
-        self.__gravidade_lua = 1.6
-        self.__friccao = 0
-        self.__centro_surface = 0
+        #self.set_centro(0)
         #self.__som_item = pygame.mixer.music
         #self.__nova_lista_colisores_terreno = []
         #self.__colidiu_nave = False
 
+    def salvar(self):
+
+        self.__s_posicao_x = self.get_posicao_x()
+        self.__s_posicao_y = self.get_posicao_y()
+        self.__s_velocidade_x = self.get_velocidade_x()
+        self.__s_velocidade_y = self.get_velocidade_y()
+        self.__s_gravidade_lua = self.get_gravidade_lua()
+        self.__s_friccao = self.get_friccao()
+
+    def carregar_save(self):
+
+        self.set_posicao_x(self.__s_posicao_x)
+        self.set_posicao_y(self.__s_posicao_y)
+        self.set_velocidade_x(self.__s_velocidade_x)
+        self.set_velocidade_y(self.__s_velocidade_y)
+        self.set_gravidade_lua(self.__s_gravidade_lua)
+        self.set_friccao(self.__s_friccao)
+
+
+
+
+
+
+    def get_posicao_inicial_x(self):
+        return self.__posicao_inicial_x
+
+    def set_posicao_inicial_x(self, posicao):
+        self.__posicao_inicial_x = posicao
+
+    def get_posicao_inicial_y(self):
+        return self.__posicao_inicial_y
+
+    def set_posicao_inicial_y(self, posicao):
+        self.__posicao_inicial_y = posicao
 
 
     def gravidade(self, tela):

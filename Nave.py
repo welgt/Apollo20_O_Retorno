@@ -33,6 +33,9 @@ class Nova_nave:
         self.__som_propulsor = pygame.mixer.music
         self.__vida = 1
 
+        self.__posicao_inicial_x = 0
+        self.__pocicao_inicial_y = 0
+
         #cor_transp = self.__surface.get_at((0,0))
         #self.__surface.set_colorkey((255,255,255,200))
         #self.__surface = self.__surface.convert()
@@ -43,28 +46,83 @@ class Nova_nave:
         #som.play()
         #som.set_volume(0.1)
 
-    def reset(self):
-        self.__posicao_x = 500
-        self.__posicao_y = 100
-        self.__velocidade_x = 0
-        self.__velocidade_y = 0
-        self.__velocidade_media = 0
-        self.__potencia_propulsor = 0
-        self.__friccao = 0
-        self.__angulo_rotacao = 0
-        self.__velocidade_rotacao = 0
-        self.__combustivel = 1000
-        self.__gravidade_lua = 5#1.6
-        self.__vida = 1
+    def reiniciar(self):
+        self.set_posicao_x(self.get_posicao_inicial_x())
+        self.set_posicao_y(self.get_posicao_inicial_y())
+        #self.__velocidade_x = 0
+        self.set_velocidade_x(0)
+        #self.__velocidade_y = 0
+        self.set_velocidade_x(0)
+        #self.__velocidade_media = 0
+        self.set_velocidade_media(0)
+        #self.__potencia_propulsor = 0
+        self.set_potencia_propulsor(0)
+        #self.__friccao = 0
+        self.set_friccao(0)
+        #self.__angulo_rotacao = 0
+        self.set_angulo_rotacao(0)
+        #self.__velocidade_rotacao = 0
+        self.set_velocidade_rotacao(0)
+        #self.__combustivel = 1000
+        self.set_combustivel(1000)
+        #self.__gravidade_lua = 5#1.6
+        self.set_gravidade_lua(5)
+        #self.__vida = 1
+        self.set_vida(1)
 
-    def save(self):
 
-        self.__r_posicao_x = self.get_posicao_x()
-        self.__r_posicao_y = self.get_posicao_y()
 
-    def reload(self):
-        self.set_posicao_x(self.__r_posicao_x)
-        self.set_posicao_y(self.__r_posicao_y)
+    def salvar(self):
+
+        self.__s_posicao_x = self.get_posicao_x()
+        self.__s_posicao_y = self.get_posicao_y()
+        self.__s_velocidade_x = self.get_velocidade_x()
+        self.__s_velocidade_y = self.get_velocidade_y()
+        self.__s_velocidade_media = self.get_velocidade_media()
+        self.__s_potencia_propulsor = self.get_potencia_propulsor()
+        self.__s_friccao = self.get_friccao()
+        self.__s_angulo_rotacao = self.get_angulo_rotacao()
+        self.__s_velocidade_rotacao = self.get_velocidade_rotacao()
+        self.__s_combustivel = self.get_combustivel()
+        self.__s_gravidade_lua = self.get_gravidade_lua()
+        self.__s_vida = self.get_vida()
+
+
+
+
+    def carregar_save(self):
+
+        self.set_posicao_x(self.__s_posicao_x)
+        self.set_posicao_y(self.__s_posicao_y)
+        self.set_velocidade_x(self.__s_velocidade_x)
+        self.set_velocidade_y(self.__s_velocidade_y)
+        self.set_velocidade_media(self.__s_velocidade_media)
+        self.set_potencia_propulsor(self.__s_potencia_propulsor)
+        self.set_friccao(self.__s_friccao)
+        self.set_angulo_rotacao(self.__s_angulo_rotacao)
+        self.set_velocidade_rotacao(self.__s_velocidade_rotacao)
+        self.set_combustivel(self.__s_combustivel)
+        self.set_gravidade_lua(self.__s_gravidade_lua)
+        self.set_vida(self.__s_vida)
+
+
+
+
+
+
+
+    def get_posicao_inicial_x(self):
+        return self.__posicao_inicial_x
+
+    def set_posicao_inicial_x(self, posicao_x):
+        self.__posicao_inicial_x = posicao_x
+
+    def get_posicao_inicial_y(self):
+        return self.__posicao_inicial_y
+
+    def set_posicao_inicial_y(self, posicao_y):
+        self.__posicao_inicial_y = posicao_y
+
 
     def set_vida(self, vida):
         self.__vida = vida

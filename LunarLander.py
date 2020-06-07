@@ -20,10 +20,14 @@ gamePlay = Nova_tela("Menu", (1000,600))
 
 nave = Nova_nave('arquivos/nave.png', gamePlay.get_resolucao()[0]/2, 100)
 nave.set_altitude(abs(nave.get_posicao_y()- gamePlay.get_resolucao()[1]))
+nave.set_posicao_inicial_x(gamePlay.get_resolucao()[0]/2)
+nave.set_posicao_inicial_y(100)
 
 gasolina = Item('arquivos/gasolina.png', gamePlay.get_resolucao()[0]/2, - 100)
 gasolina.set_velocidade_x(0)
 gasolina.set_velocidade_y(0)
+gasolina.set_posicao_inicial_x(gamePlay.get_resolucao()[0]/2)
+gasolina.set_posicao_inicial_y(- 100)
 
 terra = Nova_nave('arquivos/terra3.png', 800, 50)
 #gamePlay.set_resolucao_tela((pygame.display.list_modes()[0][0],pygame.display.list_modes()[0][1]))
@@ -42,6 +46,7 @@ botao_play = botao()
 botao_play.set_str_botao('PLAY')
 botao_exit = botao()
 botao_confg = botao()
+botao_save = botao()
 botao_voltar = botao()
 botao_sim = botao()
 botao_nao = botao()
@@ -53,6 +58,7 @@ def evento_botoes():
     botao().evento(event, botao_play, painel_menu)
     botao().evento(event, botao_exit, painel_menu)
     botao().evento(event, botao_confg, painel_menu)
+    botao().evento(event, botao_save, painel_menu)
     botao().evento(event, botao_voltar, painel_config)
     botao().evento(event, botao_bola_slider_volume_ambiente, painel_config)
     botao().evento(event, botao_full_scren, painel_config)
@@ -79,8 +85,11 @@ nova_resolucao = False
 pos_bola_slider_volume = 0
 nave.set_volume_propulsor(0.1)
 
-botao_provisorio_SAVE = False
+save = False
+carregar_save = False
+reiniciar = False
 
+marca_save = 0
 
 dados = Dados(gamePlay, mapa, nave, gasolina)
 
@@ -107,12 +116,17 @@ while jogoAtivo:
             elif event.key == pygame.K_UP:
                 nave.set_propulsor_ativo(True)
 
-
             elif event.key == pygame.K_DOWN:
                 pass
             elif event.key == pygame.K_s:
                 #debug = True
-                botao_provisorio_SAVE = True
+                #save = True
+                pass
+
+            elif event.key == pygame.K_r:
+                #debug = True
+                #carregar_save = True
+                pass
 
 
         elif event.type == pygame.KEYUP:
@@ -124,9 +138,16 @@ while jogoAtivo:
                 nave.set_propulsor_ativo(False)
 
             elif event.key == pygame.K_UP or event.key == pygame.K_s:
-                debug = False
-                botao_provisorio_SAVE = False
-                reload = False
+                #debug = False
+                #save = False
+                pass
+
+            elif event.key == pygame.K_UP or event.key == pygame.K_r:
+                #debug = False
+                #carregar_save = False
+                pass
+
+
 
 
             elif event.key == pygame.K_UP or event.key == pygame.K_ESCAPE:
@@ -140,16 +161,26 @@ while jogoAtivo:
     if painel_menu.get_ativo() == True:
 
 
+
+
         painel_menu .cria(gamePlay, 0, 0, 40, 45)
         painel_menu.draw_painel(gamePlay,AMARELO, 120)
 
-        botao_play.criar(painel_menu, 0, -50, 30, 10)
+        botao_play.criar(painel_menu, 0, -70, 30, 10)
         botao_play.draw(gamePlay, botao_play.get_str_botao())
 
-        botao_confg.criar(painel_menu, 0, 0, 30, 10)
+        botao_save.criar(painel_menu, 0, -23, 30, 10)
+        botao_save.draw(gamePlay, botao_save.get_str_botao())
+
+
+
+
+
+
+        botao_confg.criar(painel_menu, 0, 23, 30, 10)
         botao_confg.draw(gamePlay, 'CONFIG')
 
-        botao_exit.criar(painel_menu, 0, 50, 30, 10)
+        botao_exit.criar(painel_menu, 0, 70, 30, 10)
         botao_exit.draw(gamePlay, 'EXIT')
 
         evento_botoes()
@@ -268,11 +299,76 @@ while jogoAtivo:
         painel_menu.set_ativo(False)
 
 
+
+
+
+
+
+
+
+    if painel_menu.get_ativo() == True:
+        if marca_save == 0:
+            botao_save.set_str_botao('SAVE VAZIO')
+
+        if marca_save == 1:
+            botao_save.set_str_botao('CONTINUAR')
+
+        if marca_save == 1 and botao_play.get_str_botao() == 'PLAY':
+            botao_save.set_str_botao('CONTINUAR')
+
+        if marca_save == 0 and botao_play.get_str_botao() == 'PAUSADO':
+            botao_save.set_str_botao('SALVAR')
+
+        elif marca_save == 1:
+            botao_save.set_str_botao('CONTINUAR')
+
+        if marca_save == 1 and botao_play.get_str_botao() == 'PAUSADO':
+            botao_save.set_str_botao('SALV0')
+
+
+
+
+
+
+
+    if botao_save.get_clicou() == True and botao_save.get_str_botao() == 'SAVE VAZIO':
+        print("VOCE DEVE PRIMEIRO JOGAR UMA VEZ!")
+
+
+    if botao_save.get_clicou() == True and botao_play.get_str_botao() == 'PAUSADO':
+        marca_save = 1
+        save = True
+    else:
+        save = False
+
+
+
+    if botao_save.get_clicou() == True and botao_save.get_str_botao() == 'CONTINUAR' and botao_play.get_str_botao() == 'IR DENOVO' and marca_save == 1:
+        carregar_save = True
+        marca_save = 0
+
+    print("marca save :", marca_save)
+    print("save :", save)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     if  botao_play.get_clicou() == True and botao_play.get_str_botao() == 'IR DENOVO' :
         gamePlay.set_game_loop(True)
-        mapa.reset()
-        nave.reset()
-        gasolina.reset()
+        mapa.reiniciar()
+        nave.reiniciar()
+        gasolina.reiniciar()
         texto_feedback_pouso_hud.set_str('')
         botao_play.set_str_botao('PLAY')
 
@@ -309,7 +405,8 @@ while jogoAtivo:
 
             pos_bola_slider_volume = pygame.mouse.get_pos()[0] - gamePlay.get_resolucao()[0] / 2
 
-
+    if save == True:
+        nave.salvar()
 
 
     #GAMEPLAY
@@ -320,19 +417,35 @@ while jogoAtivo:
         # só inicia apos 3 segundos
         if gamePlay.get_cronometro()[4]>3:
 
-            if botao_provisorio_SAVE == False:
+            #if save == False:
+             #   mapa.desenha_terreno(gamePlay, nave)
+              #  if mapa.get_existe_area_pouso() == False:
+               #     mapa.reiniciar()
+                #    nave.reiniciar()
+                 #   gasolina.reiniciar()
+                  #  print("NAO FOI POSSIVEL SORTEAR UMA AREA DE POUSO, REDESENHANDO TERRENO [RANDON]")
+
+            if save == False:
                 mapa.desenha_terreno(gamePlay, nave)
                 if mapa.get_existe_area_pouso() == False:
-                    mapa.reset()
-                    nave.reset()
-                    gasolina.reset()
+                    mapa.reiniciar()
+                    nave.reiniciar()
+                    gasolina.reiniciar()
                     print("NAO FOI POSSIVEL SORTEAR UMA AREA DE POUSO, REDESENHANDO TERRENO [RANDON]")
 
+            if save == True and mapa.get_existe_area_pouso() == True:
+                #mapa.copia(gamePlay)
+                #mapa.set_terreno(mapa.get_copia_vertices_terreno())
+                mapa.salvar()
+                nave.salvar()
+                gasolina.salvar()
 
-            if botao_provisorio_SAVE == True and mapa.get_existe_area_pouso() == True:
-                mapa.copia(gamePlay)
-                mapa.set_terreno(mapa.get_copia_vertices_terreno())
-                teste_posicao = nave.get_posicao_x(), nave.get_posicao_y()
+
+            if carregar_save == True:
+                mapa.carregar_save()
+                nave.carregar_save()
+                gasolina.carregar_save()
+
 
 
             gasolina.set_tamanho(int(gamePlay.get_proporcao()[0] * 15), int(gamePlay.get_proporcao()[1] * 30))
@@ -496,7 +609,7 @@ while jogoAtivo:
         #print("game loop", gamePlay.get_game_loop())
         #print("botao play:", botao_play.get_str_botao())
 
-        #print("altitude reset :", dados.get_info(False, 'nave', 2))
+        #print("altitude reiniciar :", dados.get_info(False, 'nave', 2))
         #print("angulo rotacao :", dados.get_info(False, 'nave', 3))
 
         #print("angulo rotacao :", nave.get_angulo_rotacao())

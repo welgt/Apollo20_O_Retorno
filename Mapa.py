@@ -30,6 +30,7 @@ class Mapa_do_jogo:
         self.__copiou = False
         self.__copia_base_pouso_line = None
 
+
     def get_copia_vertices_terreno(self):
         return self.__copia_terreno_vertices_terreno
 
@@ -72,6 +73,8 @@ class Mapa_do_jogo:
     def get_pouso_nave_line(self):
         return self.__base_pouso_line
 
+    def set_pouso_nave_line(self, vertice):
+        self.__base_pouso_line = vertice
 
     def get_pouso_nave_retangulo(self):
         if self.__existe_area_pouso == False:
@@ -101,7 +104,69 @@ class Mapa_do_jogo:
     def set_redesenha_terreno(self, boleana):
         self.__desenha = boleana
 
-    def reset(self):
+
+    def get_qtd_tuplas_terreno(self):
+        return self.__qtd_tuplas_terreno
+
+    def set_qtd_tuplas_terreno(self, qtd):
+        self.__qtd_tuplas_terreno = qtd
+
+    def get_desenha(self):
+        return self.__desenha
+
+    def set_desenha(self, booleana):
+        self.__desenha = booleana
+
+    def get_novo_terreno(self):
+        return self.__novo_terreno
+
+    def set_novo_terreno(self, novo_terreno):
+        self.__novo_terreno = novo_terreno
+
+    def get_desenha_contorno(self):
+        return self.__desenha_contorno
+
+    def set_desenha_contorno(self, vertices):
+        self.__desenha_contorno = vertices
+
+    def get_random_alturas_diferentes(self):
+        return self.__random_alturas_diferentes
+
+    def set_random_alturas_diferentes(self, altura):
+        self.__random_alturas_diferentes = altura
+
+    def get_random_pouso_nave(self):
+        return self.__ramdom_pouso_nave
+
+    def set_ramdom_pouso_nave(self, random):
+        self.__ramdom_pouso_nave = random
+
+    def get_cont(self):
+        return self.__cont
+
+    def set_cont(self, cont):
+        self.__cont = cont
+
+    def get_porcento_altura_terreno(self):
+        return self.__porcento_altura_terreno
+
+    def set_porcento_altura_terreno(self, porcentagem):
+        self.__porcento_altura_terreno = porcentagem
+
+    def get_altura_base_pouso(self):
+        return self.__altura_base_pouso
+
+    def set_altura_base_pouso(self, altura):
+        self.__altura_base_pouso = altura
+
+    def get_espessura_base_pouso_line(self):
+        return self.__espessura_base_pouso_line
+
+    def set_espessura_base_pouso_line(self, espessura):
+        self.__espessura_base_pouso_line = espessura
+
+
+    def reiniciar(self):
 
         self.__qtd_tuplas_terreno = 0
         self.__desenha = True
@@ -125,6 +190,66 @@ class Mapa_do_jogo:
         self.__sort3 = 0
 
 
+    def salvar(self):
+
+        self.__s_qtd_tuplas_terreno = self.get_qtd_tuplas_terreno()
+        self.__s_desenha = self.get_desenha()
+        self.__s_terreno = self.get_terreno()
+        self.__s_cor = self.get_cor_terreno()
+        self.__s_novo_terreno = self.get_novo_terreno()
+        self.__s_cor_borda_terreno = self.get_cor_terreno_borda()
+        self.__s_desenha_contorno = self.get_desenha_contorno()
+        self.__s_random_alturas_diferentes = self.get_random_alturas_diferentes()
+        self.__s_random_pouso_nave = self.get_random_pouso_nave()
+        self.__s_cont = self.get_cont()
+        self.__s_base_pouso_line = self.get_pouso_nave_line()
+        self.__s_porcento_altura_terreno = self.get_porcento_altura_terreno()
+        self.__s_existe_area_pouso = self.get_existe_area_pouso()
+        self.__s_altura_base_pouso = self.get_altura_base_pouso()
+        self.__s_espessura_base_pouso_line = self.get_espessura_base_pouso_line()
+        self.__s_qualidade_terreno = self.get_qualidade_terreno()
+        self.__s_sort1 = random.randint(0, 255)
+        self.__sort2 = random.randint(0, 255)
+
+
+
+
+
+
+
+
+    def carregar_save(self):
+
+
+        self.set_qtd_tuplas_terreno(self.__s_qtd_tuplas_terreno)
+        self.set_desenha(self.__s_desenha)
+
+        self.set_terreno(self.__s_terreno)
+        self.set_cont(self.__s_cor)
+        self.set_novo_terreno(self.__s_novo_terreno)
+        self.set_cor_borda_terreno(self.__s_cor_borda_terreno)
+        self.set_desenha_contorno(self.__s_desenha_contorno)
+        self.set_random_alturas_diferentes(self.__s_random_alturas_diferentes)
+        self.set_ramdom_pouso_nave(self.__s_random_pouso_nave)
+        self.set_cont(self.__s_cont)
+        self.set_pouso_nave_line(self.__s_base_pouso_line)
+        self.set_porcento_altura_terreno(self.__s_porcento_altura_terreno)
+        self.set_existe_area_pouso(self.__s_existe_area_pouso)
+        self.set_altura_base_pouso(self.__s_altura_base_pouso)
+        self.set_espessura_base_pouso_line(self.__s_espessura_base_pouso_line)
+        self.set_qualidade_terreno(self.__s_qualidade_terreno)
+
+
+        self.__sort1 = random.randint(0, 255)
+        self.__sort2 = random.randint(0, 255)
+
+
+
+
+
+
+
+
     def copia(self, tela):
 
         self.set_terreno(self.__copia_terreno_vertices_terreno)
@@ -138,10 +263,6 @@ class Mapa_do_jogo:
             tela.draw_line((self.__sort1, self.__sort2, 0), (self.__copia_base_pouso_line[0], self.__copia_base_pouso_line[1]),
                            (self.__copia_base_pouso_line[2], self.__copia_base_pouso_line[3]),
                            self.get_espessura_line_pouso_nave())
-
-
-
-
 
 
 
