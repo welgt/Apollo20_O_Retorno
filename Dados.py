@@ -1,34 +1,50 @@
+
+CYAN = (0,255,255)
+BLACK = (0, 0, 0)
+GREY = (128,128,128)
+LARANJA = (255,165,0)
+AMARELO = (255,255,0)
+WHITE = (255, 255, 255)
+GREEN = (0, 255, 0)
+RED = (255, 0, 0)
+MARRON = (184,134,11)
+
+
 class Dados:
     def __init__(self,tela, mapa, nave, item_gasolina):
         self.__pontos = 0
-
-
         self.__obj_nave = nave
         self.__obj_tela = tela
         self.__obj_mapa = mapa
         self.__obj_item_gasolina = item_gasolina
 
+        self.__cont = 0
 
 
 
+    def get_pontos(self):
+        return self.__pontos
+
+    def set_cont(self, cont):
+        self.__cont = cont
+
+    def get_cont(self):
+        return self.__cont
+
+    def set_pontos(self, feedback_pouso, nave, mapa):
 
 
- #[self.__obj_nave.get_posicao_x(), self.__obj_nave.get_posicao_y()], \
- #[self.__obj_nave.get_altitude()], \
- #[self.__obj_nave.get_angulo_rotacao()], \
- #[self.__obj_nave.get_colidiu_terreno()], \
- #[self.__obj_nave.get_colidiu_area_pouso()], \
- #[self.__obj_nave.get_colidiu_tela()], \
- #[self.__obj_nave.get_rotacionou_dir()], \
- #[self.__obj_nave.get_rotacionou_esq()], \
- #(self.__obj_nave.get_gravidade_lua()), \
- #[self.__obj_nave.get_friccao()], \
- #[self.__obj_nave.get_gravidade_lua() * 2], \
- #(self.__obj_nave.get_combustivel())
- #[self.get_pontos()]
- #[self.__obj_mapa.get_terreno()]
- #[self.__obj_item_gasolina.get_posicao_x(), self.__obj_item_gasolina.get_posicao_x()]
+        if feedback_pouso == 'POUSO PERFEITO' and self.get_cont() == 0:
+            self.__pontos  += 150
+            self.set_cont(1)
 
+        if feedback_pouso == 'POUSO TOLERÁVEL' and self.get_cont() == 0:
+            self.__pontos  += 100
+            self.set_cont(1)
+
+        if feedback_pouso == 'POUSO FORÇADO' and self.get_cont() == 0:
+            self.__pontos  += 50
+            self.set_cont(1)
 
 
     def restart_nave(self):
@@ -47,39 +63,3 @@ class Dados:
         self.__nave_vida = 1
 
 
-
-
-
-
-
-
-    #def reset_game(self):
-
-
-
-
-
-    #def save_game(self):
-
-        #self.__obj_mapa.copia(self.__obj_tela)
-        #self.__obj_mapa.set_terreno(self.__obj_mapa.get_copia_vertices_terreno())
-
-
-
-
-
-
-    #def reload_game(self):
-
-        #self.__obj_mapa.copia(self.__obj_tela)
-        #self.__obj_mapa.set_terreno(self.__obj_mapa.get_copia_vertices_terreno())
-
-
-
-
-
-    def get_pontos(self):
-        return self.__pontos
-
-    def set_pontos(self, pontos):
-        self.__pontos = pontos

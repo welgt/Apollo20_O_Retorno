@@ -30,19 +30,9 @@ class Nova_nave:
         self.__cont = 0
         self.__som_propulsor = pygame.mixer.music
         self.__vida = 1
-
         self.__posicao_inicial_x = 0
         self.__pocicao_inicial_y = 0
 
-        #cor_transp = self.__surface.get_at((0,0))
-        #self.__surface.set_colorkey((255,255,255,200))
-        #self.__surface = self.__surface.convert()
-
-        #self.__volume = 0
-        #som = pygame.mixer.music
-        #som.load('arquivos/propulsor.mp3')
-        #som.play()
-        #som.set_volume(0.1)
 
     def reiniciar(self):
         self.set_posicao_x(self.get_posicao_inicial_x())
@@ -92,9 +82,6 @@ class Nova_nave:
         self.set_combustivel(self.__s_combustivel)
         self.set_gravidade_lua(self.__s_gravidade_lua)
         self.set_vida(self.__s_vida)
-
-
-
 
 
 
@@ -299,6 +286,8 @@ class Nova_nave:
         self.__rotacionou_esq = booleana
 
 
+
+
     def rotacaoCentralizada(self):
 
         surface = pygame.transform.rotate(self.get_surface(), self.get_angulo_rotacao())
@@ -307,6 +296,8 @@ class Nova_nave:
         nova_posicao[1] += self.get_posicao()[1]
 
         return surface ,nova_posicao
+
+
 
 
     def criaPoligono_Propulsor(self, largura_poligono, posicao_horizontal, ponto_acelerador_poligono):
@@ -321,6 +312,9 @@ class Nova_nave:
                               (ponto_esquerdo, altura_base + self.get_posicao_y()))  # (-3,-3)
 
         return self.__rotacionaPoligono_propulsor(vertices_propulsor)
+
+
+
 
 
     def __rotacionaPoligono_propulsor(self, vertices_propulsor):
@@ -338,6 +332,9 @@ class Nova_nave:
             poligono_rotacionado.append(vertice_aux)
 
         return poligono_rotacionado
+
+
+
 
 
     def gravidade(self,tela):
@@ -360,6 +357,7 @@ class Nova_nave:
             # a gravidade só puxa a nave com uma força de até 1.6(gravidade da lua)
             if self.get_velocidade_y() < self.get_gravidade_lua():
                 self.set_velocidade_y(self.get_velocidade_y()+(00.01 * self.get_friccao()))
+
 
 
 
@@ -399,6 +397,8 @@ class Nova_nave:
 
 
 
+
+
     def verifica_colisao_tela(self, tela):
 
         # se for diferente disso é porque esta fora da tela
@@ -412,6 +412,7 @@ class Nova_nave:
             # pega a posicao do momento da colisao e deixa a nave travada nela
             self.set_velocidade_x(0)
             self.set_velocidade_y(0)
+
 
 
 
@@ -594,5 +595,3 @@ class Nova_nave:
             if j < len(lista_vertice)-1:#6
                 i+=1
                 j+=1
-
-        #tela.draw_lines((RED), self.get_lista_colisores_terreno(), 2)

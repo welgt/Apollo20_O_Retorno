@@ -1,20 +1,16 @@
-from Dados import *
 from Nave import *
 from Mapa import *
 from Interface import *
-from Config import *
 from Item import *
 
 import pygame
-
 pygame.init()
+
+gamePlay = Nova_tela("Menu", (1000, 600))
 
 mapa = Mapa_do_jogo()
 mapa.set_cor_terreno(WHITE)
 mapa.set_cor_borda_terreno(GREEN)
-
-gamePlay = Nova_tela("Menu", (1000, 600))
-# gamePlay.set_resolucao((pygame.display.list_modes()[0][0],pygame.display.list_modes()[0][1]))
 
 nave = Nova_nave('arquivos/nave.png', gamePlay.get_resolucao()[0] / 2, 100)
 nave.set_altitude(abs(nave.get_posicao_y() - gamePlay.get_resolucao()[1]))
@@ -28,8 +24,6 @@ gasolina.set_posicao_inicial_x(gamePlay.get_resolucao()[0] / 2)
 gasolina.set_posicao_inicial_y(- 100)
 
 terra = Nova_nave('arquivos/terra3.png', 800, 50)
-# gamePlay.set_resolucao_tela((pygame.display.list_modes()[0][0],pygame.display.list_modes()[0][1]))
-
 
 painel_menu = painel()
 painel_menu.set_ativo(True)
@@ -51,7 +45,6 @@ botao_slider_volume_ambiente = botao()
 botao_bola_slider_volume_ambiente = botao()
 botao_full_scren = botao()
 
-
 def evento_botoes():
     botao().evento(event, botao_play, painel_menu)
     botao().evento(event, botao_exit, painel_menu)
@@ -62,7 +55,6 @@ def evento_botoes():
     botao().evento(event, botao_full_scren, painel_config)
     botao().evento(event, botao_sim, painel_sair)
     botao().evento(event, botao_nao, painel_sair)
-
 
 # funcina como repercusao, se nao sorteio a area de pouso, volte aqui!
 def redesenha_mapa():
@@ -462,7 +454,6 @@ while jogoAtivo:
                 gasolina.set_velocidade_y(0)
 
 
-
             # se a nave pousou verifique as condicoes e atribua a pontuacao correta
             # verificacao antecipada distingue se pousou na area de pouso, pois de fato ela tbm colide com o terreno
             if nave.get_colidiu_area_pouso() == False and nave.get_potencia_propulsor() > 0.4 and nave.get_posicao_y() < mapa.get_maior_altura_terreno()-80:
@@ -477,33 +468,31 @@ while jogoAtivo:
                 pousou = False
 
 
+            dados.set_pontos(texto_feedback_pouso_hud.get_str(), nave, mapa)
+            if nave.get_colidiu_area_pouso() == False:
+                dados.set_cont(0)
+
             if nave.get_colidiu_area_pouso() == True and nave.get_verifica_colisao_antecipada() == True:
                 nave.set_angulo_rotacao(nave.get_angulo_rotacao())
 
+                # verifica o pouso e gera a pontuacao
                 if nave.get_angulo_rotacao() <= 10 and nave.get_angulo_rotacao() >= -10:
-                    pouso_perfeito = 150
-                    dados.set_pontos(pouso_perfeito)
                     texto_feedback_pouso_hud.set_str('POUSO PERFEITO')
-
                     liberar_decolagem += 1
                     pousou = libera_decolagem(liberar_decolagem)
 
                 elif nave.get_angulo_rotacao() <= 20 and nave.get_angulo_rotacao() >= -20:
-                    pouso_toleravel = 100
-                    dados.set_pontos(pouso_toleravel)
                     texto_feedback_pouso_hud.set_str('POUSO TOLERÁVEL')
-
                     liberar_decolagem += 1
                     pousou = libera_decolagem(liberar_decolagem)
 
                 elif nave.get_angulo_rotacao() <= 35 and nave.get_angulo_rotacao() >= -35:
-                    pouso_forcado = 50
-                    dados.set_pontos(pouso_forcado)
                     texto_feedback_pouso_hud.set_str('POUSO FORÇADO')
-
                     liberar_decolagem += 1
                     pousou = libera_decolagem(liberar_decolagem)
+
                 else:
+
                     texto_feedback_pouso_hud.set_str('VOCÊ MORREU')
                     str_botao_play = 'IR DENOVO'
                     gamePlay.set_game_loop(False)

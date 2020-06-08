@@ -1,7 +1,5 @@
-import math
 import random
-from Config import *
-from Tela import *
+
 class Mapa_do_jogo:
     def __init__(self):
         self.__qtd_tuplas_terreno = 0

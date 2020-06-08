@@ -1,6 +1,5 @@
 import math
 import random
-
 import pygame
 
 import Nave
