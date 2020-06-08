@@ -95,6 +95,7 @@ carregar_save = False
 reiniciar = False
 marca_save = 0
 cor_texto_botao_save = WHITE
+liberar_decolagem = 0
 
 dados = Dados(gamePlay, mapa, nave, gasolina)
 
@@ -233,10 +234,9 @@ while jogoAtivo:
             temp = 3
             temp -= gamePlay.get_cronometro()[4]
 
-            texto_contagem_regressiva_hud.cria(" {0:4.4s} ".format(str(temp)), 'Times new roman',
-                int(gamePlay.get_proporcao()[1] * 100), WHITE)
-            gamePlay.blit(texto_contagem_regressiva_hud.get_surface(),
-                (gamePlay.get_resolucao()[0] / 2 - texto_contagem_regressiva_hud.get_tamanho_letra() / 2,
+            texto_contagem_regressiva_hud.cria(" {0:4.4s} ".format(str(temp)), 'Times new roman',int(gamePlay.get_proporcao()[1] * 100), WHITE)
+            gamePlay.blit(texto_contagem_regressiva_hud.get_surface(),(gamePlay.get_resolucao()[0] / 2
+                -texto_contagem_regressiva_hud.get_tamanho_letra() / 2,
                 gamePlay.get_resolucao()[1] / 2 - texto_contagem_regressiva_hud.get_tamanho_letra() / 2))
 
         pos_textos = gamePlay.get_resolucao()[0] / 5
@@ -279,14 +279,17 @@ while jogoAtivo:
 
         evento_botoes()
 
-    # GERENTE DO MENU
 
+    # GERENTE DO MENU
     if botao_full_scren.get_clicou() == True:
         gamePlay.set_resolucao((pygame.display.list_modes()[0][0], pygame.display.list_modes()[0][1] - 38))
         gamePlay.flip()
 
     if gamePlay.get_resolucao()[0] == pygame.display.list_modes()[0][0]:
-        botao_full_scren.set_cor(WHITE)
+        botao_full_scren.set_cor(AMARELO)
+
+    if botao_full_scren.get_clicou() == True and gamePlay.get_resolucao()[1] <= pygame.display.list_modes()[0][1]:
+        gamePlay.set_resolucao((1000, 600))
 
     if botao_play.get_clicou() == True and botao_play.get_str_botao() == 'PLAY':
         gamePlay.set_game_loop(True)
@@ -297,9 +300,9 @@ while jogoAtivo:
         painel_menu.set_ativo(False)
 
     if botao_save.get_clicou() == True and botao_save.get_str_botao() == 'SAVE VAZIO':
-        cor_texto_botao_save = RED
-        botao_save.set_cor(GREEN)
         botao_save.set_str_botao('VOCE DEVE PRIMEIRO JOGAR UMA VEZ!')
+        botao_save.set_cor(GREEN)
+        cor_texto_botao_save = RED
     else:
         cor_texto_botao_save = WHITE
 
@@ -360,7 +363,7 @@ while jogoAtivo:
         if botao_bola_slider_volume_ambiente.get_posicao_x() >= botao_slider_volume_ambiente.get_posicao_x() and \
             botao_bola_slider_volume_ambiente.get_posicao_x() <= botao_slider_volume_ambiente.get_posicao_x() + \
             botao_slider_volume_ambiente.get_largura() - botao_bola_slider_volume_ambiente.get_largura():
-            pos_bola_slider_volume = pygame.mouse.get_pos()[0] - gamePlay.get_resolucao()[0] / 2
+                pos_bola_slider_volume = pygame.mouse.get_pos()[0] - gamePlay.get_resolucao()[0] / 2
 
     if botao_voltar.get_clicou() == True:
         painel_config.set_ativo(False)
@@ -380,6 +383,7 @@ while jogoAtivo:
         painel_menu.set_ativo(True)
         painel_sair.set_ativo(False)
         painel_config.set_ativo(False)
+
 
     # GAMEPLAY
     if gamePlay.get_game_loop() == True:
@@ -425,7 +429,7 @@ while jogoAtivo:
 
             # so sorteia se caso  a gasolina  esta aguardando em cima da tela
             sort = random.randint(0, 200)
-            if nave.get_combustivel() < 600 and sort == 100 and gasolina.get_posicao_y() < 0:
+            if nave.get_combustivel() < 500 and sort == 100 and gasolina.get_posicao_y() < -gasolina.get_altura_y()-10:
                 gasolina.posicao_randomica(gamePlay)
                 gasolina.set_velocidade_y(1)
 
@@ -440,14 +444,40 @@ while jogoAtivo:
 
             # se a nave pousou verifique as condicoes e atribua a pontuacao correta
             # verificacao antecipada distingue se pousou na area de pouso, pois de fato ela tbm colide com o terreno
+
+            #print("vel :", nave.get_velocidade_y())
+            #print("propulsor :", nave.get_potencia_propulsor())
+            print("cont :", liberar_decolagem)
+
+            if nave.get_colidiu_area_pouso() == False and nave.get_potencia_propulsor() > 0.4:
+                texto_feedback_pouso_hud.set_str('')
+                liberar_decolagem = 0
+                mapa.set_cor_terreno(WHITE)
+
+
+
             if nave.get_colidiu_area_pouso() == True and nave.get_verifica_colisao_antecipada() == True:
-                painel_menu.set_ativo(True)
                 nave.set_angulo_rotacao(nave.get_angulo_rotacao())
 
                 if nave.get_angulo_rotacao() <= 15 and nave.get_angulo_rotacao() >= -15:
                     pouso_perfeito = 150
                     dados.set_pontos(pouso_perfeito)
                     texto_feedback_pouso_hud.set_str('POUSO PERFEITO')
+
+
+                    liberar_decolagem += 1
+                    if liberar_decolagem >= 50:
+                        texto_feedback_pouso_hud.set_str('DECOLAGEM LIBERADA!')
+                        nave.set_posicao_y(nave.get_posicao_y() - 2)
+                        randon =  random.randint(0, 255)
+                        mapa.set_cor_terreno((randon,10,10))
+                        if liberar_decolagem > 80:
+                            mapa.set_cor_terreno(RED)
+                        if liberar_decolagem == 100:
+                            mapa.reiniciar()
+                            mapa.desenha_terreno(gamePlay, nave)
+
+
 
                 elif nave.get_angulo_rotacao() <= 25 and nave.get_angulo_rotacao() >= -25:
                     pouso_toleravel = 100
@@ -471,13 +501,14 @@ while jogoAtivo:
                 painel_menu.set_ativo(True)
                 mapa.set_cor_borda_terreno(CYAN)
 
+
                 nave.set_posicao(nave.get_posicao_x(), nave.get_posicao_y())
-                nave.set_potencia_propulsor(0)
+                #nave.set_potencia_propulsor(0)
                 nave.set_rotacionou_dir(False)
                 nave.set_rotacionou_esq(False)
-                nave.set_gravidade_lua(0)
-                nave.set_velocidade_x(0)
-                nave.set_velocidade_y(0)
+                #nave.set_gravidade_lua(0)
+                #nave.set_velocidade_x(0)
+                #nave.set_velocidade_y(0)
                 nave.set_angulo_rotacao(nave.get_angulo_rotacao())
             else:
                 nave.set_colidiu_terreno(False)

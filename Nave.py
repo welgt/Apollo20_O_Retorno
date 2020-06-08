@@ -430,9 +430,7 @@ class Nova_nave:
 
 
 
-
     def verifica_colisao_area_pouso(self, mapa):
-
 
         if mapa.get_existe_area_pouso() == True:
 
@@ -450,10 +448,10 @@ class Nova_nave:
                 #print("COLIDIU COM A AREA DE POUSO")
                 #se colidiu trave a nave
                 #self.set_potencia_propulsor(0)
-                #self.set_rotacionou_dir(False)
-                #self.set_rotacionou_esq(False)
-                #self.set_velocidade_x(0)
-                #self.set_velocidade_y(0)
+                self.set_rotacionou_dir(False)
+                self.set_rotacionou_esq(False)
+                self.set_velocidade_x(0)
+                self.set_velocidade_y(0)
                 #self.set_angulo_rotacao(self.get_angulo_rotacao())
                 #self.set_posicao(self.get_posicao_x(), (self.get_posicao_y()))
             else:
@@ -568,15 +566,21 @@ class Nova_nave:
 
             # verifica se a distancia é menor que 10, se sim, colidiu com o terreno
             if distancia_entre_ponto_colisor_nave_ponto_principal < 8:
-                self.set_colidiu_terreno(True)
-                #self.set_potencia_propulsor(0)
-                #self.set_rotacionou_dir(False)
-                #self.set_rotacionou_esq(False)
-                #self.set_gravidade_lua(0)
+
 
                 #self.set_posicao(self.get_posicao_x(), self.get_posicao_y())
                 #self.set_velocidade_x(0)
                 #self.set_velocidade_y(0)
+                if self.get_colidiu_area_pouso() == False and self.get_verifica_colisao_antecipada() == False:
+                    #self.set_posicao(self.get_posicao_x(), self.get_posicao_y())
+                    self.set_velocidade_x(0)
+                    self.set_velocidade_y(0)
+                    self.set_gravidade_lua(0)
+                    self.set_colidiu_terreno(True)
+                    self.set_potencia_propulsor(0)
+                    # self.set_rotacionou_dir(False)
+                    # self.set_rotacionou_esq(False)
+                    self.set_gravidade_lua(0)
 
                 #print("COLIDIU PONTO PRINCIPAL")
 
@@ -587,15 +591,16 @@ class Nova_nave:
                     or distancia_entre_ponto_colisor_nave_ponto_intermediario_04 < 8 \
                     or distancia_entre_ponto_colisor_nave_ponto_intermediario_05 < 8 :
                 self.set_colidiu_terreno(True)
-                #self.set_potencia_propulsor(0)
+
                 #self.set_rotacionou_dir(False)
                 #self.set_rotacionou_esq(False)
 
-                #if self.get_colidiu_area_pouso() == False and self.get_verifica_colisao_antecipada() == False:
+                if self.get_colidiu_area_pouso() == False and self.get_verifica_colisao_antecipada() == False:
                     #self.set_posicao(self.get_posicao_x(), self.get_posicao_y())
-                    #self.set_velocidade_x(0)
-                    #self.set_velocidade_y(0)
-                    #self.set_gravidade_lua(0)
+                    self.set_velocidade_x(0)
+                    self.set_velocidade_y(0)
+                    self.set_gravidade_lua(0)
+                    self.set_potencia_propulsor(0)
                     #print("COLIDIU PONTO INTERMEDIARIO")
                     #self.set_colidiu_terreno(True)
 

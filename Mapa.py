@@ -26,22 +26,6 @@ class Mapa_do_jogo:
         self.__sort2 = 0
         self.__sort3 = 0
 
-        self.__copia_terreno_vertices_terreno = []
-        self.__copiou = False
-        self.__copia_base_pouso_line = None
-
-
-    def get_copia_vertices_terreno(self):
-        return self.__copia_terreno_vertices_terreno
-
-
-    def set_copia_vertices_terreno(self, copia):
-        self.__copia_terreno_vertices_terreno = copia
-
-    def set_copia_base_pouso_line(self, lista):
-        self.__copia_base_pouso_line = lista
-
-
 
 
 
@@ -245,28 +229,6 @@ class Mapa_do_jogo:
 
 
 
-
-
-
-
-
-    def copia(self, tela):
-
-        self.set_terreno(self.__copia_terreno_vertices_terreno)
-        tela.draw_polygon(self.get_cor_terreno(), self.__terreno)
-        tela.draw_lines((self.get_cor_terreno_borda()), self.__copia_terreno_vertices_terreno, 4)
-
-        self.__sort1 = random.randint(0, 255)
-        self.__sort2 = random.randint(0, 255)
-
-        if (self.__existe_area_pouso):
-            tela.draw_line((self.__sort1, self.__sort2, 0), (self.__copia_base_pouso_line[0], self.__copia_base_pouso_line[1]),
-                           (self.__copia_base_pouso_line[2], self.__copia_base_pouso_line[3]),
-                           self.get_espessura_line_pouso_nave())
-
-
-
-
     def desenha_terreno(self, tela, nave):
 
         if self.get_redesenha_terreno() == True:
@@ -331,12 +293,6 @@ class Mapa_do_jogo:
                                                 (vertice[0] + x + x_largura_pouso),
                                                 (vertice[1] + self.__random_alturas_diferentes)]
 
-                    if self.__copiou == False:
-                        self.set_copia_base_pouso_line(self.__base_pouso_line)
-
-                    # desenha o feedback da area de pouso com um retangulo
-                    self.__base_pouso = pygame.Rect(((vertice[0] + x)), self.__random_alturas_diferentes, ((x_largura_pouso/2)), 10)
-
                     self.__cont+=2
 
                     # captura a altura do pouso pra usar na colisao entre nave e terreno
@@ -361,12 +317,9 @@ class Mapa_do_jogo:
             self.__qtd_tuplas_terreno+=2
             self.__terreno = self.__novo_terreno
 
-            if self.__copiou == False:
-                self.set_copia_vertices_terreno(self.__terreno)
-
             # permite randomizar e desenhar o terreno apenas uma vez somente no primeiro frame.
             self.set_redesenha_terreno(False)
-            self.__copiou = True
+
 
 
         self.__debug()

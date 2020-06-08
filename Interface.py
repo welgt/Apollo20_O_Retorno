@@ -358,7 +358,12 @@ class botao:
                 # no hiligth pinte os botao de sair  e de save vazio de vermeho
                 if botao.get_str_botao() == 'SIM':
                     botao.set_cor(RED)
+
                 if botao.get_str_botao() == 'SAVE VAZIO':
+                    botao.set_cor(RED)
+
+                if botao.get_str_botao() == 'RESALVAR':
+                    #botao.set_('AO CLICAR VOÇÊ PERDERÁ O SAVE ANTERIOR!')
                     botao.set_cor(RED)
 
         else:
