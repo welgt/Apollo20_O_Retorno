@@ -1,8 +1,6 @@
 import math
 from Config import *
 
-
-
 class Nova_nave:
     def __init__(self, surface, posicao_x, posicao_y):
         self.__surface = pygame.image.load(surface)
@@ -27,7 +25,7 @@ class Nova_nave:
         self.__rotacionou_esq = False
         self.__nova_lista_colisores_terreno = []
         self.__combustivel = 1000
-        self.__gravidade_lua = 5#1.6
+        self.__gravidade_lua = 5.0#1.6
         self.__altitude = 0
         self.__cont = 0
         self.__som_propulsor = pygame.mixer.music
@@ -49,25 +47,15 @@ class Nova_nave:
     def reiniciar(self):
         self.set_posicao_x(self.get_posicao_inicial_x())
         self.set_posicao_y(self.get_posicao_inicial_y())
-        #self.__velocidade_x = 0
         self.set_velocidade_x(0)
-        #self.__velocidade_y = 0
         self.set_velocidade_x(0)
-        #self.__velocidade_media = 0
         self.set_velocidade_media(0)
-        #self.__potencia_propulsor = 0
         self.set_potencia_propulsor(0)
-        #self.__friccao = 0
         self.set_friccao(0)
-        #self.__angulo_rotacao = 0
         self.set_angulo_rotacao(0)
-        #self.__velocidade_rotacao = 0
         self.set_velocidade_rotacao(0)
-        #self.__combustivel = 1000
         self.set_combustivel(1000)
-        #self.__gravidade_lua = 5#1.6
-        self.set_gravidade_lua(5)
-        #self.__vida = 1
+        self.set_gravidade_lua(5.0)
         self.set_vida(1)
 
 
@@ -401,8 +389,6 @@ class Nova_nave:
             if self.get_potencia_propulsor() < self.get_altura_y()/1000*15:
                 self.set_potencia_propulsor(self.get_potencia_propulsor()+00.01)
 
-
-            #print("angulo :", angulo)
             # define nova direcao caso a nave esteja inclinada pra direita  ou esquerda
             self.set_velocidade_x((self.get_velocidade_x() + (00.01 * -angulo * self.get_friccao())))
             #print("v:", self.get_velocidade_x())

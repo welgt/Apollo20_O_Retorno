@@ -69,6 +69,24 @@ def redesenha_mapa():
     mapa.reiniciar()
     mapa.desenha_terreno(gamePlay, nave)
 
+def libera_decolagem(liberar_decolagem):
+    pousou = True
+    if liberar_decolagem >= 15:
+        texto_feedback_pouso_hud.set_str('DECOLAGEM LIBERADA!')
+        nave.set_posicao_y(nave.get_posicao_y() - 2)
+        randon = random.randint(0, 255)
+        mapa.set_cor_terreno((randon, randon, 0))
+
+        if liberar_decolagem > 20:
+            mapa.set_cor_terreno(RED)
+
+        if liberar_decolagem == 30:
+            mapa.reiniciar()
+            mapa.desenha_terreno(gamePlay, nave)
+            mapa.set_cor_terreno(WHITE)
+            pousou = False
+
+        return pousou
 
 texto_velocidade_nave_hud = fonte_texto()
 texto_combustivel_hud = fonte_texto()
@@ -96,6 +114,7 @@ reiniciar = False
 marca_save = 0
 cor_texto_botao_save = WHITE
 liberar_decolagem = 0
+pousou = False
 
 dados = Dados(gamePlay, mapa, nave, gasolina)
 
@@ -442,56 +461,54 @@ while jogoAtivo:
             if gasolina.get_colidiu_terreno() == True:
                 gasolina.set_velocidade_y(0)
 
+
+
             # se a nave pousou verifique as condicoes e atribua a pontuacao correta
             # verificacao antecipada distingue se pousou na area de pouso, pois de fato ela tbm colide com o terreno
-
-            #print("vel :", nave.get_velocidade_y())
-            #print("propulsor :", nave.get_potencia_propulsor())
-            print("cont :", liberar_decolagem)
-
-            if nave.get_colidiu_area_pouso() == False and nave.get_potencia_propulsor() > 0.4:
+            if nave.get_colidiu_area_pouso() == False and nave.get_potencia_propulsor() > 0.4 and nave.get_posicao_y() < mapa.get_maior_altura_terreno()-80:
                 texto_feedback_pouso_hud.set_str('')
                 liberar_decolagem = 0
-                mapa.set_cor_terreno(WHITE)
 
+            # o jogador é obrigado a decolar a partir do momento em que ele pousou, ele estara seguro só apos subir acima do topo do terreno
+            if texto_feedback_pouso_hud.get_str() == '' and pousou == True and nave.get_posicao_y() < mapa.get_maior_altura_terreno()-80:
+                mapa.reiniciar()
+                mapa.desenha_terreno(gamePlay, nave)
+                mapa.set_cor_terreno(WHITE)
+                pousou = False
 
 
             if nave.get_colidiu_area_pouso() == True and nave.get_verifica_colisao_antecipada() == True:
                 nave.set_angulo_rotacao(nave.get_angulo_rotacao())
 
-                if nave.get_angulo_rotacao() <= 15 and nave.get_angulo_rotacao() >= -15:
+                if nave.get_angulo_rotacao() <= 10 and nave.get_angulo_rotacao() >= -10:
                     pouso_perfeito = 150
                     dados.set_pontos(pouso_perfeito)
                     texto_feedback_pouso_hud.set_str('POUSO PERFEITO')
 
-
                     liberar_decolagem += 1
-                    if liberar_decolagem >= 50:
-                        texto_feedback_pouso_hud.set_str('DECOLAGEM LIBERADA!')
-                        nave.set_posicao_y(nave.get_posicao_y() - 2)
-                        randon =  random.randint(0, 255)
-                        mapa.set_cor_terreno((randon,10,10))
-                        if liberar_decolagem > 80:
-                            mapa.set_cor_terreno(RED)
-                        if liberar_decolagem == 100:
-                            mapa.reiniciar()
-                            mapa.desenha_terreno(gamePlay, nave)
+                    pousou = libera_decolagem(liberar_decolagem)
 
-
-
-                elif nave.get_angulo_rotacao() <= 25 and nave.get_angulo_rotacao() >= -25:
+                elif nave.get_angulo_rotacao() <= 20 and nave.get_angulo_rotacao() >= -20:
                     pouso_toleravel = 100
                     dados.set_pontos(pouso_toleravel)
                     texto_feedback_pouso_hud.set_str('POUSO TOLERÁVEL')
+
+                    liberar_decolagem += 1
+                    pousou = libera_decolagem(liberar_decolagem)
 
                 elif nave.get_angulo_rotacao() <= 35 and nave.get_angulo_rotacao() >= -35:
                     pouso_forcado = 50
                     dados.set_pontos(pouso_forcado)
                     texto_feedback_pouso_hud.set_str('POUSO FORÇADO')
+
+                    liberar_decolagem += 1
+                    pousou = libera_decolagem(liberar_decolagem)
                 else:
                     texto_feedback_pouso_hud.set_str('VOCÊ MORREU')
                     str_botao_play = 'IR DENOVO'
                     gamePlay.set_game_loop(False)
+                    pousou = False
+
 
             if nave.get_colidiu_terreno() == True and nave.get_verifica_colisao_antecipada() == False:
 

@@ -17,7 +17,7 @@ class Mapa_do_jogo:
         self.__cont = 1
         self.__base_pouso_retangulo = None
         self.__base_pouso_line = None
-        self.__porcento_altura_terreno = None
+        self.__porcentagem_prenchimento_tela = None
         self.__existe_area_pouso = False
         self.__altura_base_pouso = None
         self.__espessura_base_pouso_line = 6
@@ -25,10 +25,16 @@ class Mapa_do_jogo:
         self.__sort1 = 0
         self.__sort2 = 0
         self.__sort3 = 0
+        self.__maior_altura_terreno = 0
 
 
 
 
+    def get_maior_altura_terreno(self):
+        return self.__maior_altura_terreno
+
+    def __set_maior_altura_terreno(self, altura):
+        self.__maior_altura_terreno = altura
 
     def set_qualidade_terreno(self, int):
         self.__qualidade_terreno = int
@@ -113,10 +119,10 @@ class Mapa_do_jogo:
     def set_desenha_contorno(self, vertices):
         self.__desenha_contorno = vertices
 
-    def get_random_alturas_diferentes(self):
+    def __get_random_alturas_diferentes(self):
         return self.__random_alturas_diferentes
 
-    def set_random_alturas_diferentes(self, altura):
+    def __set_random_alturas_diferentes(self, altura):
         self.__random_alturas_diferentes = altura
 
     def get_random_pouso_nave(self):
@@ -128,19 +134,19 @@ class Mapa_do_jogo:
     def get_cont(self):
         return self.__cont
 
-    def set_cont(self, cont):
+    def __set_cont(self, cont):
         self.__cont = cont
 
-    def get_porcento_altura_terreno(self):
-        return self.__porcento_altura_terreno
+    def __get_porcento_altura_terreno(self):
+        return self.__porcentagem_prenchimento_tela
 
-    def set_porcento_altura_terreno(self, porcentagem):
-        self.__porcento_altura_terreno = porcentagem
+    def __set_porcento_altura_terreno(self, porcentagem):
+        self.__porcentagem_prenchimento_tela = porcentagem
 
     def get_altura_base_pouso(self):
         return self.__altura_base_pouso
 
-    def set_altura_base_pouso(self, altura):
+    def __set_altura_base_pouso(self, altura):
         self.__altura_base_pouso = altura
 
     def get_espessura_base_pouso_line(self):
@@ -164,7 +170,7 @@ class Mapa_do_jogo:
         self.__cont = 1
         self.__base_pouso_retangulo = None
         self.__base_pouso_line = None
-        self.__porcento_altura_terreno = None
+        self.__porcentagem_prenchimento_tela = None
         self.__existe_area_pouso = False
         self.__altura_base_pouso = None
         self.__espessura_base_pouso_line = 6
@@ -183,11 +189,11 @@ class Mapa_do_jogo:
         self.__s_novo_terreno = self.get_novo_terreno()
         self.__s_cor_borda_terreno = self.get_cor_terreno_borda()
         self.__s_desenha_contorno = self.get_desenha_contorno()
-        self.__s_random_alturas_diferentes = self.get_random_alturas_diferentes()
+        self.__s_random_alturas_diferentes = self.__get_random_alturas_diferentes()
         self.__s_random_pouso_nave = self.get_random_pouso_nave()
         self.__s_cont = self.get_cont()
         self.__s_base_pouso_line = self.get_pouso_nave_line()
-        self.__s_porcento_altura_terreno = self.get_porcento_altura_terreno()
+        self.__s_porcento_altura_terreno = self.__get_porcento_altura_terreno()
         self.__s_existe_area_pouso = self.get_existe_area_pouso()
         self.__s_altura_base_pouso = self.get_altura_base_pouso()
         self.__s_espessura_base_pouso_line = self.get_espessura_base_pouso_line()
@@ -209,17 +215,17 @@ class Mapa_do_jogo:
         self.set_desenha(self.__s_desenha)
 
         self.set_terreno(self.__s_terreno)
-        self.set_cont(self.__s_cor)
+        self.__set_cont(self.__s_cor)
         self.set_novo_terreno(self.__s_novo_terreno)
         self.set_cor_borda_terreno(self.__s_cor_borda_terreno)
         self.set_desenha_contorno(self.__s_desenha_contorno)
-        self.set_random_alturas_diferentes(self.__s_random_alturas_diferentes)
+        self.__set_random_alturas_diferentes(self.__s_random_alturas_diferentes)
         self.set_ramdom_pouso_nave(self.__s_random_pouso_nave)
-        self.set_cont(self.__s_cont)
+        self.__set_cont(self.__s_cont)
         self.set_pouso_nave_line(self.__s_base_pouso_line)
-        self.set_porcento_altura_terreno(self.__s_porcento_altura_terreno)
+        self.__set_porcento_altura_terreno(self.__s_porcento_altura_terreno)
         self.set_existe_area_pouso(self.__s_existe_area_pouso)
-        self.set_altura_base_pouso(self.__s_altura_base_pouso)
+        self.__set_altura_base_pouso(self.__s_altura_base_pouso)
         self.set_espessura_base_pouso_line(self.__s_espessura_base_pouso_line)
         self.set_qualidade_terreno(self.__s_qualidade_terreno)
 
@@ -258,11 +264,15 @@ class Mapa_do_jogo:
                 self.__qtd_tuplas_terreno = len(self.__terreno)
 
                 # sorteia duas porcentagem de tela para que o morro do terreno alterne entre picos altos e baixos
-                self.__porcento_altura_terreno = random.randint((tela.get_resolucao()[1] / 1000) * 200, #200
-                                                                (tela.get_resolucao()[1] / 1000) * 300) #300    # 10% ou 20% da tela
+                self.__porcentagem_prenchimento_tela = random.randint((tela.get_resolucao()[1] / 1000) * 200,  #200
+                                                                      (tela.get_resolucao()[1] / 1000) * 300) #300    # 10% ou 20% da tela
 
                 # faz outro sorteio que recebe como o parametro o sorteio anterior que pode ser 10 ou 20% da tela
-                self.__random_alturas_diferentes = random.randint((tela.get_resolucao()[1] - self.__porcento_altura_terreno), (tela.get_resolucao()[1] - 50))
+                self.__random_alturas_diferentes = random.randint((tela.get_resolucao()[1] - self.__porcentagem_prenchimento_tela), (tela.get_resolucao()[1] - 50))
+
+                # coleta a maior altura gerada pelo terreno
+                if self.__random_alturas_diferentes > self.get_maior_altura_terreno():
+                    self.__set_maior_altura_terreno(self.__random_alturas_diferentes)
 
                 # incrementa o valor do x que contem na tupla e em y adiciona randomicamente
                 vertice_aux = ((vertice[0] + x), (vertice[1] + self.__random_alturas_diferentes))
