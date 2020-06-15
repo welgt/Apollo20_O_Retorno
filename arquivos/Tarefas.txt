@@ -9,7 +9,7 @@ HUD
     - Time in Game
 
     SE DER TEMPO:
-        - se der tempo, desenhar feedback de estabilidade de pouso
+        - se der tempo, desenhar feedback de estabilidade de pouso_________ok
         - instaciar itens de reparo para a nave
         - instanciar item de combustivel-------ok
         - Falta fazer o texto dos botoes do menu ficar centralizado dinamicamente.-------ok
@@ -32,4 +32,4 @@ BUGS
     - Ao ir no menu/configuracoes/fullscren
         Ao apertar o botal voltar esta ativando o botao exite do painel menu
 
-    - Ao jogar um save pode ficar sempre pegando o mesmo item de combustivel e os pontos aumentam
+    - Ao jogar um save pode ficar sempre pegando o mesmo item de combustivel e os pontos aumentam_______ok

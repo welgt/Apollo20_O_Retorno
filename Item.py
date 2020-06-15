@@ -71,6 +71,16 @@ class Item:
 
 
 
+    def play_som_item(self):
+        self.__som_item.play()
+
+    def set_volume_item(self, volume):
+        self.__som_item.set_volume(volume)
+
+    def get_volume_propulsor(self):
+        return self.__som_item.get_volume()
+
+
 
     def get_posicao_inicial_x(self):
         return self.__posicao_inicial_x
@@ -195,8 +205,14 @@ class Item:
 
             print('Colidiu')
             self.set_colidiu_nave(True)
+
+            self.set_volume_item(1)
+            self.__som_item.load('arquivos/item.mp3')
+            self.__som_item.play()
         else:
             self.set_colidiu_nave(False)
+
+
 
 
 

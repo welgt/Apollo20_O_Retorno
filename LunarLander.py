@@ -46,6 +46,39 @@ botao_slider_volume_ambiente = botao()
 botao_bola_slider_volume_ambiente = botao()
 botao_full_scren = botao()
 
+texto_velocidade_nave_hud = fonte_texto()
+texto_combustivel_hud = fonte_texto()
+texto_altitude_hud = fonte_texto()
+texto_angulo_nave_hud = fonte_texto()
+texto_pontos_hud = fonte_texto()
+texto_msg_usuario_hud = fonte_texto()
+texto_volume_ambiente = fonte_texto()
+texto_fullscreen = fonte_texto()
+texto_exit = fonte_texto()
+texto_feedback_pouso_hud = fonte_texto()
+texto_feedback_pouso_hud.set_str('')
+
+
+
+debug = False
+jogoAtivo = True
+config = False
+nova_resolucao = False
+
+pos_bola_slider_volume = 0
+nave.set_volume_propulsor(0.3)
+
+save = False
+carregar_save = False
+reiniciar = False
+marca_save = 0
+cor_texto_botao_save = WHITE
+liberar_decolagem = 0
+pousou = False
+
+dados = Dados(tela, mapa, nave, gasolina)
+
+#captura o evento do botoes que sao tratados na sua propria classe
 def evento_botoes():
     botao().evento(event, botao_play, painel_menu)
     botao().evento(event, botao_exit, painel_menu)
@@ -57,10 +90,14 @@ def evento_botoes():
     botao().evento(event, botao_sim, painel_sair)
     botao().evento(event, botao_nao, painel_sair)
 
+
+
 # funcina como repercusao, se nao sorteio a area de pouso, volte aqui!
 def redesenha_mapa():
     mapa.reiniciar()
     mapa.desenha_terreno(tela, nave)
+
+
 
 def libera_decolagem(liberar_decolagem):
     pousou = True
@@ -81,43 +118,25 @@ def libera_decolagem(liberar_decolagem):
 
         return pousou
 
+
+
 def reinicia_menu():
     texto_feedback_pouso_hud.set_str('VOCÊ MORREU')
     nave.set_vida(0)
     botao_play.set_str_botao('IR DENOVO')
     painel_menu.set_ativo(True)
 
-texto_velocidade_nave_hud = fonte_texto()
-texto_combustivel_hud = fonte_texto()
-texto_altitude_hud = fonte_texto()
-texto_angulo_nave_hud = fonte_texto()
-texto_pontos_hud = fonte_texto()
-texto_contagem_regressiva_hud = fonte_texto()
-texto_volume_ambiente = fonte_texto()
-texto_fullscreen = fonte_texto()
-texto_exit = fonte_texto()
-texto_feedback_pouso_hud = fonte_texto()
-texto_feedback_pouso_hud.set_str('')
+    texto_msg_usuario_hud.cria("Game Over", 'Times new roman', int(tela.get_proporcao()[1] * 100), WHITE)
+    tela.blit(texto_msg_usuario_hud.get_surface(), (tela.get_resolucao()[0] / 2 - texto_msg_usuario_hud.get_largura()/2,
+              int(tela.get_proporcao()[1]*100)))
 
-debug = False
-jogoAtivo = True
-config = False
-nova_resolucao = False
 
-pos_bola_slider_volume = 0
-nave.set_volume_propulsor(0.1)
 
-save = False
-carregar_save = False
-reiniciar = False
-marca_save = 0
-cor_texto_botao_save = WHITE
-liberar_decolagem = 0
-pousou = False
 
-dados = Dados(tela, mapa, nave, gasolina)
 
 while jogoAtivo:
+
+    #pos_bola_slider_volume = - botao_slider_volume_ambiente.get_posicao_x()/2 + 5
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -198,13 +217,13 @@ while jogoAtivo:
         painel_config.cria(tela, 0, 0, 40, 45)
         painel_config.draw_painel(tela, AMARELO, 120)
 
-        botao_voltar.criar(painel_config, 0, tela.get_proporcao()[1] * 150, 30, 10)
+        botao_voltar.criar(painel_config, 0, tela.get_proporcao()[1] * 180, 30, 10)
         botao_voltar.draw(tela, 'VOLTAR', WHITE)
 
         botao_slider_volume_ambiente.criar(painel_config, 0, -tela.get_proporcao()[1] * 100, 50, 3)
         botao_slider_volume_ambiente.draw(tela, '-                       +', WHITE)
 
-        print("texto_volume_ambiente largura: ", texto_volume_ambiente.get_largura())
+        #print("texto_volume_ambiente largura: ", texto_volume_ambiente.get_largura())
         texto_volume_ambiente.cria("VOLUME AMBIENTE", 'Times new roman', int(tela.get_proporcao()[0] * 15), WHITE)
         tela.blit(texto_volume_ambiente.get_surface(),
                   (tela.get_resolucao()[0] / 2 - texto_volume_ambiente.get_largura() / 2,
@@ -252,10 +271,10 @@ while jogoAtivo:
             temp = 3
             temp -= tela.get_cronometro()[4]
 
-            texto_contagem_regressiva_hud.cria(" {0:4.4s} ".format(str(temp)), 'Times new roman', int(tela.get_proporcao()[1] * 100), WHITE)
-            tela.blit(texto_contagem_regressiva_hud.get_surface(), (tela.get_resolucao()[0] / 2
-                                                                    - texto_contagem_regressiva_hud.get_tamanho_letra() / 2,
-                                                                    tela.get_resolucao()[1] / 2 - texto_contagem_regressiva_hud.get_tamanho_letra() / 2))
+            texto_msg_usuario_hud.cria(" {0:4.4s} ".format(str(temp)), 'Times new roman', int(tela.get_proporcao()[1] * 100), WHITE)
+            tela.blit(texto_msg_usuario_hud.get_surface(), (tela.get_resolucao()[0] / 2
+                                                                    - texto_msg_usuario_hud.get_tamanho_letra() / 2,
+                                                                    tela.get_resolucao()[1] / 2 - texto_msg_usuario_hud.get_tamanho_letra() / 2))
 
         pos_textos = tela.get_resolucao()[0] / 5
 
@@ -410,8 +429,8 @@ while jogoAtivo:
     if tela.get_game_loop() == True:
 
 
-        box_surface_polygon = pygame.Surface((500, 300), pygame.SRCALPHA)
-        pygame.draw.polygon(box_surface_polygon, (255, 255, 255, 200), ((25, 0), (0, 25), (25, 50), (50, 25)))
+        #box_surface_polygon = pygame.Surface((500, 300), pygame.SRCALPHA)
+        #pygame.draw.polygon(box_surface_polygon, (255, 255, 255, 200), ((25, 0), (0, 25), (25, 50), (50, 25)))
 
         #tela.draw_polygon(self.get_cor_terreno(), self.__terreno)
 
@@ -428,13 +447,16 @@ while jogoAtivo:
 
 
             gasolina.set_tamanho(int(tela.get_proporcao()[0] * 15), int(tela.get_proporcao()[1] * 30))
+            gasolina.set_volume_item(pos_bola_slider_volume)
             terra.set_tamanho(int(tela.get_proporcao()[0] * 180), int(tela.get_proporcao()[0] * 180))
             nave.set_tamanho(int(tela.get_proporcao()[0] * 18),
                              int(tela.get_proporcao()[1] * 50))
 
+            print("pos_bola_slider_volume :",pos_bola_slider_volume)
             nave.set_friccao(5)
             nave.set_velocidade_rotacao(nave.get_gravidade_lua() * 2)
             nave.set_volume_propulsor(pos_bola_slider_volume)
+            nave.set_volume_explosao(pos_bola_slider_volume- 0.5)
             nave.set_altitude(abs(nave.get_posicao_y() - tela.get_resolucao()[1]))
             nave.update()
             nave.verifica_colisao_tela(tela)
@@ -498,7 +520,7 @@ while jogoAtivo:
                 # seta intensidade da explosa, circunferencia e tempo
                 nave.explodir(tela, 10, 25, 20)
 
-            print("colisao pouso :",nave.get_colidiu_area_pouso())
+
             if nave.get_colidiu_area_pouso() == True and nave.get_verifica_colisao_antecipada() == True:
                 nave.set_angulo_rotacao(nave.get_angulo_rotacao())
 
@@ -557,12 +579,12 @@ while jogoAtivo:
             # rotaciona a (imagem) nave
             nave_rot = nave.rotacaoCentralizada()
 
-
             tela.blit(terra.get_surface(), terra.get_posicao())
             tela.blit(nave_rot[0], nave_rot[1])
             tela.draw_polygon(CYAN, poligono_propulsor_dir)
             tela.draw_polygon(CYAN, poligono_propulsor_esq)
             tela.blit(gasolina.get_surface(), (gasolina.get_posicao_x(), gasolina.get_posicao_y()))
+
 
     tela.flip()
     tela.set_fps(30)

@@ -36,6 +36,7 @@ class Nova_nave:
         self.__altitude = 0
         self.__cont = 0
         self.__som_propulsor = pygame.mixer.music
+        self.__som_explosao = pygame.mixer.music
         self.__vida = 1
         self.__posicao_inicial_x = 0
         self.__pocicao_inicial_y = 0
@@ -144,6 +145,22 @@ class Nova_nave:
 
     def get_volume_propulsor(self):
         return self.__som_propulsor.get_volume()
+
+
+
+    def play_som_explosao(self):
+        self.__som_explosao.play()
+
+    def set_volume_explosao(self, volume):
+        self.__som_explosao.set_volume(volume)
+
+    def get_volume_explosao(self):
+        return self.__som_explosao.get_volume()
+
+
+
+
+
 
     def set_altitude(self, altitude):
         self.__altitude = altitude
@@ -357,10 +374,10 @@ class Nova_nave:
 
 
 
-
+    # GRAVIDADE
     def gravidade(self,tela):
 
-        # GRAVIDADE
+
         # se nao tiver acelerando e nao tiver colidido com a tela ou com a area de pouso executa a gravidade
         if self.get_propulsor_ativo() == False and self.get_colidiu_tela() == False \
             and self.get_colidiu_area_pouso() == False:
@@ -420,6 +437,72 @@ class Nova_nave:
 
 
 
+
+    #Define como sera essa explosao
+    def explodir(self, tela, intensidade, diametro, duracao):
+
+
+
+        if self.get_colidiu_terreno() == True:
+            self.__contador_explosao+=1
+
+        if self.__contador_explosao > duracao:
+            self.__set_pode_explodir(False)
+
+        if self.__get_pode_explodir() == True:
+
+
+            self.__som_explosao.load('arquivos/explosao.mp3')
+            self.__som_explosao.play()
+
+            for x in range(intensidade):
+                self.__gerador_explosao(tela, diametro)
+
+
+    # controi a estrutura da explosa0
+    def __gerador_explosao(self, tela, diametro_explosao):
+
+        # sorteia as cores da explosao dentre essas pre definidas
+        c1 = random.randint(1,4)
+        color = (0,0,0)
+        if c1 == 1:
+            color = RED
+        if c1 == 2:
+            color = CYAN
+
+        if c1 == 3:
+            color = AMARELO
+
+        if c1 == 4:
+            color = BLACK
+
+        # define o ponto central de origem da explosao e o diametro
+        x_dir = abs(int((self.get_posicao_x()+ (self.get_largura_x()/2)) + diametro_explosao))
+        x_esq = abs(int((self.get_posicao_x() + (self.get_largura_x()/2)) - diametro_explosao))
+        y_cima = abs(int((self.get_posicao_y()+ (self.get_altura_y()/2)) - diametro_explosao))
+        y_baixo = abs(int((self.get_posicao_y() + (self.get_altura_y()/2)) + diametro_explosao))
+
+        # sortei um ponto(posicao) que esteja dentro da area limite para desenhar
+        posicao_x = random.randint(x_esq,x_dir)
+        posicao_y = random.randint(y_cima, y_baixo)
+
+        # define os tamanhos posiveis dos retangulos(particulas)
+        random_tamanho = random.randint(1,10)
+        # define  a area limite que a explosao atinge
+
+        # cria a "particula"
+        retangulo = pygame.Surface((random_tamanho,random_tamanho))
+        retangulo.set_alpha(200)
+        retangulo.fill((color))
+
+        # desenha na tela
+        tela.blit(retangulo, (posicao_x, posicao_y))
+
+
+
+
+
+
     def verifica_colisao_tela(self, tela):
 
         # se for diferente disso é porque esta fora da tela
@@ -441,6 +524,9 @@ class Nova_nave:
             self.set_gravidade_lua(0)
             self.set_angulo_rotacao(self.get_angulo_rotacao())
             self.set_posicao(self.get_posicao_x(), self.get_posicao_y())
+
+            self.__som_explosao.load('arquivos/explosao.mp3')
+            self.__som_explosao.play()
 
 
 
@@ -485,60 +571,7 @@ class Nova_nave:
                 self.set_colisao_antecipada(False)
 
 
-    def explodir(self, tela, intensidade, diametro, duracao):
 
-
-
-        if self.get_colidiu_terreno() == True:
-            self.__contador_explosao+=1
-
-        if self.__contador_explosao > duracao:
-            self.__set_pode_explodir(False)
-
-
-        if self.__get_pode_explodir() == True:
-            for x in range(intensidade):
-                self.__gerador_explosao(tela, diametro)
-
-
-
-    def __gerador_explosao(self, tela, diametro_explosao):
-
-        # sorteia as cores da explosao dentre essas pre definidas
-        c1 = random.randint(1,4)
-        color = (0,0,0)
-        if c1 == 1:
-            color = RED
-        if c1 == 2:
-            color = CYAN
-
-        if c1 == 3:
-            color = AMARELO
-
-        if c1 == 4:
-            color = BLACK
-
-        # define o ponto central de origem da explosao e o diametro
-        x_dir = abs(int((self.get_posicao_x()+ (self.get_largura_x()/2)) + diametro_explosao))
-        x_esq = abs(int((self.get_posicao_x() + (self.get_largura_x()/2)) - diametro_explosao))
-        y_cima = abs(int((self.get_posicao_y()+ (self.get_altura_y()/2)) - diametro_explosao))
-        y_baixo = abs(int((self.get_posicao_y() + (self.get_altura_y()/2)) + diametro_explosao))
-
-        # sortei um ponto(posicao) que esteja dentro da area limite para desenhar
-        posicao_x = random.randint(x_esq,x_dir)
-        posicao_y = random.randint(y_cima, y_baixo)
-
-        # define os tamanhos posiveis dos retangulos(particulas)
-        random_tamanho = random.randint(1,10)
-        # define  a area limite que a explosao atinge
-
-        # cria a "particula"
-        retangulo = pygame.Surface((random_tamanho,random_tamanho))
-        retangulo.set_alpha(200)
-        retangulo.fill((color))
-
-        # desenha na tela
-        tela.blit(retangulo, (posicao_x, posicao_y))
 
 
 
