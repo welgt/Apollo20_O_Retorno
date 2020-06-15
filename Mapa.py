@@ -1,5 +1,8 @@
 import random
 
+import pygame
+
+
 class Mapa_do_jogo:
     def __init__(self):
         self.__qtd_tuplas_terreno = 0

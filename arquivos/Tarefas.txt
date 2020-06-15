@@ -27,9 +27,12 @@ MENU
         - Falta fazer o texto dos botoes do menu ficar centralizado dinamicamente.-------ok
 
 
-BUGS
+BUGS CONHECIDOS
 
     - Ao ir no menu/configuracoes/fullscren
         Ao apertar o botal voltar esta ativando o botao exite do painel menu
 
     - Ao jogar um save pode ficar sempre pegando o mesmo item de combustivel e os pontos aumentam_______ok
+
+    _ Ao salvar o jogo em uma resolucao baixa e depois for jogar o save em uma resolucao mais alta, o terreno
+        nao esta salvando certo

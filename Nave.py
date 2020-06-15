@@ -158,10 +158,6 @@ class Nova_nave:
         return self.__som_explosao.get_volume()
 
 
-
-
-
-
     def set_altitude(self, altitude):
         self.__altitude = altitude
 

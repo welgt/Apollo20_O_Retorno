@@ -1,10 +1,26 @@
 import math
 import random
 import pygame
+from Dados import GREEN
+from Dados import LARANJA
 
 class Item:
-    def __init__(self, surface, posicao_x, posicao_y):
-        self.__surface = pygame.image.load(surface)
+    def __init__(self, posicao_x, posicao_y):
+
+        # tive que fazer essa gambiarra de ultima hora pra dar tempo porque troquei de imagem para Surface
+        #r = random.randint(0,1)
+        #if r == 0:
+         #   color = GREEN
+
+        #if r == 1:
+         #   color = LARANJA
+        retangulo = pygame.Surface((100,100))
+        retangulo.set_alpha(255)
+        retangulo.fill((GREEN))
+
+        self.__surface = retangulo
+
+        #self.__surface = pygame.image.load(surface)
         self.__posicao_x = posicao_x
         self.__posicao_y = posicao_y
         self.__velocidade_x = 0
