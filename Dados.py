@@ -31,7 +31,7 @@ class Dados:
     def get_cont(self):
         return self.__cont
 
-    def set_pontos(self, feedback_pouso, nave, mapa):
+    def set_pontos(self, feedback_pouso):
 
 
         if feedback_pouso == 'POUSO PERFEITO' and self.get_cont() == 0:

@@ -1,26 +1,35 @@
 
 
 HUD
-    - Feedback pontos do pouso
+    - Feedback pontos do pouso-------ok
     - Feedback pontos totais
     - Feedback aceleracao da nave -------ok
     - Feedback combustivel -------ok
     - Feedback altitude -------ok
+    - Time in Game
 
     SE DER TEMPO:
         - se der tempo, desenhar feedback de estabilidade de pouso
         - instaciar itens de reparo para a nave
-        - instanciar item de combustivel
-        - Falta fazer o texto dos botoes do menu ficar centralizado dinamicamente.
+        - instanciar item de combustivel-------ok
+        - Falta fazer o texto dos botoes do menu ficar centralizado dinamicamente.-------ok
         - Feedback danos da nave
 
 
 MENU
 
-    - programar as configuracoes
-    - fazer um deley ao apertar o botao voltar em configuracoes, ou descobrir porque fica ativo a deteccao do botao
+    - programar as configuracoes-------ok
+    - fazer um deley ao apertar o botao voltar em configuracoes, ou descobrir porque fica ativo a deteccao do botao-------+/-ok
 
     SE DER TEMPO:
         - se der tempo fazer escalonamento no botao de acordo com o click
-        - controlar a opacidade do painel e botoes de acordo com o evento.
-        - Falta fazer o texto dos botoes do menu ficar centralizado dinamicamente.
+        - controlar a opacidade do painel e botoes de acordo com o evento.-------ok
+        - Falta fazer o texto dos botoes do menu ficar centralizado dinamicamente.-------ok
+
+
+BUGS
+
+    - Ao ir no menu/configuracoes/fullscren
+        Ao apertar o botal voltar esta ativando o botao exite do painel menu
+
+    - Ao jogar um save pode ficar sempre pegando o mesmo item de combustivel e os pontos aumentam

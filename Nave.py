@@ -1,5 +1,12 @@
 import math
-from Config import *
+import random
+from Dados import RED
+from Dados import AMARELO
+from Dados import CYAN
+from Dados import BLACK
+
+import pygame
+
 
 class Nova_nave:
     def __init__(self, surface, posicao_x, posicao_y):
@@ -25,13 +32,15 @@ class Nova_nave:
         self.__rotacionou_esq = False
         self.__nova_lista_colisores_terreno = []
         self.__combustivel = 1000
-        self.__gravidade_lua = 5.0#1.6
+        self.__gravidade_lua = 1.6
         self.__altitude = 0
         self.__cont = 0
         self.__som_propulsor = pygame.mixer.music
         self.__vida = 1
         self.__posicao_inicial_x = 0
         self.__pocicao_inicial_y = 0
+        self.__pare_de_explodir = True
+        self.__contador_explosao = 0
 
 
     def reiniciar(self):
@@ -45,9 +54,10 @@ class Nova_nave:
         self.set_angulo_rotacao(0)
         self.set_velocidade_rotacao(0)
         self.set_combustivel(1000)
-        self.set_gravidade_lua(5.0)
+        self.set_gravidade_lua(1.6)
         self.set_vida(1)
-
+        self.__set_pode_explodir(True)
+        self.set_contador_explosao(0)
 
 
     def salvar(self):
@@ -64,8 +74,8 @@ class Nova_nave:
         self.__s_combustivel = self.get_combustivel()
         self.__s_gravidade_lua = self.get_gravidade_lua()
         self.__s_vida = self.get_vida()
-
-
+        self.__s_pode_explodir = self.__get_pode_explodir()
+        self.__s_contador_explosao = self.get_contador_explosao()
 
 
     def carregar_save(self):
@@ -82,9 +92,20 @@ class Nova_nave:
         self.set_combustivel(self.__s_combustivel)
         self.set_gravidade_lua(self.__s_gravidade_lua)
         self.set_vida(self.__s_vida)
+        self.__set_pode_explodir(self.__s_pode_explodir)
+        self.set_contador_explosao(self.__s_contador_explosao)
 
+    def get_contador_explosao(self):
+        return self.__contador_explosao
 
+    def set_contador_explosao(self, contador):
+        self.__contador_explosao = contador
 
+    def __get_pode_explodir(self):
+        return self.__pare_de_explodir
+
+    def __set_pode_explodir(self, pode):
+        self.__pare_de_explodir = pode
 
     def get_posicao_inicial_x(self):
         return self.__posicao_inicial_x
@@ -406,12 +427,21 @@ class Nova_nave:
             and self.get_posicao_y() >= 0 and self.__posicao_y <= tela.get_resolucao()[1] - self.get_altura_y():
             #print("nao colidiu com a tela")
             self.set_colidiu_tela(False)
+
         else:
             #print("colidiu com a tela")
-            self.set_colidiu_tela(True)
             # pega a posicao do momento da colisao e deixa a nave travada nela
+            self.set_colidiu_tela(True)
             self.set_velocidade_x(0)
             self.set_velocidade_y(0)
+            self.set_gravidade_lua(0)
+            self.set_potencia_propulsor(0)
+            self.set_rotacionou_dir(False)
+            self.set_rotacionou_esq(False)
+            self.set_gravidade_lua(0)
+            self.set_angulo_rotacao(self.get_angulo_rotacao())
+            self.set_posicao(self.get_posicao_x(), self.get_posicao_y())
+
 
 
 
@@ -453,6 +483,62 @@ class Nova_nave:
                 #print("Colisao antecipada :", self.get_verifica_colisao_antecipada())
             else:
                 self.set_colisao_antecipada(False)
+
+
+    def explodir(self, tela, intensidade, diametro, duracao):
+
+
+
+        if self.get_colidiu_terreno() == True:
+            self.__contador_explosao+=1
+
+        if self.__contador_explosao > duracao:
+            self.__set_pode_explodir(False)
+
+
+        if self.__get_pode_explodir() == True:
+            for x in range(intensidade):
+                self.__gerador_explosao(tela, diametro)
+
+
+
+    def __gerador_explosao(self, tela, diametro_explosao):
+
+        # sorteia as cores da explosao dentre essas pre definidas
+        c1 = random.randint(1,4)
+        color = (0,0,0)
+        if c1 == 1:
+            color = RED
+        if c1 == 2:
+            color = CYAN
+
+        if c1 == 3:
+            color = AMARELO
+
+        if c1 == 4:
+            color = BLACK
+
+        # define o ponto central de origem da explosao e o diametro
+        x_dir = abs(int((self.get_posicao_x()+ (self.get_largura_x()/2)) + diametro_explosao))
+        x_esq = abs(int((self.get_posicao_x() + (self.get_largura_x()/2)) - diametro_explosao))
+        y_cima = abs(int((self.get_posicao_y()+ (self.get_altura_y()/2)) - diametro_explosao))
+        y_baixo = abs(int((self.get_posicao_y() + (self.get_altura_y()/2)) + diametro_explosao))
+
+        # sortei um ponto(posicao) que esteja dentro da area limite para desenhar
+        posicao_x = random.randint(x_esq,x_dir)
+        posicao_y = random.randint(y_cima, y_baixo)
+
+        # define os tamanhos posiveis dos retangulos(particulas)
+        random_tamanho = random.randint(1,10)
+        # define  a area limite que a explosao atinge
+
+        # cria a "particula"
+        retangulo = pygame.Surface((random_tamanho,random_tamanho))
+        retangulo.set_alpha(200)
+        retangulo.fill((color))
+
+        # desenha na tela
+        tela.blit(retangulo, (posicao_x, posicao_y))
 
 
 
@@ -554,22 +640,20 @@ class Nova_nave:
             # verifica se a distancia é menor que 10, se sim, colidiu com o terreno
             if distancia_entre_ponto_colisor_nave_ponto_principal < 8:
 
-
-                #self.set_posicao(self.get_posicao_x(), self.get_posicao_y())
-                #self.set_velocidade_x(0)
-                #self.set_velocidade_y(0)
                 if self.get_colidiu_area_pouso() == False and self.get_verifica_colisao_antecipada() == False:
-                    #self.set_posicao(self.get_posicao_x(), self.get_posicao_y())
+                    self.set_colidiu_terreno(True)
                     self.set_velocidade_x(0)
                     self.set_velocidade_y(0)
                     self.set_gravidade_lua(0)
-                    self.set_colidiu_terreno(True)
                     self.set_potencia_propulsor(0)
-                    # self.set_rotacionou_dir(False)
-                    # self.set_rotacionou_esq(False)
+                    self.set_rotacionou_dir(False)
+                    self.set_rotacionou_esq(False)
                     self.set_gravidade_lua(0)
-
-                #print("COLIDIU PONTO PRINCIPAL")
+                    self.set_angulo_rotacao(self.get_angulo_rotacao())
+                    self.set_posicao(self.get_posicao_x(), self.get_posicao_y())
+                    #print("COLIDIU PONTO PRINCIPAL")
+                else:
+                    self.set_colidiu_terreno(False)
 
             # verifica se a distancia é menor que 10, se sim, colidiu com o terreno
             if distancia_entre_ponto_colisor_nave_ponto_intermediario_01 < 8 \
@@ -577,19 +661,23 @@ class Nova_nave:
                     or distancia_entre_ponto_colisor_nave_ponto_intermediario_03 < 8 \
                     or distancia_entre_ponto_colisor_nave_ponto_intermediario_04 < 8 \
                     or distancia_entre_ponto_colisor_nave_ponto_intermediario_05 < 8 :
-                self.set_colidiu_terreno(True)
-
-                #self.set_rotacionou_dir(False)
-                #self.set_rotacionou_esq(False)
+                #self.set_colidiu_terreno(True)
 
                 if self.get_colidiu_area_pouso() == False and self.get_verifica_colisao_antecipada() == False:
-                    #self.set_posicao(self.get_posicao_x(), self.get_posicao_y())
+                    self.set_colidiu_terreno(True)
                     self.set_velocidade_x(0)
                     self.set_velocidade_y(0)
                     self.set_gravidade_lua(0)
                     self.set_potencia_propulsor(0)
+                    self.set_rotacionou_dir(False)
+                    self.set_rotacionou_esq(False)
+                    self.set_gravidade_lua(0)
+                    self.set_angulo_rotacao(self.get_angulo_rotacao())
+                    self.set_posicao(self.get_posicao_x(), self.get_posicao_y())
                     #print("COLIDIU PONTO INTERMEDIARIO")
-                    #self.set_colidiu_terreno(True)
+
+                else:
+                    self.set_colidiu_terreno(False)
 
 
             if j < len(lista_vertice)-1:#6

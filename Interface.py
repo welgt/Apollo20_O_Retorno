@@ -1,6 +1,6 @@
+import pygame
 from pygame import font
 from Dados import *
-from Tela import *
 
 class fonte_texto:
     def __init__(self):

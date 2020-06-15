@@ -1,6 +1,7 @@
-from Config import *
+import pygame
 
-class Nova_tela:
+
+class Tela:
     def __init__(self, titulo, resolucao):
         self.__resolucao_tela = resolucao
         self.set_resolucao(resolucao)

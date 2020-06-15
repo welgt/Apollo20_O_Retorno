@@ -2,10 +2,6 @@ import math
 import random
 import pygame
 
-import Nave
-from Tela import Nova_tela
-
-
 class Item:
     def __init__(self, surface, posicao_x, posicao_y):
         self.__surface = pygame.image.load(surface)
@@ -27,6 +23,9 @@ class Item:
         self.__posicao_inicial_x = 0
         self.__posicao_inicial_y = 0
 
+        self.__eh_save = False
+
+
 
 
     def reiniciar(self):
@@ -37,6 +36,7 @@ class Item:
         self.set_velocidade_y(0)
         self.set_gravidade_lua(1.6)
         self.set_friccao(0)
+
 
         #self.__largura_x = self.__surface.get_rect()[2]
         #self.__altura_y = self.__surface.get_rect()[3]
@@ -55,6 +55,7 @@ class Item:
         self.__s_velocidade_y = self.get_velocidade_y()
         self.__s_gravidade_lua = self.get_gravidade_lua()
         self.__s_friccao = self.get_friccao()
+        self.__s_eh_save = self.set_eh_save(True)
 
     def carregar_save(self):
 
@@ -64,6 +65,7 @@ class Item:
         self.set_velocidade_y(self.__s_velocidade_y)
         self.set_gravidade_lua(self.__s_gravidade_lua)
         self.set_friccao(self.__s_friccao)
+        self.set_eh_save(self.__s_eh_save)
 
 
 
@@ -178,6 +180,12 @@ class Item:
 
     def set_colidiu_nave(self, colidiu):
         self.__colidiu_nave = colidiu
+
+    def get_eh_save(self):
+        return self.__eh_save
+
+    def set_eh_save(self, eh_save):
+        self.__eh_save = eh_save
 
     def verifica_colisao_nave(self, nave):
 
